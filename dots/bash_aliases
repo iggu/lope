@@ -1,0 +1,74 @@
+# vim: ft=bash
+
+force_color_prompt=yes
+
+alias aaa='bat ~/.bash_aliases'
+alias aar='source ~/.bash_aliases'
+alias bbr="source $HOME/.bashrc"
+
+function mkdcd() {
+    mkdir -p "$1" && cd "$1"
+}
+alias dfh='df -h | head -n 1; df -h | grep /dev/sd'
+alias pf="fzf --preview='bat -f {}' --bind shift-up:preview-page-up,shift-down:preview-page-down"
+alias where="type -a"
+# Enable aliases to be sudo’ed
+alias sudo='sudo '
+alias _='sudo'
+
+alias proc="ps -ef | grep -v grep | grep"
+alias ytm="youtube-dl --extract-audio --audio-format mp3 --embed-thumbnail --add-metadata --audio-quality 0"
+alias ytl="youtube-dl -f bestvideo+bestaudio --merge-output-format mkv"
+
+
+alias apti='sudo apt install'
+alias aptr='sudo apt remove'
+alias apts='sudo apt search'
+alias apth='apt show'
+
+alias cdf='cd $(ls -d */ | fzf)'
+alias ..="cd .."
+alias ..1="cd .."
+alias 1..="cd .."
+alias ..2="cd ../.."
+alias 2..="cd ../.."
+alias ..3="cd ../../.."
+alias 3..="cd ../../.."
+alias ..4="cd ../../../.."
+alias 4..="cd ../../../.."
+alias ..5="cd ../../../../.."
+alias 5..="cd ../../../../.."
+alias ..6="cd ../../../../../.."
+alias 6..="cd ../../../../../.."
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias .....='cd ../../../..'
+alias ......='cd ../../../../..'
+alias ~="cd ~"
+alias -- -="cd -"
+
+alias ls='ls --group-directories-first --color=auto --classify' # classify symbols
+alias l='ls -1A'         # Lists in one column, hidden files.
+alias ll='ls -lh'        # Lists human readable sizes.
+alias lr='ll -R'         # Lists human readable sizes, recursively.
+alias la='ll -A'         # Lists human readable sizes, hidden files.
+alias lm='la | "$PAGER"' # Lists human readable sizes, hidden files through pager.
+alias lx='ll -XB'        # Lists sorted by extension (GNU only).
+alias lk='ll -Sr'        # Lists sorted by size, largest last.
+alias lt='ll -tr'        # Lists sorted by date, most recent last.
+alias lc='lt -c'         # Lists sorted by date, most recent last, shows change time.
+alias lu='lt -u'         # Lists sorted by date, most recent last, shows access time.
+alias sl='ls'            # I often screw this up.
+
+alias lg='lazygit'
+
+alias da='date "+%A, %B %d, %Y [%T]"'
+alias path='echo -e ${PATH//:/\\n}'
+alias openports='netstat --all --numeric --programs --inet'
+alias psgr='ps -Af | grep $1'
+# Intuitive map function
+# For example, to list all directories that contain a certain file:
+# find . -name .gitattributes | map dirname
+alias map="xargs -n1"
+
+

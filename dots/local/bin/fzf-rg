@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# 1. Search for text in files using Ripgrep
+# 2. Interactively restart Ripgrep with reload action
+# https://github.com/junegunn/fzf/blob/master/ADVANCED.md#using-fzf-as-interative-ripgrep-launcher
+RG_PREFIX="rg --column --line-number --no-heading --color=always --smart-case "
+INITIAL_QUERY="${*:-}"
+export FZF_DEFAULT_COMMAND=${INITIAL_QUERY:+"$RG_PREFIX $(printf %q "$INITIAL_QUERY")"}
+# echo $FZF_DEFAULT_COMMAND
+
+
+IFS=: read -ra selected < <(
+  fzf --ansi \
+      --disabled --query "$INITIAL_QUERY" \
+      --header "=== FIND BY CONTENT ===" \
+      --prompt "TEXT>> " \
+      --bind "change:reload:sleep 0.1; $RG_PREFIX {q} || true" \
+      --delimiter : \
+      --preview 'bat --color=always {1} --highlight-line {2}' \
+      --preview-window 'right,60%,border-bottom,+{2}+3/3,~3'
+)
+
+# selected contains: 0=filepath, 1=line, 2=pos, 3=content
+
+# TODO: this must be the deidcated script - suitable for standalone and from lf
+if [ -n "${selected[0]}" ] ; then
+    toPath="${selected[0]}" #$(echo "${selected[0]}" | sed 's/ /\\ /g')
+    toLine="${selected[1]}" #$(echo "${selected[1]}" | sed 's/ /\\ /g')
+    toPath=`realpath $toPath`
+    echo "$toPath +$toLine" # vim-ready - just prepend with 'vim' and thatsall
+    if [[ -n $id ]] ; then # probably we called from lf
+        who="$(ps -hq $PPID -o comm)" # direct parent or grand parent must be 'lf'
+        [[ $who == "lf" ]] || who="$(ps -hq `ps -hq $PPID -o ppid` -o comm)"
+        if [[ "$who" == "lf" ]]; then
+            lf -remote "send $id select $(echo $toPath | sed 's/ /\\ /g')"
+            lf -remote "send $id echo [$id]fzf:found => '$toPath' $toLine"
+        fi
+    fi
+fi

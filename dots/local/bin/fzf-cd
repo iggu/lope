@@ -1,0 +1,27 @@
+#!/bin/bash
+
+
+if type fd >/dev/null 2>/dev/null ; then
+    export FZF_DEFAULT_COMMAND='fd --type d --color=never --hidden --exclude .git'
+else
+    export FZF_DEFAULT_COMMAND='find -mindepth 1 -type d -not \( -path ".git" -prune \)'
+fi
+export FZF_DEFAULT_OPTS="--preview 'tree -C {}'"
+
+toPath=`fzf \
+            --header "=== FIND DIRECTORY BY NAME ===" \
+            --prompt "FN>> " \
+            --bind shift-up:preview-page-up,shift-down:preview-page-down`
+
+if [[ $? -eq 0 ]] && [[ -n $toPath ]] ; then
+    toPath=`realpath $toPath`
+    echo $toPath
+    if [[ -n $id ]] ; then
+        who="$(ps -hq $PPID -o comm)" # direct parent or grand parent must be 'lf'
+        [[ $who == "lf" ]] || who="$(ps -hq `ps -hq $PPID -o ppid` -o comm)"
+        if [[ "$who" == "lf" ]]; then
+            lf -remote "send $id cd $(echo "$toPath" | sed 's/ /\\ /g')"
+            lf -remote "send $id echo [$id]fzf:cd => $toPath"
+        fi
+    fi
+fi

@@ -1,0 +1,86 @@
+[alias]
+
+    # Credit an author on the latest commit.
+    credit = "!f() { \
+        if [ -n \"$1\" ] && [ -n \"$2\" ]; then \
+            git commit --amend --author \"$1 <$2>\" --no-edit --reuse-message=HEAD; \
+        fi \
+    }; f"
+
+    # Allow `$ git git git...`
+    git = !exec git
+
+    # List contributors.
+    contribs = shortlog --email --numbered --summary
+
+    # List remote branches.
+    lrb = "!f() { \
+        remote=\"${1:-origin}\"; \
+        git ls-remote --heads \"$remote\"; \
+    }; f"
+
+    # Remove the tag with the specified tag name if exists and tag the latest commit with that name.
+    retag = "!f() { \
+        git tag --delete \"$1\" &> /dev/null; \
+        git tag \"$1\"; \
+    }; f"
+
+    # Remove last commits (by default it removes the last commit).
+    rlc = "!f() { \
+        number_of_commits=\"${1:-1}\"; \
+        git reset --hard \"HEAD~$number_of_commits\"; \
+    }; f"
+
+    # Update the content of the last commit by including all
+    # staged changes.
+    # Note: "Update" is used loosely. Git doesn't actually
+    # update the last commit, but instead, creates a new commit
+    # based on the last commit and replaces it.
+    update-staged = commit --amend --no-edit
+
+    # Update the content of the last commit by including all local changes.
+    update-all = !git add --all && git commit --amend --no-edit
+
+    # Undo last commits (by default it undoes the last commit).
+    undo = "!f() { \
+        number_of_commits=\"${1:-1}\"; \
+        git reset --soft \"HEAD~$number_of_commits\"; \
+    }; f"
+
+    # Update the content of the last commit by including all
+    # staged changes as well as allow the user to change its
+    # commit message.
+    update-staged-w-message = commit --amend
+
+[pretty]
+
+    custom = "%C(magenta)%h%C(red)%d %C(yellow)%ar %C(green)%s %C(yellow)(%an)"
+    #                     │        │            │            │             └─ author name
+    #                     │        │            │            └─ message
+    #                     │        │            └─ date (relative)
+    #                     │        └─ decorations (branch, heads or tags)
+    #                     └─ hash (abbreviated)
+
+
+[core]
+    pager = delta
+
+[interactive]
+    diffFilter = delta --color-only
+
+[delta]
+    navigate = true
+    # side-by-side = true
+    
+[merge]
+    conflictstyle = diff3
+
+[diff]
+    colorMoved = default
+
+[pull]
+	rebase = false
+[credential]
+	helper = store
+[cola]
+	spellcheck = false

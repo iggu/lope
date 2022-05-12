@@ -1,0 +1,28 @@
+#!/bin/bash
+
+
+if type fd >/dev/null 2>/dev/null ; then
+    export FZF_DEFAULT_COMMAND='fd --type f --color=never --hidden --exclude .git'
+else
+    export FZF_DEFAULT_COMMAND='find -type f -not \( -path ".git" -prune \)'
+fi
+export FZF_DEFAULT_OPTS="--preview 'bat -f {}'" #'--no-height --color=bg+:#343d46,gutter:-1,pointer:#ff3c3c,info:#0dbc79,hl:#0dbc79,hl+:#23d18b'
+
+toPath=`fzf \
+            --header "=== FIND BY FILENAME ===" \
+            --prompt "FN>> " \
+            --preview-window 'right,60%,border-bottom,+{2}+3/3,~3' \
+            --bind shift-up:preview-page-up,shift-down:preview-page-down`
+
+if [[ $? -eq 0 ]] && [[ -n $toPath ]] ; then
+    toPath=`realpath $toPath`
+    echo $toPath # always print the result - to make this suitable for standalone usage
+    if [[ -n $id ]] ; then # probably we called from lf
+        who="$(ps -hq $PPID -o comm)" # is direct parent or grand parent 'lf'?
+        [[ $who == "lf" ]] || who="$(ps -hq `ps -hq $PPID -o ppid` -o comm)"
+        if [[ "$who" == "lf" ]] ; then # if yes - notify it about what happend
+            lf -remote "send $id select $(echo "$toPath" | sed 's/ /\\ /g')"
+            lf -remote "send $id echo [$id]fzf:show => $toPath"
+        fi
+    fi
+fi
