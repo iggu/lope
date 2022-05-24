@@ -1,0 +1,30 @@
+## have releases both for x86_64 and aarch64
+microsoft/ripgrep-prebuilt # original repo only for x86_64
+ajeetdsouza/zoxide
+ClementTsang/bottom    
+Peltoche/lsd
+bmatsuo/jqsh
+charmbracelet/glow
+dandavison/delta
+eth-p/bat-extras
+gokcehan/lf
+jesseduffield/lazydocker
+jesseduffield/lazygit
+junegunn/fzf
+ms-jpq/sad
+sharkdp/bat
+sharkdp/fd
+bootandy/dust
+wfxr/code-minimap
+
+## x86 only - use with -I for othe arches
+phiresky/ripgrep-all
+ogham/exa
+sayanarijit/xplr # os only, no arch in name
+extrawurst/gitui # os only, no arch in name
+
+## bash scripts - multiple archives, installer cant deal with
+# dylanaraps/fff # source code only
+
+##  bad release urls - only arch, or only os, or another mess
+# doronbehar/pistol # single binary, no extra name, no archive
