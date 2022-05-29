@@ -6,6 +6,7 @@ declare -A Self=(
     [exe]=$(basename `realpath $0`)
 )
 [[ -n ${BASH_LIB_PATH} ]] && Self[lib]=`realpath ${BASH_LIB_PATH}` # include path can be passed via envvar
+source ${Self[lib]}/common.sh
 
 # use logging as color output facility which verbosity level can be easily configured
 # B_LOG_DEFAULT_TEMPLATE="@5@"
@@ -22,15 +23,6 @@ declare -A Arches=( [x86_64]="(x86_|amd)64" [aarch64]="(aarch|arm)64" )
 #####################################################################################
 # Utility functions
 #####################################################################################
-
-# Print the whole associative array
-function echo_assarr() # 1=ArrayName 2=EchoColor
-{
-    declare -n ARR=$1
-    echo -ne "${!2}"
-    paste -d= <(printf "$1[%s]\n" "${!ARR[@]}") <(printf "%s\n" "${ARR[@]}")
-    echo -ne "${ResetColor}"
-}
 
 # Constructs the service path in unified format. The containg directory is created if not exists.
 # Args are:
@@ -57,16 +49,6 @@ function path_dist_construct()
         done
         [[ $maybeExt == .* ]] && echo "${maybeExt}" || echo "++${maybeExt}"
     fi
-}
-
-# Print error message and exit
-function fail() # 1=errorCode, 2=erroMessage, 3..=printfParams
-{
-    local errCode=${1:-9}
-    local args=("$@")
-    printf "${Red}Error#%d: ${BoldRed}%s " "$1" "$2" >&2
-    echo -e "${Red}${args[@]:2}${ResetColor}" >&2
-    exit $errCode
 }
 
 #####################################################################################
@@ -168,7 +150,7 @@ function gh_unpack_dist() # 1=version 2=arch
 
 function prepare()
 {
-    echo_assarr Self IntenseBlack
+    :echo_assarr Self IntenseBlack
 
     # WARNING: params/flags/etc with '-' inside do not work but claimed to (dont: --some-flag, do: --someflag)
     parser_definition() {
@@ -196,19 +178,19 @@ function prepare()
     }
 
     par() {
-        [ -n "${3}${!1}" ] || fail 3 "Mandatory param $1 is not set"
+        [ -n "${3}${!1}" ] || :fail 3 "Mandatory param $1 is not set"
         CliArgs[$2]="${!1}"
         unset ${1}
     }
 
-    eval "$(${Self[lib]}/getoptions.sh parser_definition)"
-    [ -z "$REST" ] || fail 2 "Extra args detected (param with space?)"
-    [[ -z $ARCH || -v "Arches[$ARCH]" ]] || fail 3 "Unsupported machine architecture '$ARCH'" "(expect: ${!Arches[@]})"
+    eval "$(${Self[lib]}/getoptions.sh parser_definition) exit 1"
+    [ -z "$REST" ] || :fail 2 "Extra args detected (param with space?)"
+    [[ -z $ARCH || -v "Arches[$ARCH]" ]] || :fail 3 "Unsupported machine architecture '$ARCH'" "(expect: ${!Arches[@]})"
     par APPLIST list ; par DISTDIR dist ;
     par BINPATH bin opt ; par REGEX regex opt ;  par ARCH arch opt ;  par NO_FAIL nofail opt ;
-    [ -f ${CliArgs[list]} ] || fail 4 "File with list of packages does not exist" "(${CliArgs[list]})"
+    [ -f ${CliArgs[list]} ] || :fail 4 "File with list of packages does not exist" "(${CliArgs[list]})"
 
-    echo_assarr CliArgs IntenseBlack
+    :echo_assarr CliArgs IntenseBlack
 
     local ln=0
     while read -r line; do 
@@ -218,10 +200,10 @@ function prepare()
             0) ;; # ignore empty lines
             1) AppsTags[${cols}]="latest" ;; # no ws after usr/repo
             2) AppsTags[$(echo $cols | cut -s -d' ' -f1)]=$(echo $cols | cut -s -d' ' -f2) ;;
-            *) fail 9 "${CliArgs[list]}:$ln - invalid line format '$line'" "(accept only 'ghUser/ghRepo ?tag)";;
+            *) :fail 9 "${CliArgs[list]}:$ln - invalid line format '$line'" "(accept only 'ghUser/ghRepo ?tag)";;
         esac
     done < ${CliArgs[list]}
-    echo_assarr AppsTags IntenseBlack
+    :echo_assarr AppsTags IntenseBlack
 }
 
 function main()
@@ -235,13 +217,13 @@ function main()
             gh_release_spec $ghOwner $ghRepo
 
             local ghRelInfo=`gh_release_info $ghOwner $ghRepo $ghTag`
-            [[ -z $ghRelInfo ]] && fail 11 "Tag $ghTag not found for app $ghApp"
+            [[ -z $ghRelInfo ]] && :fail 11 "Tag $ghTag not found for app $ghApp"
             [[ $ghTag == "latest" ]] && ghTag=`echo "$ghRelInfo" | jq -r '.tag_name'`
             
             local ghUrl=`gh_select_url "$ghRelInfo" $arch`
             if [[ -z $ghUrl ]] ; then
                 if [[ -z ${CliArgs[nofail]} ]] ; then
-                    fail 12 "Download URL is not found for app $ghApp '${CliArgs[nofail]}'"
+                    :fail 12 "Download URL is not found for app $ghApp '${CliArgs[nofail]}'"
                 else
                     echo -e " > ${Yellow}$ghTag ${IntenseYellow}unapplicable${ResetColor}"
                     continue
