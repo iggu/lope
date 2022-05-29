@@ -5,6 +5,7 @@ force_color_prompt=yes
 alias aaa='bat ~/.bash_aliases'
 alias aar='source ~/.bash_aliases'
 alias bbr="source $HOME/.bashrc"
+alias emscripten-tools-import-here='eval `~/.emsdk_env.eval`'
 
 function mkdcd() {
     mkdir -p "$1" && cd "$1"
