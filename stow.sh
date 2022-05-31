@@ -55,7 +55,9 @@ stow_all_dot_mods()
 }
 
 ret=1
-stow_all_dot_mods "-n" && stow_all_dot_mods && ret=0 \
+    # && stow_all_dot_mods "-n" >/dev/null 2>&1 \
+stow_all_dot_mods \
+    && ret=0 \
     && echo -e "${C_OK}==== Stow succeeded ====" \
     || echo -e "${C_ERR}==== Stow failed - conflicts! ====" >&2
 echo -e "$C_CLR"

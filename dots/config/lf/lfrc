@@ -35,9 +35,9 @@ map . set hidden!
 
 map o &mimeopen $f
 map O $mimeopen --ask $f
-map i $pv $f | less -XR
+map i $command pv $f | less -XR
 map I $less -XR $f
-map L $pistol $f | less -XR
+map L $command pistol $f | less -XR
 
 map ; redraw # default '<c-l>' clashes with tmux and vim navigations
 map | push !cat<space>$f<space>|<space>

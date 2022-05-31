@@ -1,0 +1,34 @@
+# Docker file for the deb-packaged shell linux installation (DebSHellLINux)
+# The resulting system contains aux set of shell tools
+#   which makes comfortable to operate and install more.
+# May be used as a real working environment.
+
+# NOTE: refer the comments for the parent image(s)
+
+
+FROM deblin:u2004
+
+ARG AptInstall="apt-get install -y --no-install-recommends"
+# dir on host where cache of ghai resides - avoid github blockage for too frequent requests
+# which occur when user debugs dockerfile and runs it often
+ARG GHAPPS_CACHE=./docker/.emptydir
+
+RUN ${AptInstall} tmux tree vim nano mc less htop bc file ncdu htop
+
+COPY ./bin/ ./conf/ ./lib/  /usr/local/share/lope/ghapps/
+COPY $GHAPPS_CACHE /usr/local/lib/ghapps/
+COPY ./dots /usr/local/share/lope/dots
+COPY ./stow.sh /usr/local/share/lope
+
+RUN ${AptInstall} git curl wget jq unzip stow python3 python3-pip
+RUN BASH_LIB_PATH=/usr/local/share/lope/ghapps \
+        /usr/local/share/lope/ghapps/ghai.sh -l /usr/local/share/lope/ghapps/pkgs.lst -I \
+                                             -d /usr/local/lib/ghapps -b /usr/local/bin
+
+RUN echo '/usr/local/share/lope/stow.sh >/dev/null' > /.bootstrap.user \
+    && echo 'echo export PATH=\"$HOME/.local/bin:$PATH\" >> ~/.bashrc' >> /.bootstrap.user \
+    && echo 'echo "deshlin" > $HOME/.dockername' >> /.bootstrap.user \
+    && cat /.bootstrap.user \
+    && chmod 555 /.bootstrap.user
+
+

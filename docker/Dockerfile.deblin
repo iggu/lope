@@ -1,0 +1,43 @@
+# Docker file for the deb-packaged basic linux installation (DEbBaseLINux)
+# The resulting system contains only the very basic tools
+#   and in general is intended to be used as a parent for other
+#   images or as a very raw test environment
+
+# When run interactively the bootstrap script creates user's home which
+#   has the same name/group/ids as on the host, and sets up the bash prompt
+#   to emphasize that this is the shell in the docker, where the names
+#   of the image and the container are displayed.
+
+# COMMON RULES (for this image and it's descendants)
+
+# This class of docker images are desgined to be run on behalf of the real user
+# They must be run with the at least following command line:
+#   $ docker run -v ...:/ws --rm -it deblin "$(id)" ?alias
+#       where '/ws' is mandatory mount where all required user files live
+#       $(id) passes the info about the user on the host to make a copy in the container
+#       and ?alias is an optional parameter - containter's user-defined alias.
+
+FROM ubuntu:20.04
+
+# Set image locale.
+ENV LANG ru_RU.UTF-8
+ENV TZ=Europe/Moscow
+
+# ENV DEBIAN_FRONTEND=noninteractive
+
+ARG AptInstall="apt-get install -y --no-install-recommends"
+
+# Do the base system
+RUN apt-get update
+RUN ${AptInstall} ca-certificates locales tzdata sudo \
+        && sed -i -e "s/# $LANG.*/$LANG UTF-8/" /etc/locale.gen \
+        && dpkg-reconfigure --frontend=noninteractive locales \
+        && update-locale LANG=$LANG
+
+# Reduce image size - kinda useless, reduces size a very little, it need to be done
+#   in the same instruction with apt-udpate/install
+# RUN apt-get clean && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/*
+
+COPY ./docker/bootstrap.sh /.bootstrap.sh
+ENTRYPOINT [ "/.bootstrap.sh" ]
+
