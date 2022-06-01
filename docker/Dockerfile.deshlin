@@ -20,15 +20,12 @@ COPY $GHAPPS_CACHE /usr/local/lib/ghapps/
 COPY ./dots /usr/local/share/lope/dots
 COPY ./stow.sh /usr/local/share/lope
 
-RUN ${AptInstall} git curl wget jq unzip stow python3 python3-pip
+RUN ${AptInstall} git curl wget jq unzip stow
 RUN BASH_LIB_PATH=/usr/local/share/lope/ghapps \
         /usr/local/share/lope/ghapps/ghai.sh -l /usr/local/share/lope/ghapps/pkgs.lst -I \
                                              -d /usr/local/lib/ghapps -b /usr/local/bin
 
-RUN echo '/usr/local/share/lope/stow.sh >/dev/null' > /.bootstrap.user \
-    && echo 'echo export PATH=\"$HOME/.local/bin:$PATH\" >> ~/.bashrc' >> /.bootstrap.user \
-    && echo 'echo "deshlin" > $HOME/.dockername' >> /.bootstrap.user \
-    && cat /.bootstrap.user \
-    && chmod 555 /.bootstrap.user
-
+RUN printf 'sudo -u $1 /usr/local/share/lope/stow.sh >/dev/null ; \n\
+            sudo -u $1 echo export PATH=\"$HOME/.local/bin:$PATH\" >> /home/$1/.bashrc ; \n' >> /.bootstrap.next \
+    && echo "deshlin" > /.dockername
 

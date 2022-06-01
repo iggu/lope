@@ -88,12 +88,11 @@ chown -R ${USER}:${UGID} ${HOME}
 chown -R ${USER}:${UGID} /ws
 chown -R ${USER}:${UGID} ${HOME}/ws
 
-echo "deblin" > $HOME/.dockername # this file contains the docker image name as a 1st line
-chown ${USER}:${UGID} $HOME/.dockername
-if [[ -x /.bootstrap.user ]] ; then
-    su $USER -c /.bootstrap.user
-fi
-DKRNM=$(head -n1 $HOME/.dockername)
+# execute derived images hooks
+[[ -f /.bootstrap.next ]] && chmod u+rx /.bootstrap.next && /.bootstrap.next $USER $UUID $UGID
+# query image's name
+DKRNM=$(head -n1 /.dockername)
+# and init the bash prompt for the image - so one can easily understand that this is not the host
 [[ -z $DKRNM ]] && DKRNM="-"
 [[ -z $DKRALS ]] || DKRALS="/$DKRALS"
 echo "PS1=\"dkr>\[\033[01;36m\]${DKRNM}${DKRALS}\[\033[00m\]"\

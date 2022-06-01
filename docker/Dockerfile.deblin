@@ -32,7 +32,8 @@ RUN apt-get update
 RUN ${AptInstall} ca-certificates locales tzdata sudo \
         && sed -i -e "s/# $LANG.*/$LANG UTF-8/" /etc/locale.gen \
         && dpkg-reconfigure --frontend=noninteractive locales \
-        && update-locale LANG=$LANG
+        && update-locale LANG=$LANG \
+        && echo "deblin" > /.dockername
 
 # Reduce image size - kinda useless, reduces size a very little, it need to be done
 #   in the same instruction with apt-udpate/install
