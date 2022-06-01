@@ -1,0 +1,47 @@
+
+FROM deshlin:u2004
+
+ARG AptInstall="apt-get install -y --no-install-recommends"
+
+RUN ${AptInstall} gnupg2 build-essential
+RUN echo "deb https://ppa.launchpadcontent.net/neovim-ppa/unstable/ubuntu $(cat /etc/lsb-release | grep CODENAME | cut -d'=' -f2) main" | tee -a /etc/apt/sources.list \
+        && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DBB0BE9366964F134855E2255F96FCF8231B6DD \
+        && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+        && apt update
+
+# neovim-unstable from ppa sometimes suggests buggy dev versions which cause fatal errors
+# so prefer releases from github (available only for amd64) and falling back to ppa otherwise
+# ppa:deb 0.7.0~ubuntu1+git202205312123-c632f64e2-dd05b3569-d7f2994a3~ubuntu20.04.1 proved to work with lvim
+RUN test $(arch) = x86_64 \
+    && wget -qO - https://github.com/neovim/neovim/releases/download/stable/nvim-linux64.tar.gz | tar -xz -C /usr/local --strip-components=1 \
+    || ${AptInstall} neovim
+
+# also neovim can be built from sources
+# RUN ${AptInstall} xclip ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config
+# RUN cd /tmp && git clone -b stable --single-branch --depth=1 https://github.com/neovim/neovim \
+#       && cd /tmp/neovim && make -j4 && make install
+
+# these are optional deps
+# RUN ${AptInstall} python3 python3-pip nodejs && npm install -g neovim tree-sitter-cli && pip3 install pynvim
+
+# take stable release (not the stable branch which is also sometimes buggy) and install it to /root
+# with codebase in /usr/local/share so it can be effiectively used by number of users
+ARG LVIMV=1.1.3
+WORKDIR /usr/local/share/
+RUN wget -qO - https://api.github.com/repos/LunarVim/LunarVim/tarball/$LVIMV | tar -xz \
+    && /usr/local/share/LunarVim-*/utils/installer/install.sh --local --no-install-dependencies
+# first start of lvim causes installation of tree-sitter's components - how to avoid it?
+# RUN /root/.local/bin/lvim  --headless -c 'autocmd User TS??? quitall' -c "TSInstall c"
+
+# the magic: take the root's lvim installation and just copy it to the end-user home dir
+# this helps to avoid installation of plugins - since they are already installed for root
+RUN echo "delvim" > /.dockername ; \
+    printf 'mkdir -p /home/$1/.local/share /home/$1/.local/bin ; \n\
+            cp -R /root/.local/share/lunarvim /home/$1/.local/share/lunarvim ; \n\
+            chown -R $1:$1 /home/$1/.local/share ; \n\
+            cp -R /root/.config/lvim /home/$1/.config/lvim ; \n\
+            chown -R $1:$1 /home/$1/.config/lvim ; \n\
+            sed "s/root/home\\/$1/" /root/.local/bin/lvim > /home/$1/.local/bin/lvim ; \n\
+            chmod a+x /home/$1/.local/bin/lvim ; \n\
+            chown $1:$1 /home/$1/.local/bin/lvim ; \n' >> /.bootstrap.next
+
