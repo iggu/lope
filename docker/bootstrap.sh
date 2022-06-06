@@ -100,7 +100,7 @@ echo "PS1=\"dkr>\[\033[01;36m\]${DKRNM}${DKRALS}\[\033[00m\]"\
      >> ~/.bashrc
 
 echo
-cd $HOME/ws
+test `pwd` = "/" && cd $HOME/ws # change dir only if no '-w' option is set for 'docker run'
 touch ~/.sudo_as_admin_successful # to get rid of annoying message about sudo
 echo -e "==> [INFO] 'sudo': default password is 'qwe'"
 echo -e "==> [INFO] Starting $SHELL for $USER in container."

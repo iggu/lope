@@ -1,3 +1,4 @@
+disableStartupPopups: true
 gui:
     sidePanelWidth: 0.2
 git:

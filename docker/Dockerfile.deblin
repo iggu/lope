@@ -16,6 +16,7 @@
 #       where '/ws' is mandatory mount where all required user files live
 #       $(id) passes the info about the user on the host to make a copy in the container
 #       and ?alias is an optional parameter - containter's user-defined alias.
+# Supports '-w' docker run command option
 
 FROM ubuntu:20.04
 

@@ -1,4 +1,4 @@
-# Docker file for the deb-packaged shell linux installation (DebSHellLINux)
+# Docker file for the deb-packaged shell linux installation (DEbSHellLINux)
 # The resulting system contains aux set of shell tools
 #   which makes comfortable to operate and install more.
 # May be used as a real working environment.
@@ -14,13 +14,13 @@ ARG AptInstall="apt-get install -y --no-install-recommends"
 ARG GHAPPS_CACHE=./docker/.emptydir
 
 RUN ${AptInstall} tmux tree vim nano mc less htop bc file ncdu htop
+RUN ${AptInstall} git curl wget jq unzip stow
 
 COPY ./bin/ ./conf/ ./lib/  /usr/local/share/lope/ghapps/
 COPY $GHAPPS_CACHE /usr/local/lib/ghapps/
 COPY ./dots /usr/local/share/lope/dots
 COPY ./stow.sh /usr/local/share/lope
 
-RUN ${AptInstall} git curl wget jq unzip stow
 RUN BASH_LIB_PATH=/usr/local/share/lope/ghapps \
         /usr/local/share/lope/ghapps/ghai.sh -l /usr/local/share/lope/ghapps/pkgs.lst -I \
                                              -d /usr/local/lib/ghapps -b /usr/local/bin
@@ -29,3 +29,5 @@ RUN printf 'sudo -u $1 /usr/local/share/lope/stow.sh >/dev/null ; \n\
             sudo -u $1 echo export PATH=\"$HOME/.local/bin:$PATH\" >> /home/$1/.bashrc ; \n' >> /.bootstrap.next \
     && echo "deshlin" > /.dockername
 
+# do not rebuild base images it bootstrap script has changed
+COPY ./docker/bootstrap.sh /.bootstrap.sh
