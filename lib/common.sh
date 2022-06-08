@@ -29,4 +29,11 @@ function :fail() # 1=errorCode, 2=erroMessage, 3..=printfParams
     CliArgs[$2]="${!1}"
     unset ${1}
 }
+# Same as :capar but value is casted to real path
+:capar-rp()
+{
+    [ -n "${3}${!1}" ] || :fail 3 "Mandatory param $1 is not set"
+    CliArgs[$2]=`realpath -q "${!1}"`
+    unset ${1}
+}
 

@@ -3,6 +3,7 @@
 BASH_SELF_DIR=$(dirname `realpath $0`)
 BASH_SELF_EXE=$(basename `realpath $0`)
 BASH_LIB_PATH=${BASH_LIB_PATH:-`realpath $BASH_SELF_DIR/../lib`}
+BASH_DOTS_PATH=${BASH_DOTS_PATH:-`realpath $BASH_SELF_DIR/../dots`}
 source ${BASH_LIB_PATH}/common.sh
 [[ $* == *--no-color* || -n "${NO_COLOR}" ]] || source ${BASH_LIB_PATH}/colors.sh
 
@@ -41,11 +42,76 @@ function install_ems()
     fi
 }
 
+function install_lvim()
+{
+    # WARNING: LunarVim sadly supports customization of it's paths, never try to move cache dir from default location
+    #   tested customizations are:
+    #   INSTALL_PREFIX - dir/bin where starter script resides (bin is always appended); defaults to ~/.local (+bin)
+    #   LUNARVIM_RUNTIME_DIR - where glue code lives; defaults to ~/.local/share
+    #   LUNARVIM_CONFIG_DIR - where configs and compiled code is; defaults to ~/.config/lvim
+
+    # WARNING: packer wants default gcc or clang, whatever
+    #   sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 10
+    #   sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 10
+    #   sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-12 10
+
+    # NOTE: how it works:
+    #   release is downloaded and placed to dist dir
+    #   lunarvim is installed with runtime and install paths pointed to dist dir
+    #   starter script patched and moved to the requested bin dir
+    #   cache dir is always neovim's default
+    #   config is copied from the repo only if it doesnt exist (so stowed one is not touched)
+
+    # NOTE: consider installation to default paths only
+
+    if ! command -v gcc && ! command -v clang ; then :fail 8 "Cannot find gcc or clang" >&2; exit 1; fi
+    if ! command -v nvim ; then :fail 8 "Cannot find neovim" >&2; fi
+
+    declare dirDist="${CliArgs[dist]}"  dirLib="${CliArgs[lib]}" dirCfg="${CliArgs[cfg]}" dirBin="${CliArgs[bin]}"
+    cd $dirDist
+
+    # rm -rf ~/.local/share/lunarvim ~/.local/bin/lvim ~/.local/share/applications/lvim.desktop ~/.config/lvim/plugin ~/.cache/nvim ~/.local/share/nvim/
+
+    echo "Installing LunarVim... "
+    local LVIMV=latest
+    if [ $LVIMV = latest ] ; then
+        LVIMV=$(curl -s https://api.github.com/repos/LunarVim/LunarVim/releases/latest | jq -r '.tag_name')
+        echo "LVIM release is: $LVIMV"
+    fi
+    if [ ! -d $dirDist/lvim-$LVIMV/LunarVim-* ] ; then
+        mkdir -p $dirDist/lvim-$LVIMV
+        wget -qO - https://api.github.com/repos/LunarVim/LunarVim/tarball/$LVIMV | tar -xzC $dirDist/lvim-$LVIMV
+    fi
+
+    declare -x INSTALL_PREFIX=$dirDist/_ LUNARVIM_RUNTIME_DIR=$dirDist/_/lib LUNARVIM_CONFIG_DIR=$dirDist/_/cfg LUNARVIM_CACHE_DIR=
+    # echo "install=$INSTALL_PREFIX runtime=$LUNARVIM_RUNTIME_DIR config=$LUNARVIM_CONFIG_DIR cache=$LUNARVIM_CACHE_DIR"
+    $dirDist/lvim-$LVIMV/LunarVim-*/utils/installer/install.sh --local --no-install-dependencies
+
+    {
+        echo "#!/bin/sh"; echo "# auto generated lunarvim launcher"; echo
+        echo "export LUNARVIM_RUNTIME_DIR='$dirLib/lvim/lvim'"
+        echo "export LUNARVIM_CONFIG_DIR='$dirCfg/lvim'"
+        echo "export LUNARVIM_CACHE_DIR='$HOME/.cache/nvim'"
+        echo; echo 'exec nvim -u "$LUNARVIM_RUNTIME_DIR/init.lua" "$@"'
+    } > $dirBin/lvim
+
+    rm -rf $dirCfg/lvim/plugin $dirLib/lvim
+    mkdir -p $dirBin $dirLib/lvim $dirCfg/lvim
+    mv -f $LUNARVIM_RUNTIME_DIR/* $dirLib/lvim
+    cp -n $BASH_DOTS_PATH/config/lvim/config.lua $dirCfg/lvim/config.lua
+    chmod a+x $dirBin/lvim
+    rm -rf $INSTALL_PREFIX
+
+    # 1st time old list of plugins is synced (why? no answer)
+    $dirBin/lvim +'autocmd User PackerComplete | qall' +PackerSync
+    # and then afterwards updated list is taken into accaunt
+    $dirBin/lvim +'autocmd User PackerComplete | qall' +PackerSync
+}
+
+
 
 function prepare()
 {
-    :echo_assarr BASH_SELF_EXE IntenseBlack
-
     # WARNING: params/flags/etc with '-' inside do not work but claimed to (dont: --some-flag, do: --someflag)
     parser_definition() {
         setup   REST help:usage -- "Usage: ${BASH_SELF_EXE} [options]... [arguments]..." ''
@@ -53,7 +119,9 @@ function prepare()
         msg -- ""
         msg -- 'Parameters (no whitespaces in values, + mandatory, - optional):'
         param  DISTDIR  -d --dist    --    "+ folder to install application files"
-        param  BINPATH  -b --bin     --    "- install application files to this root"
+        param  BINDIR   -b --bin     --    "+ install application files to this root"
+        param  LIBDIR   -l --lib     --    "+ storage for library files"
+        param  CFGDIR   -c --cfg     --    "+ place configuration files starting from this path"
         flag   NO_COLOR --no-color   --    "- do not colorize output"
         disp   :usage   -h --help    --    "- print help, ignore any other cliargs"
         msg -- 'If not specified - then not performed'
@@ -63,8 +131,9 @@ function prepare()
     }
     eval "$($BASH_LIB_PATH/getoptions.sh parser_definition) exit 1" # initial $@ is substitud with free args
 
-    :capar DISTDIR dist ;
-    :capar BINPATH bin opt ;
+    for k in dist bin lib cfg ; do # all cliarg dirs are strictly mandatory
+        :capar-rp "${k^^}DIR" $k
+    done
 
     [[ -z $REST ]] && :fail 2 "No components specified"
     CliArgs[cmds]=$* # $@ contains all free args while REST is a list of their indicies in the command line
