@@ -47,19 +47,17 @@ RUN if [ $LVIMV = latest ] ; then \
     && /root/.local/bin/lvim --headless +'TSInstall bash python cpp dockerfile typescript javascript css html json yaml toml' +'sleep 10' +qa
 # if config was changed - do not rebuild all the base images just because of it, take new
 COPY ./dots/config/lvim/config.lua /usr/local/share/lope/dots/config/lvim/config.lua
-# install non-default but user-provided config with plugins to avoid wasting time for it on container start
-# packer-sync works in headless mode very ugly, complete event is never sent, some plugins are failed to install
-#   here we install everything we can - and it would be reused at the container start, but it's better to update them all at startup
+RUN cp -f /usr/local/share/lope/dots/config/lvim/config.lua /root/.config/lvim/config.lua
+# want: install non-default but user-provided config with plugins to avoid wasting time for it on container start
+# got: packer-sync works in headless mode very ugly, complete event is never sent, old plugins list is taken
+#   i found no way to install plugins at image build stage - so doing it at first start
 #   https://github.com/wbthomason/packer.nvim/issues/751 - and no recipe from here works
-RUN echo "====>>>> Pre-installing nvim plugins from user config, wait...." \
-    && cp -f /usr/local/share/lope/dots/config/lvim/config.lua /root/.config/lvim/config.lua \
-    && /root/.local/bin/lvim --headless +'autocmd User PackerComplete sleep 100m | write /tmp/packer.sync.result | qall' +PackerSync +'sleep 5' +qa
+# RUN /root/.local/bin/lvim --headless +'autocmd User PackerComplete sleep 100m | qall' +PackerSync +'sleep 5' +qa
 
 # the magic: take the root's lvim installation and just copy it to the end-user home dir
-# this helps to avoid installation of plugins - since they are already installed for root
-# also at the first run force syncing plugins since packer works ugly in headless mode and
-# very likely that plugins installation in the build stage is incomplete - so those plugins
-# which are installed well wont be touched and only unfinished ones would consume time
+# this wont help to avoid installation of plugins - since there is no way to install them headless
+# so it is required to install them all in headful mode - appropriate command is added to bash history
+# user lvim config will be used
 RUN echo "delvim" > /.dockername ; \
     printf 'mkdir -p /home/$1/.local/share /home/$1/.local/bin ; \n\
             cp -R /root/.local/share/lunarvim /home/$1/.local/share/lunarvim ; \n\
@@ -70,8 +68,8 @@ RUN echo "delvim" > /.dockername ; \
             chmod a+x /home/$1/.local/bin/lvim ; \n\
             chown $1:$1 /home/$1/.local/bin/lvim ; \n\
             test -v LVIM_INIT_SKIP || sudo -u $1 /home/$1/.local/bin/lvim +"autocmd User PackerComplete qall" +PackerSync ; \n\
-            echo lvim +\"autocmd User PackerComplete qall\" +PackerSync >> /home/$1/.bash_history ; \n\
             echo lvim >> /home/$1/.bash_history ; \n\
+            echo lvim +\"autocmd User PackerComplete qall\" +PackerSync >> /home/$1/.bash_history ; \n\
             chown $1:$1 /home/$1/.bash_history ; \n\
            ' >> /.bootstrap.next
 
