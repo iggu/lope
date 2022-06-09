@@ -1,22 +1,7 @@
 #!/bin/bash
 
-declare -A Self=( 
-    [dir]=$(dirname `realpath $0`)
-    [lib]=$(dirname `realpath $0`)/../lib
-    [exe]=$(basename `realpath $0`)
-)
-[[ -n ${BASH_LIB_PATH} ]] && Self[lib]=`realpath ${BASH_LIB_PATH}` # include path can be passed via envvar
-source ${Self[lib]}/common.sh
+source $(dirname `realpath $0`)/_include.sh
 
-# use logging as color output facility which verbosity level can be easily configured
-# B_LOG_DEFAULT_TEMPLATE="@5@"
-# source ${Self[lib]}/b-log.sh
-## Enable our easy to read Colour Flags as long as --no-colors hasn't been passed
-## or the NO_COLOR Env Variable (https://no-color.org/) is set. 
-## (condition is here since I failed to understand how to implement it with getoption.sh)
-[[ $* == *--no-color* || -n "${NO_COLOR}" ]] || source ${Self[lib]}/colors.sh
-
-declare -A CliArgs
 declare -A AppsTags # app is user/repo
 declare -A Arches=( [x86_64]="(x86_|amd)64" [aarch64]="(aarch|arm)64" )
 
@@ -150,11 +135,9 @@ function gh_unpack_dist() # 1=version 2=arch
 
 function prepare()
 {
-    :echo_assarr Self IntenseBlack
-
     # WARNING: params/flags/etc with '-' inside do not work but claimed to (dont: --some-flag, do: --someflag)
     parser_definition() {
-        setup   REST help:usage -- "Usage: ${Self[exe]} [options]... [arguments]..." ''
+        setup   REST help:usage -- "Usage: ${THIS_LIB_PATH} [options]... [arguments]..." ''
         msg -- "Install applications from github onto local host."
         msg -- ""
         msg -- 'Parameters (no whitespaces in values, + mandatory, - optional):'
@@ -183,7 +166,7 @@ function prepare()
         unset ${1}
     }
 
-    eval "$(${Self[lib]}/getoptions.sh parser_definition) exit 1"
+    eval "$(${THIS_LIB_PATH}/getoptions.sh parser_definition) exit 1"
     [ -z "$REST" ] || :fail 2 "Extra args detected (param with space?)"
     [[ -z $ARCH || -v "Arches[$ARCH]" ]] || :fail 3 "Unsupported machine architecture '$ARCH'" "(expect: ${!Arches[@]})"
     par APPLIST list ; par DISTDIR dist ;

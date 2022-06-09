@@ -1,14 +1,6 @@
 #!/bin/bash
 
-BASH_SELF_DIR=$(dirname `realpath $0`)
-BASH_SELF_EXE=$(basename `realpath $0`)
-BASH_LIB_PATH=${BASH_LIB_PATH:-`realpath $BASH_SELF_DIR/../lib`}
-BASH_DOTS_PATH=${BASH_DOTS_PATH:-`realpath $BASH_SELF_DIR/../dots`}
-source ${BASH_LIB_PATH}/common.sh
-[[ $* == *--no-color* || -n "${NO_COLOR}" ]] || source ${BASH_LIB_PATH}/colors.sh
-
-
-declare -A CliArgs
+source $(dirname `realpath $0`)/_include.sh
 
 
 function install_ems()
@@ -100,7 +92,7 @@ function install_lvim()
     rm -rf $dirCfg/lvim/plugin $dirLib/lvim
     mkdir -p $dirBin $dirLib/lvim $dirCfg/lvim
     mv -f $LUNARVIM_RUNTIME_DIR/* $dirLib/lvim
-    cp -n $BASH_DOTS_PATH/config/lvim/config.lua $dirCfg/lvim/config.lua
+    cp -n $THIS_DOTS_PATH/config/lvim/config.lua $dirCfg/lvim/config.lua
     chmod a+x $dirBin/lvim
     rm -rf $INSTALL_PREFIX
 
@@ -118,7 +110,7 @@ function prepare()
 
     # WARNING: params/flags/etc with '-' inside do not work but claimed to (dont: --some-flag, do: --someflag)
     parser_definition() {
-        setup   REST help:usage -- "Usage: ${BASH_SELF_EXE} [options]... [arguments]..." ''
+        setup   REST help:usage -- "Usage: ${THIS_SELF_EXE} [options]... [arguments]..." ''
         msg -- "Clone and install. That's it."
         msg -- ""
         msg -- 'Parameters (no whitespaces in values, + mandatory, - optional):'
@@ -133,7 +125,7 @@ function prepare()
         msg -- 'All args passed at the rest are components to install, one or several of:'
         msg -- "    ${INST_LIST/$'\n'/ }"
     }
-    eval "$($BASH_LIB_PATH/getoptions.sh parser_definition) exit 1" # initial $@ is substitud with free args
+    eval "$($THIS_LIB_PATH/getoptions.sh parser_definition) exit 1" # initial $@ is substitud with free args
 
     for k in dist bin lib cfg ; do # all cliarg dirs are strictly mandatory
         :capar-rp "${k^^}DIR" $k

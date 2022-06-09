@@ -37,3 +37,8 @@ function :fail() # 1=errorCode, 2=erroMessage, 3..=printfParams
     unset ${1}
 }
 
+# ensure that we are root
+:must-be-root()
+{
+    [ "${UID}" != "0" ] && :fail ${1:-1} "Must be root" "(you are: `whoami`)"
+}
