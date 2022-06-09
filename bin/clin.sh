@@ -13,14 +13,16 @@ declare -A CliArgs
 
 function install_ems()
 {
+    command -v python3 || :fail 8 "No python3 is found"
+
     declare dirDist="${CliArgs[dist]}" dirBin="${CliArgs[bin]}"
     cd $dirDist
 
     function create_emsdk_script()
     {
-        echo "# execute this script and eval it's output to import EMS tools into the calling shell" > ~/.emsdk_env.eval
-        echo "echo source $dirDist/emsdk/emsdk_env.sh" >> ~/.emsdk_env.eval
-        chmod a+x ~/.emsdk_env.eval
+        echo "# execute this script and eval it's output to import EMS tools into the calling shell" > $dirBin/emsdk_env.eval
+        echo "echo source $dirDist/emsdk/emsdk_env.sh" >> $dirBin/emsdk_env.eval
+        chmod a+x $dirBin/emsdk_env.eval
     }
 
     if [[ -f  emsdk/emsdk_env.sh ]] ; then
@@ -36,7 +38,7 @@ function install_ems()
             echo -e "${IntenseYellow}" &&
             echo -n "======= emscripten is installed ========" &&
             echo -e "${IntenseCyan}" &&
-            echo 'Do "eval `~/.emsdk_env.eval`" or call alias "emscripten-tools-import-here" to make EMS available for this shell' &&
+            echo 'Do "eval `emsdk_env.eval`" or call alias "emscripten-tools-import-here" to make EMS available for this shell' &&
             echo -e "${ResetColor}"
 
     fi
@@ -112,10 +114,12 @@ function install_lvim()
 
 function prepare()
 {
+    local na=$#
+
     # WARNING: params/flags/etc with '-' inside do not work but claimed to (dont: --some-flag, do: --someflag)
     parser_definition() {
         setup   REST help:usage -- "Usage: ${BASH_SELF_EXE} [options]... [arguments]..." ''
-        msg -- "Install various stuff to user locations, all-in-one or by name"
+        msg -- "Clone and install. That's it."
         msg -- ""
         msg -- 'Parameters (no whitespaces in values, + mandatory, - optional):'
         param  DISTDIR  -d --dist    --    "+ folder to install application files"
@@ -135,6 +139,7 @@ function prepare()
         :capar-rp "${k^^}DIR" $k
     done
 
+    echo $REST
     [[ -z $REST ]] && :fail 2 "No components specified"
     CliArgs[cmds]=$* # $@ contains all free args while REST is a list of their indicies in the command line
     local j=  # discourage command line like '--opt val free-arg --flag another-free-arg last-free-arg'
@@ -142,6 +147,7 @@ function prepare()
         [[ -n $j ]] && ((j!=i-1)) && :fail 2 "Components must be listed as a tail of cliargs only"
         j=$i
     done
+    [[ $j -ne $na ]] && :fail 2 "Components must be listed as a tail of cliargs only"
 
     local icmds=`declare -F | awk '{print $NF}' | sort | egrep "^install_" | sed "s/install_//g"`
     declare -a badcmds
