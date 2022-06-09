@@ -22,6 +22,8 @@ alias ytm="youtube-dl --extract-audio --audio-format mp3 --embed-thumbnail --add
 alias ytl="youtube-dl -f bestvideo+bestaudio --merge-output-format mkv"
 
 
+alias aptu='sudo apt update'
+alias aptU='sudo apt upgrade'
 alias apti='sudo apt install'
 alias aptr='sudo apt remove'
 alias apts='sudo apt search'
