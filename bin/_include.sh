@@ -2,8 +2,11 @@
 
 THIS_SELF_EXE=$(basename `realpath $0`)
 THIS_SELF_DIR=$(dirname `realpath $0`)
+THIS_CONF_PATH=${THIS_LIB_PATH:-`realpath $THIS_SELF_DIR/../conf`}
 THIS_LIB_PATH=${THIS_LIB_PATH:-`realpath $THIS_SELF_DIR/../lib`}
 THIS_DOTS_PATH=${THIS_DOTS_PATH:-`realpath $THIS_SELF_DIR/../dots`}
+
+THIS_UBUNTU_CODENAME=$(cat /etc/lsb-release | grep CODENAME | cut -d'=' -f2) ;\
 
 source ${THIS_LIB_PATH}/common.sh
 

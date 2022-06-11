@@ -137,7 +137,7 @@ function prepare()
 {
     # WARNING: params/flags/etc with '-' inside do not work but claimed to (dont: --some-flag, do: --someflag)
     parser_definition() {
-        setup   REST help:usage -- "Usage: ${THIS_LIB_PATH} [options]... [arguments]..." ''
+        setup   REST help:usage -- "Usage: ${THIS_SELF_EXE} [options]... [arguments]..." ''
         msg -- "Install applications from github onto local host."
         msg -- ""
         msg -- 'Parameters (no whitespaces in values, + mandatory, - optional):'

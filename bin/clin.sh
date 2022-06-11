@@ -115,9 +115,9 @@ function prepare()
         msg -- ""
         msg -- 'Parameters (no whitespaces in values, + mandatory, - optional):'
         param  DISTDIR  -d --dist    --    "+ folder to install application files"
-        param  BINDIR   -b --bin     --    "+ install application files to this root"
+        param  BINDIR   -b --bin     --    "+ install starter scripts here"
         param  LIBDIR   -l --lib     --    "+ storage for library files"
-        param  CFGDIR   -c --cfg     --    "+ place configuration files starting from this path"
+        param  CFGDIR   -c --cfg     --    "+ place configs there"
         flag   NO_COLOR --no-color   --    "- do not colorize output"
         disp   :usage   -h --help    --    "- print help, ignore any other cliargs"
         msg -- 'If not specified - then not performed'
@@ -131,7 +131,6 @@ function prepare()
         :capar-rp "${k^^}DIR" $k
     done
 
-    echo $REST
     [[ -z $REST ]] && :fail 2 "No components specified"
     CliArgs[cmds]=$* # $@ contains all free args while REST is a list of their indicies in the command line
     local j=  # discourage command line like '--opt val free-arg --flag another-free-arg last-free-arg'
