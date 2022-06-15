@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# test if ppa is already added
 function ppa_is_in()
 {
     local ppa=$1
@@ -8,6 +9,7 @@ function ppa_is_in()
     return $?
 }
 
+# standard ubuntu ppa on launchpad with with standard keys location
 function ppa_source_lp()
 {
     declare ppa=$1 key=$3
@@ -19,6 +21,18 @@ function ppa_source_lp()
         && echo OK || echo FAIL
 }
 
+# add ppa for external repo with key stored in launcpad
+function ppa_source_lpker()
+{
+    declare name=$1 debstr="$2" key=$3
+    echo "deb $debstr # $name" \
+            >> /etc/apt/sources.list.d/${name}-${THIS_UBUNTU_CODENAME}.list
+    echo -n "++ PPA/lpker { $name } : "
+    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv ${key} > /dev/null 2>&1 \
+        && echo OK || echo FAIL
+}
+
+# add ppa by url with key which can be imported by url too
 function ppa_source_auto()
 {
     declare name=$1 debstr="$2" keyurl="$3"
@@ -27,6 +41,7 @@ function ppa_source_auto()
     echo "deb $debstr # $name" >> /etc/apt/sources.list.d/$name.list
 }
 
+# add ppa by url which is signed by the particular key, available by url
 function ppa_source_sign()
 {
     declare name=$1 debstr="$2" keyurl="$3"

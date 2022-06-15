@@ -2,14 +2,12 @@
 
 source $(dirname `realpath $0`)/_include.sh
 
-:must-be-root
-
 function prepare()
 {
     # WARNING: params/flags/etc with '-' inside do not work but claimed to (dont: --some-flag, do: --someflag)
     parser_definition() {
         setup   REST help:usage -- "Usage: ${THIS_SELF_EXE} [options]... [arguments]..." ''
-        msg -- "Install GUI applications from PPAs with apt."
+        msg -- "Install GUI applications from PPAs with apt (must be run as root)."
         msg -- ""
         msg -- 'Parameters (no whitespaces in values, + mandatory, - optional):'
         param  PKG      -p --pkg     --    "- config file with list of packages to install"
@@ -33,6 +31,8 @@ function prepare()
     done
 
     :echo_assarr CliArgs IntenseBlack
+
+    :must-be-root
 }
 
 
@@ -49,6 +49,7 @@ else
     ppa_import PPA_LAUNCHPAD PPA_LAUNCHPAD lp
     ppa_import PPA_KEYS_AUTO PPA_REPO_DEBS auto
     ppa_import PPA_KEYS_SIGN PPA_REPO_DEBS sign
+    ppa_import PPA_KEYS_LP PPA_REPO_DEBS lpker
 fi
 
 if [ -n "${CliArgs[keys]}" ] ; then
