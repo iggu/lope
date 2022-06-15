@@ -10,8 +10,11 @@
 
 # when connection is closed - the remote server would stop, so to re-connect user
 #	must first re-run the 'ssh...' command and then connect with a client again
+#    or pass '-forever' flag when running the script
 
-# 'remmina' and 'VNC Viewer' are good clients for VNC
+# 'remmina' is a good client for VNC, on windows VNC and MobaXTerm viewers are ok
+#   (MobaXTerm is good cause it can make SSH tunnel for VNC - no more tools are required;
+#    also need too use 'new engine' - though it doesnt understand alt+tab too)
 
 # vnc port and x display can be configured via setting vars PORT and DISP before program start
 #	PORT=5901 DISP=:1 x11vnc.sh
@@ -31,6 +34,6 @@ x11vnc -localhost -shared -remap less-comma,parenleft-9,parenright-0 \
        -nomodtweak -noxfixes -noxrecord -noxdamage -ncache_cr \
        -repeat -sloppy_keys -noxkb  -skip_dups \
        -display $DISP \
-       -rfbport $PORT
+       -rfbport $PORT $@
        # -debug_keyboard \
 

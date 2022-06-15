@@ -21,7 +21,7 @@ COPY $GHAPPS_CACHE /usr/local/lib/ghapps/
 COPY ./dots /usr/local/share/lope/dots
 COPY ./stow.sh /usr/local/share/lope
 
-RUN BASH_LIB_PATH=/usr/local/share/lope/ghapps \
+RUN THIS_LIB_PATH=/usr/local/share/lope/ghapps \
         /usr/local/share/lope/ghapps/ghai.sh -l /usr/local/share/lope/ghapps/pkgs.lst -I \
                                              -d /usr/local/lib/ghapps -b /usr/local/bin
 
