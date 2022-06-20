@@ -37,8 +37,59 @@ function :fail() # 1=errorCode, 2=erroMessage, 3..=printfParams
     unset ${1}
 }
 
+# Get all free args and ensure that they all are in the tail of the command line
+# Mandatory:
+#   $1 = list of indicies of cliargs ($REST after parse_definitions)
+#   $2 = the index of last cliarg in the original command line
+# Optional:
+#   $3 = the list of allowed freeargs (optional)
+#   $4 = the list of all cliargs ($*)
+# Test that freeargs do monotonically increase and end up with the last cliarg
+# To acquire the values one must use $* right after parse_definitions
+:capar-restargs-ontail()
+{
+    [[ -z $1 ]] && :fail 2 "No rest-args specified"
+    local j=  # discourage command line like '--opt val rest-arg --flag another-rest-arg last-rest-arg'
+    for i in ${1//[!0-9]/ }; do # check that all the free args are listed in the tail
+        [[ -n $j ]] && ((j!=i-1)) && :fail 2 "Rest-args must be listed as a tail of cliargs only"
+        j=$i
+    done
+    [[ $j -ne $2 ]] && :fail 2 "Rest-args must be listed as a tail of cliargs only"
+
+    if [[ -n $3 && -n $4 ]]; then
+        declare -a bad
+        for fa in "$4"; do # ensure that every component passed has it's handler within this script
+            echo $3 | grep -qw "${fa}" || bad+=($fa)
+        done
+        [[ ${#bad[@]} -ne 0 ]] && :fail 2 "Unsupported rest-arg(s): ${bad[@]}"
+    fi
+
+}
+
 # ensure that we are root
 :must-be-root()
 {
     [ "${UID}" != "0" ] && :fail ${1:-1} "Must be root" "(you are: `whoami`)"
 }
+
+# List commands:packages which are stictly required
+# If command and package are the same - then no : is required, a single word is enough
+# Example: gettext libtool:libtool-bin
+:require-pkgs()
+{
+    declare -a absent
+    for meta in $@ ; do
+        local exe=`echo $meta | cut -d':' -f1`
+        command -v $exe >/dev/null || absent+=($meta)
+    done
+
+    if [ -n "$absent" ] ; then
+        declare -a pkgs cmds
+        for a in ${absent[@]}; do
+            cmds+=(`echo $a | cut -d':' -f1`)
+            pkgs+=(`echo $a | cut -d':' -f2`)
+        done
+        :fail 2 "Require packages" "[" ${pkgs[@]} "] for commands [" ${cmds[@]} "]"
+    fi
+}
+

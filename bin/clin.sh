@@ -5,7 +5,7 @@ source $(dirname `realpath $0`)/_include.sh
 
 function install_ems()
 {
-    command -v python3 || :fail 8 "No python3 is found"
+    :require-pkgs python3
 
     declare dirDist="${CliArgs[dist]}" dirBin="${CliArgs[bin]}"
     cd $dirDist
@@ -107,6 +107,7 @@ function install_lvim()
 function prepare()
 {
     local na=$#
+    local icmds=`declare -F | awk '{print $NF}' | sort | egrep "^install_" | sed "s/install_//g"`
 
     # WARNING: params/flags/etc with '-' inside do not work but claimed to (dont: --some-flag, do: --someflag)
     parser_definition() {
@@ -123,7 +124,7 @@ function prepare()
         msg -- 'If not specified - then not performed'
         msg -- '    BINPATH - installation of symlinks to binaries'
         msg -- 'All args passed at the rest are components to install, one or several of:'
-        msg -- "    ${INST_LIST/$'\n'/ }"
+        msg -- "    ${icmds//$'\n'/ }"
     }
     eval "$($THIS_LIB_PATH/getoptions.sh parser_definition) exit 1" # initial $@ is substitud with free args
 
@@ -131,21 +132,8 @@ function prepare()
         :capar-rp "${k^^}DIR" $k
     done
 
-    [[ -z $REST ]] && :fail 2 "No components specified"
+    :capar-restargs-ontail "$REST" "$na" "$icmds" "$@"
     CliArgs[cmds]=$* # $@ contains all free args while REST is a list of their indicies in the command line
-    local j=  # discourage command line like '--opt val free-arg --flag another-free-arg last-free-arg'
-    for i in ${REST//[!0-9]/ }; do # check that all the free args are listed in the tail
-        [[ -n $j ]] && ((j!=i-1)) && :fail 2 "Components must be listed as a tail of cliargs only"
-        j=$i
-    done
-    [[ $j -ne $na ]] && :fail 2 "Components must be listed as a tail of cliargs only"
-
-    local icmds=`declare -F | awk '{print $NF}' | sort | egrep "^install_" | sed "s/install_//g"`
-    declare -a badcmds
-    for cmd in "$@"; do # ensure that every component passed has it's handler within this script
-        echo $icmds | grep -qw "${cmd}" || badcmds+=($cmd)
-    done
-    [[ ${#badcmds[@]} -ne 0 ]] && :fail 2 "Unsupported component(s): ${badcmds[@]}"
 
     :echo_assarr CliArgs IntenseBlack
 }
