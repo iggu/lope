@@ -3,40 +3,7 @@
 source $(dirname `realpath $0`)/_include.sh
 
 
-function install_ems()
-{
-    :require-pkgs python3
-
-    declare dirDist="${CliArgs[dist]}" dirBin="${CliArgs[bin]}"
-    cd $dirDist
-
-    function create_emsdk_script()
-    {
-        echo "# execute this script and eval it's output to import EMS tools into the calling shell" > $dirBin/emsdk_env.eval
-        echo "echo source $dirDist/emsdk/emsdk_env.sh" >> $dirBin/emsdk_env.eval
-        chmod a+x $dirBin/emsdk_env.eval
-    }
-
-    if [[ -f  emsdk/emsdk_env.sh ]] ; then
-        echo "EMSDK is already installed"
-    else
-        echo "Installing EMSDK... "
-        create_emsdk_script
-        git clone https://github.com/emscripten-core/emsdk.git &&
-            cd emsdk &&
-            ./emsdk install latest &&
-            ./emsdk activate latest &&
-            create_emsdk_script &&
-            echo -e "${IntenseYellow}" &&
-            echo -n "======= emscripten is installed ========" &&
-            echo -e "${IntenseCyan}" &&
-            echo 'Do "eval `emsdk_env.eval`" or call alias "emscripten-tools-import-here" to make EMS available for this shell' &&
-            echo -e "${ResetColor}"
-
-    fi
-}
-
-function install_lvim()
+function install_lunarvim()
 {
     # WARNING: LunarVim sadly supports customization of it's paths, never try to move cache dir from default location
     #   tested customizations are:

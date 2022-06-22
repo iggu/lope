@@ -7,7 +7,7 @@ function prepare()
     # WARNING: params/flags/etc with '-' inside do not work but claimed to (dont: --some-flag, do: --someflag)
     parser_definition() {
         setup   REST help:usage -- "Usage: ${THIS_SELF_EXE} [options]... [arguments]..." ''
-        msg -- "Install GUI applications from PPAs with apt (must be run as root)."
+        msg -- "Install packages with apt (must be run as root)."
         msg -- ""
         msg -- 'Parameters (no whitespaces in values, + mandatory, - optional):'
         param  PKG      -p --pkg     --    "- config file with list of packages available to install"

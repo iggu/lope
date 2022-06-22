@@ -31,15 +31,49 @@ function _ghclone_make_install()
 
 function install_neovim()
 {
-    _ghclone_make_install pkg-config,libtool:libtool-bin,gettext \
+    _ghclone_make_install pkg-config,libtool:libtool-bin,gettext,make,cmake,g++ \
                       neovim/neovim \
                       "CMAKE_BUILD_TYPE=Release CMAKE_INSTALL_PREFIX=${CliArgs[prefix]}"
 }
 
 function install_ctags()
 {
-    _ghclone_make_install pkg-config,autoconf,automake \
+    _ghclone_make_install pkg-config,autoconf,automake,make,gcc \
                       universal-ctags/ctags
+}
+
+function install_emsdk()
+{
+    :require-pkgs python3 xz:xz-utils
+
+    declare dirDist="${CliArgs[prefix]}/lib" dirBin="${CliArgs[prefix]}/bin"
+    mkdir -p $dirBin $dirDist
+    cd $dirDist
+
+    function create_emsdk_script()
+    {
+        echo "# execute this script and eval it's output to import EMS tools into the calling shell" > $dirBin/emsdk_env.eval
+        echo "echo source $dirDist/emsdk/emsdk_env.sh" >> $dirBin/emsdk_env.eval
+        chmod a+x $dirBin/emsdk_env.eval
+    }
+
+    if [[ -f  emsdk/emsdk_env.sh ]] ; then
+        echo "EMSDK is already installed"
+    else
+        echo "Installing EMSDK... "
+        # create_emsdk_script
+        git clone https://github.com/emscripten-core/emsdk.git &&
+            cd emsdk &&
+            ./emsdk install latest &&
+            ./emsdk activate latest &&
+            create_emsdk_script &&
+            echo -e "${IntenseYellow}" &&
+            echo -n "======= emscripten is installed ========" &&
+            echo -e "${IntenseCyan}" &&
+            echo 'Do "eval `emsdk_env.eval`" or call alias "emscripten-tools-import-here" to make EMS available for this shell' &&
+            echo -e "${ResetColor}"
+
+    fi
 }
 
 function install_nerdfonts()
