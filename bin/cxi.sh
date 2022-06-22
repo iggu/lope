@@ -1,7 +1,10 @@
 #!/bin/bash
 
+# CompleX Install : installer with complex rules
+
 source $(dirname `realpath $0`)/_include.sh
 
+###############################################################################
 
 function install_lunarvim()
 {
@@ -25,8 +28,7 @@ function install_lunarvim()
 
     # NOTE: consider installation to default paths only
 
-    if ! command -v gcc && ! command -v clang ; then :fail 8 "Cannot find gcc or clang" >&2; exit 1; fi
-    if ! command -v nvim ; then :fail 8 "Cannot find neovim" >&2; fi
+    :require-pkgs gcc nvim
 
     declare dirDist="${CliArgs[dist]}"  dirLib="${CliArgs[lib]}" dirCfg="${CliArgs[cfg]}" dirBin="${CliArgs[bin]}"
     cd $dirDist
@@ -69,7 +71,7 @@ function install_lunarvim()
     $dirBin/lvim +'autocmd User PackerComplete | qall' +PackerSync
 }
 
-
+###############################################################################
 
 function prepare()
 {
@@ -105,6 +107,7 @@ function prepare()
     :echo_assarr CliArgs IntenseBlack
 }
 
+###############################################################################
 
 function main()
 {
@@ -117,9 +120,10 @@ function main()
     done
 }
 
+###############################################################################
 
 prepare $*
 main $*
 
-
+###############################################################################
 

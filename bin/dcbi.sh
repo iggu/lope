@@ -1,7 +1,9 @@
 #!/bin/bash
-# build & install
+# Download, Configure, Build & Install
 
 source $(dirname `realpath $0`)/_include.sh
+
+###############################################################################
 
 #### Check prerequisites, clone code from github, configure, make and install it
 # $1=required:packages,comma,separated
@@ -29,6 +31,8 @@ function _ghclone_make_install()
     if [ -n "${CliArgs[clean]}" ] ; then rm -rf $dir ; fi
 }
 
+###############################################################################
+
 function install_neovim()
 {
     _ghclone_make_install pkg-config,libtool:libtool-bin,gettext,make,cmake,g++ \
@@ -36,11 +40,15 @@ function install_neovim()
                       "CMAKE_BUILD_TYPE=Release CMAKE_INSTALL_PREFIX=${CliArgs[prefix]}"
 }
 
+###############################################################################
+
 function install_ctags()
 {
     _ghclone_make_install pkg-config,autoconf,automake,make,gcc \
                       universal-ctags/ctags
 }
+
+###############################################################################
 
 function install_emsdk()
 {
@@ -75,6 +83,8 @@ function install_emsdk()
 
     fi
 }
+
+###############################################################################
 
 function install_nerdfonts()
 {
@@ -121,6 +131,7 @@ function install_nerdfonts()
     if [ -n "${CliArgs[clean]}" ] ; then rm -rf $download_dir ; fi
 }
 
+###############################################################################
 
 function prepare()
 {
@@ -158,6 +169,7 @@ function prepare()
 
 }
 
+###############################################################################
 
 function main()
 {
@@ -168,6 +180,10 @@ function main()
     done
 }
 
+###############################################################################
 
 prepare $*
 main
+
+###############################################################################
+

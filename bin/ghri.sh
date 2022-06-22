@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# GitHub Release Installer
+
 source $(dirname `realpath $0`)/_include.sh
 
 declare -A AppsTags # app is user/repo
@@ -53,6 +55,8 @@ function gh_release_spec()
     echo -e "${allReleasesJson}${ResetColor}"
 }
 
+###############################################################################
+
 function gh_release_info()
 {
     declare owner=$1 repo=$2 ver=$3
@@ -62,6 +66,8 @@ function gh_release_info()
         jq -r --arg V $ver '.[] | select(.tag_name==$V)'
     fi < $(path_dist_construct meta $owner $repo .json)
 }
+
+###############################################################################
 
 function gh_select_url() # 1=info 2=arch
 {
@@ -85,6 +91,8 @@ function gh_select_url() # 1=info 2=arch
     # no package for the particular arch - print nothing to raise error
 }
 
+###############################################################################
+
 function gh_download_url()
 {
     declare owner=$1 repo=$2 ver=$3 arch=$4 url=$5
@@ -100,6 +108,8 @@ function gh_download_url()
     fi
     echo -e "$localPkgFn${ResetColor}"
 }
+
+###############################################################################
 
 function gh_unpack_dist() # 1=version 2=arch
 {
@@ -189,6 +199,8 @@ function prepare()
     :echo_assarr AppsTags IntenseBlack
 }
 
+###############################################################################
+
 function main()
 {
     local arch=${CliArgs[arch]:-`arch`}
@@ -235,6 +247,9 @@ function main()
     fi
 }
 
+###############################################################################
+
 prepare $*
 main $*
 
+###############################################################################

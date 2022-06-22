@@ -1,6 +1,10 @@
 #!/bin/bash
 
+# PaCKages installer
+
 source $(dirname `realpath $0`)/_include.sh
+
+###############################################################################
 
 function prepare()
 {
@@ -40,6 +44,8 @@ function prepare()
     :must-be-root
 }
 
+###############################################################################
+
 function ppa_import_all()
 {
     if [ -z "${CliArgs[ppa]}" ] ; then
@@ -62,6 +68,8 @@ function ppa_import_all()
         ppa_add_missing_keys
     fi
 }
+
+###############################################################################
 
 function pkg_install_all()
 {
@@ -104,6 +112,10 @@ function pkg_install_all()
     fi
 }
 
+###############################################################################
+
 prepare $*
 ppa_import_all
 pkg_install_all
+
+###############################################################################

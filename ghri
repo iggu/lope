@@ -9,14 +9,14 @@ declare -A Self=(
     [exe]=$(basename `realpath $0`)
 )
 
-declare -A Ghai=(
-    [exe]="${Self[bin]}/ghai.sh"
+declare -A Ghri=(
+    [exe]="${Self[bin]}/ghri.sh"
     [conf]="${Self[conf]}/pkgs.lst"
-    [dist]="$HOME/.local/lib/ghai"
+    [dist]="$HOME/.local/lib/ghri"
     [inst]="$HOME/.local/bin"
 )
 
 echo "Installing apps from github...."
-echo " >> ${Ghai[exe]} -l ${Ghai[conf]} -d ${Ghai[dist]} -b ${Ghai[inst]} -I"
-${Ghai[exe]} -l ${Ghai[conf]} -d ${Ghai[dist]} -b ${Ghai[inst]} -I
+echo " >> ${Ghri[exe]} -l ${Ghri[conf]} -d ${Ghri[dist]} -b ${Ghri[inst]} -I"
+${Ghri[exe]} -l ${Ghri[conf]} -d ${Ghri[dist]} -b ${Ghri[inst]} -I
 

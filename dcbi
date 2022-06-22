@@ -1,0 +1,6 @@
+#!/bin/bash
+
+
+SELF=$(realpath $0)
+$(dirname $SELF)/bin/dcbi.sh  -p $HOME/.local -t /tmp "$@"
+
