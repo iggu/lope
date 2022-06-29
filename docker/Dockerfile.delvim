@@ -16,17 +16,24 @@ RUN ${AptInstall} cmake universal-ctags ccal
 # RUN ${AptInstall} nodejs && npm install -g neovim tree-sitter-cli # ?? curl -fsSL https://deb.nodesource.com/setup_18.x | bash - 
 
 
-# neovim-unstable from ppa sometimes suggests buggy dev versions which cause fatal errors
-# so prefer releases from github (available only for amd64) or falling back to ppa-stable otherwise (which is usually outdated)
-RUN if [ $(arch) = x86_64 ] ; then \
-        wget -qO - https://github.com/neovim/neovim/releases/download/stable/nvim-linux64.tar.gz \
-            | tar -xz -C /usr/local --strip-components=1 ;\
-    else \
+# neovim ppa-unstable sometimes suggests buggy dev versions which cause fatal errors
+# ppa-stable is usually outdated and fails to work properly with latest lunarvim
+# use latest stable release built from sources until not asked not to do it
+ARG NvimForceStablePpa="no"
+RUN if [ "$NvimForceStablePpa" = "yes" ] ; then \
         UCN=$(cat /etc/lsb-release | grep CODENAME | cut -d'=' -f2) ;\
         echo "deb https://ppa.launchpadcontent.net/neovim-ppa/stable/ubuntu $UCN main" | tee -a /etc/apt/sources.list ;\
         apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DBB0BE9366964F134855E2255F96FCF8231B6DD ;\
         apt update ;\
         ${AptInstall} neovim ;\
+    elif [ $(arch) = x86_64 ] ; then \
+        wget -qO - https://github.com/neovim/neovim/releases/download/stable/nvim-linux64.tar.gz \
+            | tar -xz -C /usr/local --strip-components=1 ;\
+    else \
+        ${AptInstall} autoconf automake make cmake gettext libtool-bin pkg-config ;\
+        cd /tmp && git clone -b stable --single-branch --depth=1 https://github.com/neovim/neovim ;\
+        cd /tmp/neovim ;\
+        make -j4 CMAKE_BUILD_TYPE=Release && make install ;\
     fi
 # also neovim can be built from sources (example below build debug version of nvim, but need release, investigate Makefile)
 # RUN ${AptInstall} cmake gettext libtool-bin pkg-config
