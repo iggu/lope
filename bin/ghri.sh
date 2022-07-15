@@ -75,7 +75,10 @@ function gh_select_url() # 1=info 2=arch
     declare anyRet nAnyRet=0 osRet
     local archRe=${Arches[$arch]}
 
-    local jqQuery='.assets[].browser_download_url | select(endswith(".tar.gz") or endswith(".zip"))'
+    local jqUrlRe='".*(t.z|\\.tar\\..z|zip)$"'
+    local jqQuery='.assets[].browser_download_url | select(test('$jqUrlRe'))'
+    # local jqEndsWith='endswith(".tar.gz") or endswith(".zip") or endswith(".tar.xz")'
+    # local jqQuery=".assets[].browser_download_url | select($jqEndsWith)"
     for url in `jq -r "$jqQuery"`; do
         if [[ $url == *inux* ]]; then
             [[ $url =~ $archRe ]] && echo $url && return # exact match! return immediately
@@ -96,9 +99,8 @@ function gh_select_url() # 1=info 2=arch
 function gh_download_url()
 {
     declare owner=$1 repo=$2 ver=$3 arch=$4 url=$5
-    local urlFn=`basename $url`
-    local ext=`[[ $urlFn == *.zip ]] && echo .zip || echo .tar.gz`
-    local localPkgFn="$(path_dist_construct $arch $owner $repo $ver)$ext"
+    local ext=`:ext4ar $url`
+    local localPkgFn="$(path_dist_construct $arch $owner $repo $ver).$ext"
 
     if [ -f $localPkgFn ] ; then
         echo -ne " > ${IntenseBlack}"
@@ -119,11 +121,7 @@ function gh_unpack_dist() # 1=version 2=arch
     echo -en " > ${IntenseBlack}"
     if [ ! -d "$pkg" ] ; then
         local td=`mktemp -d`
-        if [[ -f "${pkg}.zip" ]] ; then
-            unzip -qqq ${pkg}.zip -d $td
-        else
-            tar -xzf ${pkg}.tar.gz -C $td
-        fi
+        :extract ${pkg}* $td
 
         mkdir -p "$pkg"
         if [[ `ls -1 $td | wc -l` == "1" && `ls -1d $td/*/ 2>/dev/null | wc -l` == "1" ]] ; then
@@ -241,7 +239,7 @@ function main()
             local n=`basename $exe`
             local l="${CliArgs[bin]}/$n"
             [[ -L "$l" && "$(realpath `readlink $l`)" == "$(realpath $exe)" ]] && continue
-            ln -sv "$exe" "$l"
+            ln -sfv "$exe" "$l" # overwrite - maybe it's an update
         done < <(find ${CliArgs[dist]}/$arch -type f -executable -not -path "*complet*")
         # find ${CliArgs[dist]}/$arch -type f -executable -not -path "*complet*" -exec ln -sfv '{}' ${CliArgs[bin]} ';'
     fi

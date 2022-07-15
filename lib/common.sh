@@ -95,3 +95,49 @@ function :fail() # 1=errorCode, 2=erroMessage, 3..=printfParams
     fi
 }
 
+# Tests 1st param if it ends with any of supported archive extensions and returns it
+:ext4ar()
+{
+    case $1 in
+        *.tar.bz2) echo tar.bz2 ;;
+        *.tar.gz)  echo tar.gz  ;;
+        *.tar.xz)  echo tar.xz  ;;
+        *.bz2)     echo bz2     ;;
+        *.rar)     echo rar     ;;
+        *.gz)      echo gz      ;;
+        *.tar)     echo tar     ;; 
+        *.tbz2)    echo tbz2    ;;
+        *.tgz)     echo tgz     ;;
+        *.txz)     echo txz     ;;
+        *.zip)     echo zip     ;;
+        *.Z)       echo Z       ;;
+    esac
+}
+
+# Extracts (silently) given in $1 archive file path to directory $2 (or cwd)
+:extract()
+{
+    if [ -f $1 ] ; then
+        local origPwd=`pwd`
+        [ -d "$2" ] && cd "$2"
+        case $1 in
+            *.tar.bz2)  tar xjf $1      ;;
+            *.tar.gz)   tar xzf $1      ;;
+            *.tar.xz)   tar xf $1       ;;
+            *.bz2)      bunzip2 $1      ;;
+            *.rar)      rar x $1        ;;
+            *.gz)       gunzip $1  ;;
+            *.tar)      tar xf $1       ;;
+            *.tbz2)     tar xjf $1      ;;
+            *.tgz)      tar xzf $1      ;;
+            *.txz)      tar xf $1       ;;
+            *.zip)      unzip -qqq $1        ;;
+            *.Z)        uncompress $1   ;;
+            *)          echo "'$1' cannot be extracted via extract()" ;;
+        esac
+        cd "$origPwd"
+    else
+        echo "'$1' is not a valid file"
+    fi
+}
+

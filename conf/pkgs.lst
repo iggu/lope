@@ -16,6 +16,7 @@ sharkdp/bat
 sharkdp/fd
 bootandy/dust
 wfxr/code-minimap
+koalaman/shellcheck
 
 ## x86 only - use with -I for othe arches
 phiresky/ripgrep-all
