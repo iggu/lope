@@ -42,8 +42,9 @@ function :fail() # 1=errorCode, 2=erroMessage, 3..=printfParams
 #   $1 = list of indicies of cliargs ($REST after parse_definitions)
 #   $2 = the index of last cliarg in the original command line
 # Optional:
-#   $3 = the list of allowed freeargs (optional)
-#   $4 = the list of all cliargs ($*)
+#   $3 = the list of allowed freeargs (optional; if not set - when all the rest just ignored)
+#   $4 = the list of all freeargs ($*) (optional; if not set - when all the rest just ignored)
+#   $5 = manda/opt separator (optional; if set then $4 is treated as 'manda:opt' pairs, and only 'manda' is checked while 'opt' is ignored)
 # Test that freeargs do monotonically increase and end up with the last cliarg
 # To acquire the values one must use $* right after parse_definitions
 :capar-restargs-ontail()
@@ -58,7 +59,8 @@ function :fail() # 1=errorCode, 2=erroMessage, 3..=printfParams
 
     if [[ -n $3 && -n $4 ]]; then
         declare -a bad
-        for fa in "$4"; do # ensure that every component passed has it's handler within this script
+        for fa in $4; do # ensure that every component passed has it's handler within this script
+            fa=${fa%%$5*} # get rid of optional part if any, consider only manda
             echo $3 | grep -qw "${fa}" || bad+=($fa)
         done
         [[ ${#bad[@]} -ne 0 ]] && :fail 2 "Unsupported rest-arg(s): ${bad[@]}"

@@ -36,7 +36,7 @@ function _ghclone_make_install()
 function install_neovim()
 {
     _ghclone_make_install pkg-config,libtool:libtool-bin,gettext,make,cmake,g++ \
-                      neovim/neovim \
+                      neovim/neovim${1:+/$1} \
                       "CMAKE_BUILD_TYPE=Release CMAKE_INSTALL_PREFIX=${CliArgs[prefix]}"
 }
 
@@ -45,7 +45,7 @@ function install_neovim()
 function install_ctags()
 {
     _ghclone_make_install pkg-config,autoconf,automake,make,gcc \
-                      universal-ctags/ctags
+                      universal-ctags/ctags${1:+/$1}
 }
 
 ###############################################################################
@@ -54,7 +54,7 @@ function install_emsdk()
 {
     :require-pkgs python3 xz:xz-utils
 
-    declare dirDist="${CliArgs[prefix]}/lib" dirBin="${CliArgs[prefix]}/bin"
+    declare dirDist="${CliArgs[prefix]}/lib" dirBin="${CliArgs[prefix]}/bin" version=${1:-latest}
     mkdir -p $dirBin $dirDist
     cd $dirDist
 
@@ -72,8 +72,8 @@ function install_emsdk()
         # create_emsdk_script
         git clone https://github.com/emscripten-core/emsdk.git &&
             cd emsdk &&
-            ./emsdk install latest &&
-            ./emsdk activate latest &&
+            ./emsdk install $version &&
+            ./emsdk activate $version &&
             create_emsdk_script &&
             echo -e "${IntenseYellow}" &&
             echo -n "======= emscripten is installed ========" &&
@@ -111,7 +111,7 @@ function install_nerdfonts()
     )
     :require-pkgs fc-cache:fontconfig
 
-    local version='2.1.0'
+    local version=${1:-2.1.0}
     local download_dir=`mktemp -d -p "${CliArgs[tmpdir]}" --suffix=.zips -t nerdfonts.XXXX`
     local fonts_dir="${CliArgs[prefix]}/share/fonts"
 
@@ -152,6 +152,8 @@ function prepare()
         msg -- ""
         msg -- "Available commands are:"
         msg -- "    ${icmds//$'\n'/ }"
+        msg -- "Commands may have tail-arg appended with ':', like 'name:tag';"
+        msg -- "  in general - this is tag or branch (neovim:v0.7.2)"
         msg -- ""
         msg -- "May require root's priviliges and/or some dev packages."
     }
@@ -162,7 +164,7 @@ function prepare()
     done
     :capar CLEAN clean opt
 
-    :capar-restargs-ontail "$REST" "$na" "$icmds" "$@"
+    :capar-restargs-ontail "$REST" "$na" "$icmds" "$*" :
     CliArgs[cmds]=$* # $@ contains all free args while REST is a list of their indicies in the command line
 
     :echo_assarr CliArgs IntenseBlack
@@ -175,8 +177,10 @@ function main()
 {
     mkdir -p "${CliArgs[tmpdir]}"  "${CliArgs[prefix]}"
     for cmd in ${CliArgs[cmds]}; do
-        echo -e "**** ${Green} $cmd ${ResetColor} ****"
-        install_$cmd
+        declare name=${cmd%%:*} tag=${cmd#*:}
+        [[ $name = $tag ]] && tag=
+        echo -e "**** ${Green} $name${tag:+ : $tag} ${ResetColor} ****"
+        install_$name $tag
     done
 }
 
