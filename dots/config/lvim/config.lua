@@ -153,6 +153,7 @@ local function init_plugins_manual()
         {'nvim-telescope/telescope-media-files.nvim'},
         {'is0n/fm-nvim'},
         {'aspeddro/gitui.nvim'},
+	{'junegunn/limelight.vim'},
         {'junegunn/goyo.vim', setup = function()
             vim.g.goyo_width = "80%+5%"
         end},
@@ -258,7 +259,7 @@ init_plugins_manual()
 
 -- Which Keys {{{
 local function init_whichkeys_menu()
-    lvim.builtin.which_key.vmappings["h"] = {
+    lvim.builtin.which_key.vmappings["H"] = {
         name = "Highlight",
         H = {":<c-u>HSRmHighlight<CR>", "UnDo"},
         h = {":<c-u>HSHighlight<CR>", "Do"},
@@ -275,9 +276,14 @@ local function init_whichkeys_menu()
     }
 
     lvim.builtin.which_key.mappings["P"] = { "<cmd>Telescope projects<CR>", "Projects" }
-    lvim.builtin.which_key.mappings["G"] = { ":Goyo<CR>", "Toggle Goyo" }
 
     -- lvim.builtin.which_key.mappings.g.G = {":lua lvim.userdata.terminal_cmd_toggle('gitui')<cr>", "GitUI"}
+    lvim.builtin.which_key.mappings.H = {
+        name = "+Highlight",
+        g = {":Goyo<cr>", "Toggle Goyo"},
+        l = {":Limelight!!<cr>", "Toggle LimeLight"},
+    }
+
     lvim.builtin.which_key.mappings.g.G = {":Gitui<cr>", "GitUI"}
     lvim.builtin.which_key.mappings.g.f = {
         name = "+Fuzzy",

@@ -26,7 +26,7 @@ alias aptu='sudo apt update'
 alias aptU='sudo apt upgrade'
 alias apti='sudo apt install'
 alias aptr='sudo apt remove'
-alias apts='sudo apt search'
+alias apts='apt search'
 alias apth='apt show'
 
 alias cdf='cd $(ls -d */ | fzf)'

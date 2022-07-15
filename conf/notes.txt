@@ -1,0 +1,13 @@
+DOCKER
+======
+
+## Stop the daemon
+  $ systemctl stop docker.service
+  $ systemctl stop docker.socket
+
+## Start the daemon after config changed
+  $ systemctl daemon-reload
+  $ systemctl start docker
+
+## Move cache to another location                                                                                           :
+  E /etc/docker/daemon.json: { "graph": "/home/docker" } 
