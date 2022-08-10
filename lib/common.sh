@@ -106,6 +106,7 @@ function :fail() # 1=errorCode, 2=erroMessage, 3..=printfParams
         *.rar)     echo rar     ;;
         *.gz)      echo gz      ;;
         *.tar)     echo tar     ;; 
+        *.tbz)     echo tbz     ;;
         *.tbz2)    echo tbz2    ;;
         *.tgz)     echo tgz     ;;
         *.txz)     echo txz     ;;
@@ -128,12 +129,13 @@ function :fail() # 1=errorCode, 2=erroMessage, 3..=printfParams
             *.rar)      rar x $1        ;;
             *.gz)       gunzip $1  ;;
             *.tar)      tar xf $1       ;;
+            *.tbz)      tar xjf $1      ;;
             *.tbz2)     tar xjf $1      ;;
             *.tgz)      tar xzf $1      ;;
             *.txz)      tar xf $1       ;;
             *.zip)      unzip -qqq $1        ;;
             *.Z)        uncompress $1   ;;
-            *)          echo "'$1' cannot be extracted via extract()" ;;
+            *)          :fail 100 "'$1' cannot be extracted via extract()" ;;
         esac
         cd "$origPwd"
     else

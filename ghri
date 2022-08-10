@@ -18,5 +18,5 @@ declare -A Ghri=(
 
 echo "Installing apps from github...."
 echo " >> ${Ghri[exe]} -l ${Ghri[conf]} -d ${Ghri[dist]} -b ${Ghri[inst]} -I"
-${Ghri[exe]} -l ${Ghri[conf]} -d ${Ghri[dist]} -b ${Ghri[inst]} -I
+${Ghri[exe]} -l ${Ghri[conf]} -d ${Ghri[dist]} -b ${Ghri[inst]} -I "$@"
 

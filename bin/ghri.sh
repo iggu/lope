@@ -184,7 +184,7 @@ function prepare()
     :echo_assarr CliArgs IntenseBlack
 
     local ln=0
-    while read -r line; do 
+    while read -r line; do
         let ln++ # remove comments and extra spaces, subst tabs with spaces, collapse whitespaces
         local cols=$(echo "$line" | sed 's/\t/ /g' | sed "s/ *#.*$//g" | tr -s ' ')
         case `echo $cols | wc -w` in # can be or only user/repo, or u/r with tags
@@ -212,7 +212,7 @@ function main()
             local ghRelInfo=`gh_release_info $ghOwner $ghRepo $ghTag`
             [[ -z $ghRelInfo ]] && :fail 11 "Tag $ghTag not found for app $ghApp"
             [[ $ghTag == "latest" ]] && ghTag=`echo "$ghRelInfo" | jq -r '.tag_name'`
-            
+
             local ghUrl=`gh_select_url "$ghRelInfo" $arch`
             if [[ -z $ghUrl ]] ; then
                 if [[ -z ${CliArgs[nofail]} ]] ; then
@@ -247,6 +247,7 @@ function main()
 
 ###############################################################################
 
+:require-pkgs jq curl
 prepare $*
 main $*
 

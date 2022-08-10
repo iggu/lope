@@ -35,7 +35,7 @@ function _ghclone_make_install()
 
 function install_neovim()
 {
-    _ghclone_make_install pkg-config,libtool:libtool-bin,gettext,make,cmake,g++ \
+    _ghclone_make_install pkg-config,libtool:libtool-bin,gettextize:gettext,make,cmake,g++ \
                       neovim/neovim${1:+/$1} \
                       "CMAKE_BUILD_TYPE=Release CMAKE_INSTALL_PREFIX=${CliArgs[prefix]}"
 }

@@ -17,6 +17,7 @@ sharkdp/fd
 bootandy/dust
 wfxr/code-minimap
 koalaman/shellcheck
+aristocratos/btop
 
 ## x86 only - use with -I for othe arches
 phiresky/ripgrep-all
