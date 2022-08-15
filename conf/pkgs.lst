@@ -19,11 +19,12 @@ wfxr/code-minimap
 koalaman/shellcheck
 aristocratos/btop
 
-## x86 only - use with -I for othe arches
+## x86 only - use with -I for other arches
 phiresky/ripgrep-all
 ogham/exa
 sayanarijit/xplr # os only, no arch in name
 extrawurst/gitui # os only, no arch in name
+vnotex/vnote v3.14.0
 
 ## bash scripts - multiple archives, installer cant deal with
 # dylanaraps/fff # source code only

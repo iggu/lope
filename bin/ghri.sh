@@ -5,7 +5,7 @@
 source $(dirname `realpath $0`)/_include.sh
 
 declare -A AppsTags # app is user/repo
-declare -A Arches=( [x86_64]="(x86_|amd)64" [aarch64]="(aarch|arm)64" )
+declare -A Arches=( [x86_64]="(x86_|amd|x)64" [aarch64]="(aarch|arm)64" )
 
 #####################################################################################
 # Utility functions
@@ -199,7 +199,7 @@ function prepare()
 
 ###############################################################################
 
-function main()
+function download()
 {
     local arch=${CliArgs[arch]:-`arch`}
     for ghApp in ${!AppsTags[@]} ; do
@@ -230,25 +230,43 @@ function main()
             fi
         fi
     done
+}
 
-    # install every binary file except completion scripts
+function install()
+{
+    local arch=${CliArgs[arch]:-`arch`}
+    function ?samelink() { [[ -L $1 && "$(realpath `readlink $1`)" == "$(realpath $2)" ]] && return 0 || return 1 ; }
+
+    # install every binary file except completion scripts and appimages
     if [ -n "${CliArgs[bin]}" ] ; then
         mkdir -p ${CliArgs[bin]}
         echo -e "**** ${Green}Installing executables${ResetColor} => ${Green}${CliArgs[bin]}${ResetColor} ****"
         while read -r exe; do
             local n=`basename $exe`
             local l="${CliArgs[bin]}/$n"
-            [[ -L "$l" && "$(realpath `readlink $l`)" == "$(realpath $exe)" ]] && continue
-            ln -sfv "$exe" "$l" # overwrite - maybe it's an update
-        done < <(find ${CliArgs[dist]}/$arch -type f -executable -not -path "*complet*")
-        # find ${CliArgs[dist]}/$arch -type f -executable -not -path "*complet*" -exec ln -sfv '{}' ${CliArgs[bin]} ';'
+            if [[ "${n}" != @(install.sh|uninstall.sh|setuid.sh) ]] && ! ?samelink "$l" "$exe" ; then
+                ln -sfv "$exe" "$l" # make a link with possible overwrite - maybe it's an update
+            fi
+        done < <(find ${CliArgs[dist]}/$arch -type f -executable -not -path "*complet*" -not -iname "*.appimage")
     fi
+
+    # install appimages
+    find ${CliArgs[bin]} -executable -iname "*.appimage" -exec rm '{}' ';'
+    while read -r appimg; do
+        local name=$(echo $appimg | rev | cut -d'/' -f2 | rev | cut -d'+' -f1)
+        local link="${CliArgs[bin]}/$name"
+        if ! ?samelink "$link" "$appimg" ; then
+            [[ -x "$appimg" ]] || chmod a+x "$appimg"
+            ln -sfv "$appimg" "$link"
+        fi
+    done < <(find ${CliArgs[dist]}/$arch -type f -iname "*.appimage")
 }
 
 ###############################################################################
 
 :require-pkgs jq curl
 prepare $*
-main $*
+download $*
+install $*
 
 ###############################################################################
