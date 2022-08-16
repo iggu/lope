@@ -23,12 +23,21 @@ function _ghclone_make_install()
     git clone ${branch:+-b $branch} --single-branch --depth=1 https://github.com/$user/$repo $dir
     cd $dir
     [ -x ./autogen.sh ] && ./autogen.sh
+    [[ -f ./configure.ac && ! -x ./configure ]] && aclocal && autoheader && automake --add-missing && autoconf
     [ -x ./configure ] && ./configure --prefix=${CliArgs[prefix]}
     make $3
     make install
     cd $opwd
 
     if [ -n "${CliArgs[clean]}" ] ; then rm -rf $dir ; fi
+}
+
+###############################################################################
+
+function install_xstow()
+{
+    _ghclone_make_install pkg-config,autoconf,automake,make,g++ \
+                      majorkingleo/xstow${1:+/$1}
 }
 
 ###############################################################################
