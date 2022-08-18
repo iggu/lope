@@ -9,6 +9,7 @@ source $(dirname `realpath $0`)/_include.sh
 # $1=required:packages,comma,separated
 # $2=ghuser/ghrepo[?/ghbranch]
 # $3="make options" -- optional
+# $4="post-install command in the repo dir" -- optional
 function _ghclone_make_install()
 {
     local rqpkg=`echo $1 | tr ',' ' '`
@@ -17,20 +18,28 @@ function _ghclone_make_install()
     local gh=($(echo $2 | tr '/' "\n"))
     declare user=${gh[0]} repo=${gh[1]} branch=${gh[2]}
 
-    local opwd=`pwd`
     local dir=`mktemp -u -d -p "${CliArgs[tmpdir]}" --suffix=.git -t $user+$repo.XXXX`
 
     git clone ${branch:+-b $branch} --single-branch --depth=1 https://github.com/$user/$repo $dir
-    cd $dir
+    cd $dir # never return to the path we came from
     [ -x ./autogen.sh ] && ./autogen.sh
     [[ -f ./configure.ac && ! -x ./configure ]] && aclocal && autoheader && automake --add-missing && autoconf
     [ -x ./configure ] && ./configure --prefix=${CliArgs[prefix]}
     make $3
     make install
-    cd $opwd
+    [[ -n "$4" ]] && $4
 
     if [ -n "${CliArgs[clean]}" ] ; then rm -rf $dir ; fi
 }
+
+###############################################################################
+
+function install_doneyet()
+{
+    _ghclone_make_install pkg-config,autoconf,automake,make,g++ \
+                      gtaubman/doneyet${1:+/$1} "" "cp -bv doneyet ${CliArgs[prefix]}/bin"
+}
+
 
 ###############################################################################
 
@@ -189,7 +198,9 @@ function main()
         declare name=${cmd%%:*} tag=${cmd#*:}
         [[ $name = $tag ]] && tag=
         echo -e "**** ${Green} $name${tag:+ : $tag} ${ResetColor} ****"
+        pushd `pwd`
         install_$name $tag
+        popd
     done
 }
 

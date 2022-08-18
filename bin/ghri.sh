@@ -244,9 +244,10 @@ function install()
         while read -r exe; do
             local n=`basename $exe`
             local l="${CliArgs[bin]}/$n"
-            if [[ "${n}" != @(install.sh|uninstall.sh|setuid.sh) ]] && ! ?samelink "$l" "$exe" ; then
-                ln -sfv "$exe" "$l" # make a link with possible overwrite - maybe it's an update
-            fi
+	    case "$n" in
+		*.sh|*.awk|*.bat) ;; # ignore those files; TODO: search only app's ./ and ./bin folders for exe
+		*) ?samelink "$l" "$exe" || ln -sfv "$exe" "$l" ;; # make a link with possible overwrite - maybe it's an update
+   	    esac
         done < <(find ${CliArgs[dist]}/$arch -type f -executable -not -path "*complet*" -not -iname "*.appimage")
     fi
 
