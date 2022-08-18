@@ -157,11 +157,11 @@ local function init_plugins_manual()
   lvim.plugins = {
 
     -- {'TimUntersberger/neogit'}, -- lazygit does the same - and more pretty
-    { 'nvim-telescope/telescope-media-files.nvim' },
-    { 'is0n/fm-nvim' },
+    -- { 'nvim-telescope/telescope-media-files.nvim' },
+    { 'is0n/fm-nvim' }, -- use your favorite terminal file managers (and fuzzy finders)
     { 'aspeddro/gitui.nvim' },
     { 'ellisonleao/glow.nvim', setup = function()
-        vim.g.glow_width = 200
+      vim.g.glow_width = 200
     end },
     { 'junegunn/limelight.vim' },
     { 'junegunn/goyo.vim', setup = function()
@@ -217,11 +217,10 @@ local function init_plugins_manual()
 
     -- SYMBOLS NAVIGATION
     { "folke/trouble.nvim" },
-    { 'ludovicchabant/vim-gutentags' },
+    -- { 'ludovicchabant/vim-gutentags' },
     { "romgrk/nvim-treesitter-context" },
     { 'sidebar-nvim/sidebar.nvim', config = function() require("sidebar-nvim").setup(
-        { open = false, side = "left", sections = { "symbols", "todos", "diagnostics", },
-        })
+        { open = false, side = "left", sections = { "symbols", "todos", "diagnostics", }, })
     end },
     -- main rule is: left side - tree-sitter based outliners (should be used in general as fastest),
     -- right side - ctags-based (they may be pretty slow on big files)
@@ -253,19 +252,19 @@ local function init_plugins_manual()
     { 'tpope/vim-unimpaired' }, -- complementary pairs of mappings
     { 'xiyaowong/nvim-cursorword' }, -- underline words similar to one under cursor
     { "max397574/better-escape.nvim" }, -- jk in insert mode acts as <esc>
-    { 'Kristoffer-PBS/interesting-words.nvim' }, -- highlight words in the buffer
+    -- { 'Kristoffer-PBS/interesting-words.nvim' }, -- highlight words in the buffer
     { 'lukas-reineke/indent-blankline.nvim', setup = function() -- draw vertical lines as indent markers
       vim.g.indent_blankline_filetype_exclude = lvim.userdata.exclude_filetypes
     end },
 
     -- COLORSCHEMES
-    { "folke/tokyonight.nvim" }, { "abzcoding/zephyr-nvim" }, { "abzcoding/doom-one.nvim" }, { "rose-pine/neovim" },
-    { "kyoz/purify", rtp = "vim" }, { "nanotech/jellybeans.vim" }, { "arcticicestudio/nord-vim" },
-    { "jacoborus/tender.vim" },
+    -- { "abzcoding/zephyr-nvim" }, << this theme uses treesitter in an invalid way which gives permanent erros
+    { "folke/tokyonight.nvim" }, { "abzcoding/doom-one.nvim" }, { "rose-pine/neovim" },
+    { "kyoz/purify", rtp = "vim" }, { "nanotech/jellybeans.vim" }, { "arcticicestudio/nord-vim" }, { "jacoborus/tender.vim" },
     { "morhetz/gruvbox" }, { "tomasr/molokai" }, { "sjl/badwolf" }, { "dracula/vim" }, { "jnurmine/Zenburn" },
     { 'tomasiser/vim-code-dark' }, { 'savq/melange' }, { 'rockerBOO/boo-colorscheme-nvim' }, { 'bluz71/vim-moonfly-colors' },
     { 'liuchengxu/space-vim-theme' }, { 'rafamadriz/neon' }, { 'catppuccin/nvim', as = "catppuccin" }, { 'jsit/toast.vim' },
-    { 'Shatur/neovim-ayu' }, { 'Everblush/everblush.nvim', as='everblush'}, { 'EdenEast/nightfox.nvim' },
+    { 'Shatur/neovim-ayu' }, { 'Everblush/everblush.nvim', as = 'everblush' }, { 'EdenEast/nightfox.nvim' },
     { 'marko-cerovac/material.nvim' }, { 'rebelot/kanagawa.nvim' }, { 'cocopon/iceberg.vim' },
     { 'AlessandroYorba/Despacio', setup = function() vim.g.despacio_Pitc = 1 end },
     { 'junegunn/seoul256.vim', setup = function() vim.g.seoul256_background = 233 end }, --[[233=darkest, 236=lightest; not working here]]
@@ -381,14 +380,14 @@ local function init_whichkeys_menu()
     D = { ":colorscheme dracula<CR>", "Dracula" },
     f = { ":colorscheme despacio<CR>", "Despacio" },
     F = {
-        name = "Fox",
-        c = { ":colorscheme carbonfox<CR>", "Carbon" },
-        d = { ":colorscheme dayfox<CR>", "Day" },
-        D = { ":colorscheme dawnfox<CR>", "Dawn" },
-        f = { ":colorscheme duskfox<CR>", "Dusk" },
-        n = { ":colorscheme nightfox<CR>", "Night" },
-        N = { ":colorscheme nordfox<CR>", "Nord" },
-        t = { ":colorscheme terafox<CR>", "Tera" },
+      name = "Fox",
+      c = { ":colorscheme carbonfox<CR>", "Carbon" },
+      d = { ":colorscheme dayfox<CR>", "Day" },
+      D = { ":colorscheme dawnfox<CR>", "Dawn" },
+      f = { ":colorscheme duskfox<CR>", "Dusk" },
+      n = { ":colorscheme nightfox<CR>", "Night" },
+      N = { ":colorscheme nordfox<CR>", "Nord" },
+      t = { ":colorscheme terafox<CR>", "Tera" },
     },
     g = { ":colorscheme gruvbox<CR>", "Gruv Box" },
     i = { ":colorscheme iceberg<CR>", "Iceberg" },
@@ -408,7 +407,7 @@ local function init_whichkeys_menu()
     t = { ":colorscheme tokyonight<CR>", "TokyoNight" },
     T = { ":colorscheme tender<CR>", "Tender" },
     Y = { ":colorscheme toast<CR>", "Toast" },
-    z = { ":colorscheme zephyr<CR>", "Zephir" },
+    -- z = { ":colorscheme zephyr<CR>", "Zephir" },
     Z = { ":colorscheme zenburn<CR>", "Zenburn" },
   }
 end
