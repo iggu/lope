@@ -55,8 +55,9 @@ init_vim_options()
 
 -- Key Mappings {{{
 local function init_keymaps()
-  local map = vim.api.nvim_set_keymap
-  local opts = { noremap = true, silent = true }
+  -- local map = vim.api.nvim_set_keymap
+  -- local opts = { noremap = true, silent = true }
+  -- map('n', '<A-l>', ':BufferLineMoveNext<CR>', opts)
 
   lvim.leader = "space" -- view all the defaults by pressing <leader>Lk
   lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
@@ -73,9 +74,11 @@ local function init_keymaps()
     ]]
 
   -- Magic buffer-picking mode
-  map('n', '<A-l>', ':BufferLineMoveNext<CR>', opts)
-  map('n', '<A-h>', ':BufferLineMovePrev<CR>', opts)
-  map('n', '<A-o>', ':BufferLinePick<CR>', opts)
+  lvim.keys.normal_mode["<A-l>"]     = ":BufferLineCycleNext<CR>"
+  lvim.keys.normal_mode["<A-h>"]     = ":BufferLineCyclePrev<CR>"
+  lvim.keys.normal_mode["<A-S-l>"]   = ":BufferLineMoveNext<CR>"
+  lvim.keys.normal_mode["<A-S-h>"]   = ":BufferLineMovePrev<CR>"
+  lvim.keys.normal_mode["<A-S-o>"]   = ":BufferLinePick<CR>"
 
   -- Change Telescope navigation to use j and k for navigation and n and p for history in both input and normal mode.
   -- we use protected-mode (pcall) just in case the plugin wasn't loaded yet.
@@ -132,7 +135,8 @@ local function init_plugins_builtin()
   ll.options.disabled_filetypes = lvim.userdata.exclude_filetypes
 
   lvim.builtin.treesitter.ensure_installed = {
-    "bash", "python", "c", "cpp", "lua", "dockerfile", "typescript", "javascript", "css", "html", "json"
+    "bash", "python", "c", "cpp", "lua", "dockerfile", "typescript", "javascript", "css", "html", "json", "markdown", "yaml", "toml", "markdown",
+
   }
   lvim.builtin.treesitter.ignore_install = { "lua", "haskell" } -- lua always give weird errors
   lvim.builtin.treesitter.highlight.enabled = true
@@ -167,6 +171,7 @@ local function init_plugins_manual()
     { 'junegunn/goyo.vim', setup = function()
       vim.g.goyo_width = "80%+5%"
     end },
+    { 'aserebryakov/vim-todo-lists' },
     -- {'itchyny/calendar.vim', setup = function() -- it's too slow
     --         vim.g.calendar_google_calendar = 0
     --         vim.g.calendar_google_task = 0
@@ -220,7 +225,7 @@ local function init_plugins_manual()
     -- { 'ludovicchabant/vim-gutentags' },
     { "romgrk/nvim-treesitter-context" },
     { 'sidebar-nvim/sidebar.nvim', config = function() require("sidebar-nvim").setup(
-        { open = false, side = "left", sections = { "symbols", "todos", "diagnostics", }, })
+        { open = false, side = "left", sections = { "symbols", "git", "todos", "diagnostics", }, })
     end },
     -- main rule is: left side - tree-sitter based outliners (should be used in general as fastest),
     -- right side - ctags-based (they may be pretty slow on big files)
@@ -259,7 +264,7 @@ local function init_plugins_manual()
 
     -- COLORSCHEMES
     -- { "abzcoding/zephyr-nvim" }, << this theme uses treesitter in an invalid way which gives permanent erros
-    { "folke/tokyonight.nvim" }, { "abzcoding/doom-one.nvim" }, { "rose-pine/neovim" },
+    { "folke/tokyonight.nvim" }, { "abzcoding/doom-one.nvim" }, { "rose-pine/neovim" }, { 'sainnhe/sonokai' },
     { "kyoz/purify", rtp = "vim" }, { "nanotech/jellybeans.vim" }, { "arcticicestudio/nord-vim" }, { "jacoborus/tender.vim" },
     { "morhetz/gruvbox" }, { "tomasr/molokai" }, { "sjl/badwolf" }, { "dracula/vim" }, { "jnurmine/Zenburn" },
     { 'tomasiser/vim-code-dark' }, { 'savq/melange' }, { 'rockerBOO/boo-colorscheme-nvim' }, { 'bluz71/vim-moonfly-colors' },
@@ -402,6 +407,7 @@ local function init_whichkeys_menu()
     o = { ":colorscheme onedarker<CR>", "One Darker" },
     p = { ":colorscheme purify<CR>", "Purify" },
     r = { ":colorscheme rose-pine<CR>", "Rose Pine" },
+    q = { ":colorscheme sonokai<CR>", "Sonokai" },
     s = { ":colorscheme space_vim_theme<CR>", "Space Vim" },
     S = { ":let g:seoul256_background = 233<CR>:colorscheme seoul256<CR>", "Seoul 256" },
     t = { ":colorscheme tokyonight<CR>", "TokyoNight" },
