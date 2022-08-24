@@ -95,6 +95,15 @@ function :fail() # 1=errorCode, 2=erroMessage, 3..=printfParams
     fi
 }
 
+# need python3 of minor version at least of $1
+:require-py3()
+{
+    :require-pkgs python3
+    local minPyV=$1
+    [ $(python3 -V | cut -d. -f2) -ge $minPyV ] || :fail 2 "Require Python >= 3.$minPyV" "but deal with" `python3 -V`
+    (pip -V | grep -q "3.$minPyV") || :fail 2 "Require pip for Python 3.$minPyV" "but deal with" `pip -V`
+}
+
 # Tests 1st param if it ends with any of supported archive extensions and returns it
 :ext4ar()
 {
@@ -141,5 +150,25 @@ function :fail() # 1=errorCode, 2=erroMessage, 3..=printfParams
     else
         echo "'$1' is not a valid file"
     fi
+}
+
+# takes files for the given '<component>' in 'files/<action>' directory and applies '<action>' on it
+# for the given target path preserving all the related paths under 'files/<action>/<component>'
+# actions are: overwrite (tbd: patch, remove)
+function :files_actions_apply() # $1=fromComponentName $2=toPath
+{
+    local dirBin=$(dirname `realpath $0`) # assume that caller is located in bin/ and it's path is stored in $0
+    local dirInFiles=`realpath $dirBin/../files`
+    local dirInOvwr="$dirInFiles/overwrite/$1"
+    local dirOutRoot="$2"
+
+    # perform 'overwrite' action for files
+    while read -r inFile ; do # paths relative to patches/leo, can use as is
+        local outDir="$dirOutRoot/$(dirname $inFile)"
+        mkdir -p "$outDir"
+        cp -fv "$dirInOvwr/$inFile" "$outDir/$(basename $inFile)"
+    done < <(cd $dirInOvwr && find -type f -printf '%P\n')
+
+    # TODO: place other actions like 'patch' or 'delete' below
 }
 

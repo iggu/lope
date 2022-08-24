@@ -2,7 +2,19 @@
 
 # CompleX Install : installer with complex rules
 
-source $(dirname `realpath $0`)/_include.sh
+THIS_SELF_DIR=$(dirname `realpath $0`)
+source $THIS_SELF_DIR/_include.sh
+
+
+###############################################################################
+
+function install_leo()
+{
+    :require-py3 8
+    (python3 -m leo 2>&1 | grep -q 'cannot be directly executed') && echo "Leo itself is already installed" || \
+        pip3 install leo
+    :files_actions_apply leo "$(pip show leo | grep Location | cut -d' ' -f2)/leo"
+}
 
 ###############################################################################
 
