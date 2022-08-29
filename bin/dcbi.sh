@@ -25,12 +25,20 @@ function _ghclone_make_install()
     [ -x ./autogen.sh ] && ./autogen.sh
     [[ -f ./configure.ac && ! -x ./configure ]] && aclocal && autoheader && automake --add-missing && autoconf
     [ -x ./configure ] && ./configure --prefix=${CliArgs[prefix]}
-    make $3
-    make install
+    PREFIX=${CliArgs[prefix]} make $3
+    PREFIX=${CliArgs[prefix]} make install
     [[ -n "$4" ]] && $4
 
     if [ -n "${CliArgs[clean]}" ] ; then rm -rf $dir ; fi
 }
+
+###############################################################################
+
+function install_encpipe()
+{
+    _ghclone_make_install make,gcc jedisct1/encpipe ${1:+/$1}
+}
+
 
 ###############################################################################
 
