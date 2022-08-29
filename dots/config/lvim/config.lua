@@ -73,6 +73,9 @@ local function init_keymaps()
               inoremap <C-F>t <Esc>:CtrlSFToggle<CR>
     ]]
 
+  -- plugin works only when ft=markdown which is not always convinient, try to fool it by calling with filename
+  lvim.keys.normal_mode["<A-m>"]     = ":Glow %<CR>"
+
   -- Magic buffer-picking mode
   lvim.keys.normal_mode["<A-l>"]     = ":BufferLineCycleNext<CR>"
   lvim.keys.normal_mode["<A-h>"]     = ":BufferLineCyclePrev<CR>"
@@ -166,7 +169,7 @@ local function init_plugins_manual()
     { 'aspeddro/gitui.nvim' },
     { 'ellisonleao/glow.nvim', setup = function()
       vim.g.glow_width = 200
-    end },
+    end }, 
     { 'junegunn/limelight.vim' },
     { 'junegunn/goyo.vim', setup = function()
       vim.g.goyo_width = "80%+5%"
@@ -179,6 +182,7 @@ local function init_plugins_manual()
 
 
     -- DECORATIONS
+    { 'zakharykaplan/nvim-retrail' }, -- highlight & trim trailing whitespace upon :write.
     { 'm-demare/hlargs.nvim' }, -- highlight arguments' definitions and usages, asynchronously, using Treesitter
     { 'Pocco81/HighStr.nvim' }, -- Permanently highlight selection
     { 'haringsrob/nvim_context_vt' }, -- Shows virtual text of the current context at the end of: functions, if, for, ...
@@ -431,6 +435,11 @@ local function init_autocommands()
   -- { "FileType", "cpp", [[lua lvim.userdata.somefunc()]] },
   -- { "BufWinEnter", "*.lua", "setlocal ts=8 sw=8" },
   -- }
+  vim.api.nvim_create_autocmd("BufEnter", {
+	  pattern = { "*.todo.md", "*.md", "*.mkd" },
+	  -- enable wrap mode for json files only
+	  command = "setlocal nospell syntax=markdown",
+  })
 end
 
 init_autocommands()
