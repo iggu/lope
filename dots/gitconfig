@@ -84,3 +84,6 @@
 	helper = store
 [cola]
 	spellcheck = false
+[user]
+	name = iG Gu
+	email = iggu@nm.ru
