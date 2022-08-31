@@ -1,0 +1,62 @@
+#!/bin/bash
+
+
+CONFDIR="$HOME/.config/sncli"
+PSWDFILE="$CONFDIR/password"
+SALTFILE="$CONFDIR/salt"
+DATADIR="$HOME/.local/share/sncli"
+
+function die()
+{
+    echo "$@"
+    exit 1
+}
+
+function salt_file_create
+{
+    read -rsp "Encryption/decryption salt: "  SALT
+    echo "$SALT" > "$SALTFILE"
+    echo
+}
+
+function password_file_create()
+{
+    read -rsp "SimpleNote service password: " PSWD 
+    echo -n "$PSWD" | encpipe -e -P "$SALTFILE" - -o "$PSWDFILE"
+    echo
+}
+
+function prepare()
+{
+    declare DOTRC=~/.snclirc CONFRC="$CONFDIR/snclirc"
+
+    if [[ ! -L "$CONFRC" ]] ; then
+        die "Cannot find $CONFRC symlink (did you stowed lope?)"
+    elif [[ ! -e "$DOTRC" ]] ; then
+        ln -s "$CONFRC" "$DOTRC"
+    elif [[ "$(readlink -m "$DOTRC")" != "$(readlink -m "$CONFRC")" ]] ; then
+        die "$DOTRC is not symlink to lope's $CONFRC"
+    elif ! grep -q 'cfg_sn_password_eval = encpipe' "$DOTRC" ; then
+        die "Seems like current sncli setup doesnt support approach with encrypted password"
+    fi
+
+    [[ -f "$SALTFILE" ]] || salt_file_create
+    [[ -f "$PSWDFILE" ]] || password_file_create
+}
+
+function run()
+{
+
+    mkdir -p "$DATADIR"
+    # sncli accepts only 'plain' paths, w/o vars or expansions, abs or rel
+    # in config rel paths are set, so need to start sncli from the dir all paths are relative to
+    cd
+    clear # sncli ui is ugly and poor in re-drawing... this helps it to get rid of unwanted artifacts
+    sncli "$@"
+    rm -f "$SALTFILE" # remove in case sncli didt do it
+    clear # the same reason
+}
+
+prepare
+run "$@"
+
