@@ -109,6 +109,7 @@ init_keymaps()
 local function init_plugins_builtin()
 
   lvim.builtin.bufferline.active = true -- tabs with open buffers atop of vim
+  lvim.builtin.autopairs.active = false -- hate auto pairs
 
   --lvim.builtin.dashboard.active = true
   lvim.builtin.notify.active = true -- gh:'rcarriga/nvim-notify', popup notifications
@@ -217,6 +218,7 @@ local function init_plugins_manual()
     { 'kevinhwang91/nvim-bqf' }, -- better quickfix window,
 
     -- FILETYPES
+    { 'hauleth/vim-encpipe' }, -- files encoded by encpipe, with '.enc' extension
     { 'bfrg/vim-jq' },
     -- {'bfrg/vim-jqplay'}, -- pretty useless, have dedicated shell scripts for that
 
@@ -436,7 +438,7 @@ local function init_autocommands()
   -- { "BufWinEnter", "*.lua", "setlocal ts=8 sw=8" },
   -- }
   vim.api.nvim_create_autocmd("BufEnter", {
-	  pattern = { "*.todo.md", "*.md", "*.mkd" },
+	  pattern = { "*.todo.md", "*.md", "*.mkd", "*.md.enc", "*.mkd.enc" },
 	  -- enable wrap mode for json files only
 	  command = "setlocal nospell syntax=markdown",
   })

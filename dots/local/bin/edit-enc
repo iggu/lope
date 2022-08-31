@@ -1,0 +1,71 @@
+#!/bin/bash
+
+filename="passwords.gpg"
+if [ -v EDITOR ] ; then
+    editor="$EDITOR"
+elif [ -f /usr/bin/editor ] ; then
+    editor='/usr/bin/editor'
+else
+    editor='vi'
+fi
+
+# more security for vi
+if [ $editor = "vi" ] || [ $editor = "vim" ] ; then
+    editor="$editor -n -i NONE" # -n is for noswap and -i NONE is for no .viminfo
+fi
+
+filename=$1
+# strict commandline
+if [ $# -ne 1 ] ; then
+    echo -n "Error: "
+    [ $# -gt 1 ] && echo "Too many options." || echo "No filename specified."
+    echo "Usage: $0 <filename>.enc."
+    exit 1
+elif [ "${filename##*.}" != "enc" ] ; then
+    echo "Error: filename must have '.enc' extension"
+    exit 1
+fi
+
+# choose how to delete files
+if command -v shred ; then
+    rm='shred -u'
+elif command -v srm ; then
+    rm='srm -z'
+else
+    rm='rm'
+fi > /dev/null
+
+# ensure that we can write back the result
+if [ ! -f "$filename" ] ; then
+    echo "$filename doesn't exist. Starting from empty file."
+elif [ ! -r "$filename" ] ; then
+    echo "$filename isn't readable."
+    exit 1
+elif [ ! -w "$filename" ] ; then
+    echo "$filename isn't writable"
+    exit 1
+fi
+
+# prompt for password; don't show typing
+stty -echo
+read -rp "Password: " passw; echo
+stty echo 
+
+# make temp file where actual editing would be done
+tmp=$(mktemp -t enc=XXXXXXXXXX=${filename%.*}) || exit 1
+
+# decrypt into the tmp file
+if [ -f "$filename" ] ; then
+    if ! encpipe -d -p "$passw" -i "$filename" -o "$tmp" ; then
+        $rm $tmp
+        exit 3
+    fi
+fi
+
+# edit the file
+$editor $tmp
+
+# write changes back out
+encpipe -e -p "$passw" -i "$tmp" -o "$filename"
+$rm $tmp
+[ -f "$tmp" ] && "temp file wasnt removed"
