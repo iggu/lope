@@ -18,6 +18,7 @@ bootandy/dust
 wfxr/code-minimap
 koalaman/shellcheck
 aristocratos/btop
+FiloSottile/age
 
 ## x86 only - use with -I for other arches
 phiresky/ripgrep-all
