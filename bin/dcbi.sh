@@ -36,7 +36,7 @@ function _ghclone_make_install()
 
 function install_encpipe()
 {
-    _ghclone_make_install make,gcc jedisct1/encpipe ${1:+/$1}
+    _ghclone_make_install make,cc,gcc jedisct1/encpipe ${1:+/$1}
 }
 
 

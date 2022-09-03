@@ -26,7 +26,7 @@ ogham/exa
 sayanarijit/xplr # os only, no arch in name
 extrawurst/gitui # os only, no arch in name
 vnotex/vnote v3.14.0
-neovim/neovim v0.7.2
+# neovim/neovim v0.7.2
 
 ## bash scripts - multiple archives, installer cant deal with
 # dylanaraps/fff # source code only

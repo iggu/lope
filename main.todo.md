@@ -25,7 +25,11 @@
 # GitHubApps
 
 - [ ] **wezterm** - has strange filenames, need to integrate
+- [ ] **encpipe** - libhydrogen wants `cc` shortcut which is available only when default gcc is installed
+  - [ ] can build `libhydrogen` with cmake, not make
+  - [ ] can make own form and build and release encpipe for my needs, make it available in binary form
 
 # NeoVim plugins
 
 - [ ] **list** - https://github.com/rockerBOO/awesome-neovim
+- [X] **encryption** - use `/dev/shm` instead of `/tmp` wherever possible
