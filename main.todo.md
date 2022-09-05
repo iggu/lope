@@ -32,4 +32,15 @@
 # NeoVim plugins
 
 - [ ] **list** - https://github.com/rockerBOO/awesome-neovim
-- [X] **encryption** - use `/dev/shm` instead of `/tmp` wherever possible
+- [ ] **encryption** - use `/dev/shm` instead of `/tmp` wherever possible
+
+# Encrypted notes
+
+- [ ] try `pass` for storing password
+  - [ ] use extensions that hides the filenames
+  - [ ] choose btw `gpg` and `age` backends
+  - [ ] enhance safety with other plugins
+  - [ ] decide how to remotely store and distribute the db
+  - [ ] think of using cli-tools based on `KeePassX` backend
+- [ ] how to store encrypted notes - use what? encryption plugin for vim? which?
+  - [ ] prefer anything wide-spreaded for all oses like gpa or openssl
