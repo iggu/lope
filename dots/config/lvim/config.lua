@@ -187,13 +187,14 @@ local function init_plugins_manual()
     { 'vim-scripts/Rename2' },
 
     -- EDITING
-    { 'kylechui/nvim-surround' -- operate on surrounding pairs - quotes, braces, tags, ts-objs
+    { 'kylechui/nvim-surround', setup = function() -- operate on surrounding pairs - quotes, braces, tags, ts-objs
         --[[ insert = "<C-g>s", insert_line = "<C-g>S";
             q = any-quote `"', b = brace , t = tag, f = function << csqb changes newares quote to parentheses
             modes: ato=around-text-obj, acl=arounf-current-line
             normal: ato="ys", acl="yS" (curline shortcuts: yss, ySS)
             visual: ato="S", acl="gS";
             delete="ds"; change="cs" ]]
+        end
     },
     { 'nvim-treesitter/nvim-treesitter' -- syntax aware text-objects, select, move, swap, and peek support.
             --[[ TODO: learn it ]]
@@ -217,6 +218,8 @@ local function init_plugins_manual()
     -- {'pseewald/vim-anyfold'}, -- folds are pretty unusable since preview windows content is folded too
 
     -- SEARCH/FIND
+    { 'rlane/pounce.nvim' }, -- incremental fuzzy search on motions
+    { 'woosaaahh/sj.nvim' }, -- quick-jump search
     { 'voldikss/vim-skylight',
       setup = function() -- Search for file/symbol/word under cursor and preview in the floating window.
         vim.g.skylight_opener = 'drop' -- jump to location using the same split the search was performed in
@@ -239,12 +242,15 @@ local function init_plugins_manual()
       vim.g.cpp_simple_highlight = 1
     end, },
 
+    -- DIAGNOSTICS
+    { "folke/trouble.nvim" },
+    { "WhoIsSethDaniel/toggle-lsp-diagnostics.nvim" },
+
     -- CODE MANIPULATIONS
     { 'sbdchd/neoformat' },
     { 'folke/todo-comments.nvim', config = function() require("todo-comments").setup {} end, }, -- use :Todo... commands
 
     -- SYMBOLS NAVIGATION
-    { "folke/trouble.nvim" },
     -- { 'ludovicchabant/vim-gutentags' },
     { "romgrk/nvim-treesitter-context" },
     { 'sidebar-nvim/sidebar.nvim', config = function() require("sidebar-nvim").setup(
@@ -284,6 +290,7 @@ local function init_plugins_manual()
     { 'lukas-reineke/indent-blankline.nvim', setup = function() -- draw vertical lines as indent markers
       vim.g.indent_blankline_filetype_exclude = lvim.userdata.exclude_filetypes
     end },
+    { 'jinh0/eyeliner.nvim' }, -- color unique char in the line to speed up f/F to the corresponding word
 
     -- COLORSCHEMES
     -- { "abzcoding/zephyr-nvim" }, << this theme uses treesitter in an invalid way which gives permanent erros
@@ -334,6 +341,19 @@ local function init_whichkeys_menu()
     l = { ":Limelight!!<cr>", "Toggle LimeLight" },
   }
 
+  lvim.builtin.which_key.mappings.l.D = { ":ToggleDiag<cr>", "Toggle Diagnostics" }
+  lvim.builtin.which_key.mappings.l.t = {
+    name = "+Toggle Options",
+    u = { "<Plug>(toggle-lsp-diag-underline)<cr>", "Underline" },
+    s = { "<Plug>(toggle-lsp-diag-signs)<cr>", "Signs" },
+    v = { "<Plug>(toggle-lsp-diag-vtext)<cr>", "Virtual Text" },
+    i = { "<Plug>(toggle-lsp-diag-update_in_insert)<cr>", "Upd-On-Ins" },
+    t = { "<Plug>(toggle-lsp-diag)<cr>", "-- All --" },
+    d = { "<Plug>(toggle-lsp-diag-default)<cr>", "Defaults" },
+    o = { "<Plug>(toggle-lsp-diag-off)<cr>", "On" },
+    O = { "<Plug>(toggle-lsp-diag-on)<cr>", "Off" },
+
+  }
   lvim.builtin.which_key.mappings.g.G = { ":Gitui<cr>", "GitUI" }
   lvim.builtin.which_key.mappings.g.f = {
     name = "+Fuzzy",
@@ -369,6 +389,9 @@ local function init_whichkeys_menu()
   lvim.builtin.which_key.mappings.s.s = { ":Telescope resume<cr>", "Resume last search" }
   lvim.builtin.which_key.mappings.s.g = { ":Telescope grep_string<cr>", "Search for Word UC" }
   lvim.builtin.which_key.mappings.s.m = { ":Telescope media_files<cr>", "Search for Media" }
+  lvim.builtin.which_key.mappings.s.j = { ":lua require('sj').run()<cr>", "Search/Jump" }
+  lvim.builtin.which_key.mappings.s.p = { ":<cmd>Pounce<cr>", "Pounce" }
+  lvim.builtin.which_key.mappings.s.P = { ":<cmd>PounceRepeat<cr>", "Pounce Repeat" }
 
   lvim.builtin.which_key.mappings["w"] = {
     name = "Compile",
@@ -391,7 +414,7 @@ local function init_whichkeys_menu()
     name = "+Outlines",
     -- M = { "<cmd>MinimapToggle<CR>", "Minimap Toggle" },
     -- m = { "<cmd>MinimapRefresh<CR>", "Minimap Refresh" },
-    a = { "<cmd>AerialToggle!<CR>", "Aerial Toggle (missing)" },
+    a = { "<cmd>AerialToggle!<CR>", "Aerial Toggle" },
     b = { "<cmd>SidebarNvimToggle<CR>", "SideBar Toggle" },
     s = { "<cmd>SymbolsOutline<CR>", "SymbolsOutline Toggle" },
     t = { "<cmd>TagbarToggle<CR>", "Tagbar Toggle" },
