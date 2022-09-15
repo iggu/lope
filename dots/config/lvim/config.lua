@@ -166,6 +166,8 @@ local function init_plugins_manual()
 
     -- {'TimUntersberger/neogit'}, -- lazygit does the same - and more pretty
     -- { 'nvim-telescope/telescope-media-files.nvim' },
+
+    -- INTEGRATIONS
     { 'is0n/fm-nvim' }, -- use your favorite terminal file managers (and fuzzy finders)
     { 'aspeddro/gitui.nvim' },
     { 'ellisonleao/glow.nvim', setup = function()
@@ -175,24 +177,32 @@ local function init_plugins_manual()
     { 'junegunn/goyo.vim', setup = function()
       vim.g.goyo_width = "80%+5%"
     end },
-    { 'aserebryakov/vim-todo-lists' },
     -- {'itchyny/calendar.vim', setup = function() -- it's too slow
     --         vim.g.calendar_google_calendar = 0
     --         vim.g.calendar_google_task = 0
     --     end, },
 
+    -- HELPERS
+    { 'zakharykaplan/nvim-retrail' }, -- highlight & trim trailing whitespace upon :write.
+    { 'vim-scripts/Rename2' },
+
+    -- EDITING
+    { 'kylechui/nvim-surround' -- operate on surrounding pairs - quotes, braces, tags, ts-objs
+        --[[ insert = "<C-g>s", insert_line = "<C-g>S";
+            q = any-quote `"', b = brace , t = tag, f = function << csqb changes newares quote to parentheses
+            modes: ato=around-text-obj, acl=arounf-current-line
+            normal: ato="ys", acl="yS" (curline shortcuts: yss, ySS)
+            visual: ato="S", acl="gS";
+            delete="ds"; change="cs" ]]
+    },
+    { 'nvim-treesitter/nvim-treesitter' -- syntax aware text-objects, select, move, swap, and peek support.
+            --[[ TODO: learn it ]]
+    },
 
     -- DECORATIONS
-    { 'zakharykaplan/nvim-retrail' }, -- highlight & trim trailing whitespace upon :write.
     { 'm-demare/hlargs.nvim' }, -- highlight arguments' definitions and usages, asynchronously, using Treesitter
     { 'Pocco81/HighStr.nvim' }, -- Permanently highlight selection
     { 'haringsrob/nvim_context_vt' }, -- Shows virtual text of the current context at the end of: functions, if, for, ...
-    { 'bfrg/vim-cpp-modern', setup = function() -- Enhanced C and C++ syntax highlighting
-      vim.g.cpp_function_highlight = 1
-      vim.g.cpp_attributes_highlight = 1
-      vim.g.cpp_member_highlight = 1
-      vim.g.cpp_simple_highlight = 1
-    end, },
     { 'p00f/nvim-ts-rainbow' }, -- Rainbow parentheses for neovim using tree-sitter
     -- {'wfxr/minimap.vim'} -- works weird - QuickFix appears small and ugly, layouts become broken
     { 'dstein64/nvim-scrollview', setup = function()
@@ -221,6 +231,13 @@ local function init_plugins_manual()
     { 'hauleth/vim-encpipe' }, -- files encoded by encpipe, with '.enc' extension
     { 'bfrg/vim-jq' },
     -- {'bfrg/vim-jqplay'}, -- pretty useless, have dedicated shell scripts for that
+    { 'aserebryakov/vim-todo-lists' },
+    { 'bfrg/vim-cpp-modern', setup = function() -- Enhanced C and C++ syntax highlighting
+      vim.g.cpp_function_highlight = 1
+      vim.g.cpp_attributes_highlight = 1
+      vim.g.cpp_member_highlight = 1
+      vim.g.cpp_simple_highlight = 1
+    end, },
 
     -- CODE MANIPULATIONS
     { 'sbdchd/neoformat' },
@@ -270,15 +287,18 @@ local function init_plugins_manual()
 
     -- COLORSCHEMES
     -- { "abzcoding/zephyr-nvim" }, << this theme uses treesitter in an invalid way which gives permanent erros
-    { "folke/tokyonight.nvim" }, { "abzcoding/doom-one.nvim" }, { "rose-pine/neovim" }, { 'sainnhe/sonokai' },
-    { "kyoz/purify", rtp = "vim" }, { "nanotech/jellybeans.vim" }, { "arcticicestudio/nord-vim" }, { "jacoborus/tender.vim" },
-    { "morhetz/gruvbox" }, { "tomasr/molokai" }, { "sjl/badwolf" }, { "dracula/vim" }, { "jnurmine/Zenburn" },
-    { 'tomasiser/vim-code-dark' }, { 'savq/melange' }, { 'rockerBOO/boo-colorscheme-nvim' }, { 'bluz71/vim-moonfly-colors' },
-    { 'liuchengxu/space-vim-theme' }, { 'rafamadriz/neon' }, { 'catppuccin/nvim', as = "catppuccin" }, { 'jsit/toast.vim' },
-    { 'Shatur/neovim-ayu' }, { 'Everblush/everblush.nvim', as = 'everblush' }, { 'EdenEast/nightfox.nvim' },
-    { 'marko-cerovac/material.nvim' }, { 'rebelot/kanagawa.nvim' }, { 'cocopon/iceberg.vim' },
-    { 'AlessandroYorba/Despacio', setup = function() vim.g.despacio_Pitc = 1 end },
-    { 'junegunn/seoul256.vim', setup = function() vim.g.seoul256_background = 233 end }, --[[233=darkest, 236=lightest; not working here]]
+    -- INFO: color schemes as they appear in <leader>C menu
+    { "sjl/badwolf" }, { 'rockerBOO/boo-colorscheme-nvim' }, { 'tomasiser/vim-code-dark' }, { 'catppuccin/nvim', as = "catppuccin" },
+    { "abzcoding/doom-one.nvim" }, { 'Everblush/everblush.nvim', as = 'everblush' }, { 'cocopon/iceberg.vim' }, { 'marko-cerovac/material.nvim' },
+    { 'rafamadriz/neon' }, { 'sainnhe/sonokai' }, { "rose-pine/neovim" }, -- +onedarker which is buildin
+    { "folke/tokyonight.nvim" }, { 'jsit/toast.vim' },
+    -- INFO: not working schemes: they do not color the coda
+    -- { "kyoz/purify", rtp = "vim" }, { "nanotech/jellybeans.vim" }, { "arcticicestudio/nord-vim" }, { "jacoborus/tender.vim" },
+    -- { "morhetz/gruvbox" }, { "tomasr/molokai" }, { "dracula/vim" }, { "jnurmine/Zenburn" },
+    -- { 'savq/melange' }, { 'bluz71/vim-moonfly-colors' }, { 'liuchengxu/space-vim-theme' },
+    -- { 'Shatur/neovim-ayu' }, { 'EdenEast/nightfox.nvim' }, { 'rebelot/kanagawa.nvim' },
+    -- { 'AlessandroYorba/Despacio', setup = function() vim.g.despacio_Pitc = 1 end },
+    -- { 'junegunn/seoul256.vim', setup = function() vim.g.seoul256_background = 233 end }, --[[233=darkest, 236=lightest; not working here]]
   }
 end
 
@@ -380,47 +400,47 @@ local function init_whichkeys_menu()
 
   lvim.builtin.which_key.mappings["C"] = {
     name = "+ColorSchemes",
-    a = { ":colorscheme ayu-dark<CR>", "Ayu Dark" },
-    A = { ":colorscheme ayu-mirage<CR>", "Ayu Mirage" },
+    -- a = { ":colorscheme ayu-dark<CR>", "Ayu Dark" },
+    -- A = { ":colorscheme ayu-mirage<CR>", "Ayu Mirage" },
     b = { ":colorscheme badwolf<CR>", "Bad Wolf" },
     B = { ":colorscheme boo<CR>", "Boo" },
     c = { ":colorscheme codedark<CR>", "Code Dark" },
     C = { ":colorscheme catppuccin<CR>", "Catppuccin" },
     d = { ":colorscheme doom-one<CR>", "Doom One" },
     e = { ":colorscheme everblush<CR>", "Everblush" },
-    D = { ":colorscheme dracula<CR>", "Dracula" },
-    f = { ":colorscheme despacio<CR>", "Despacio" },
-    F = {
-      name = "Fox",
-      c = { ":colorscheme carbonfox<CR>", "Carbon" },
-      d = { ":colorscheme dayfox<CR>", "Day" },
-      D = { ":colorscheme dawnfox<CR>", "Dawn" },
-      f = { ":colorscheme duskfox<CR>", "Dusk" },
-      n = { ":colorscheme nightfox<CR>", "Night" },
-      N = { ":colorscheme nordfox<CR>", "Nord" },
-      t = { ":colorscheme terafox<CR>", "Tera" },
-    },
-    g = { ":colorscheme gruvbox<CR>", "Gruv Box" },
+    -- D = { ":colorscheme dracula<CR>", "Dracula" },
+    -- f = { ":colorscheme despacio<CR>", "Despacio" },
+    -- F = {
+    --   name = "Fox",
+    --   c = { ":colorscheme carbonfox<CR>", "Carbon" },
+    --   d = { ":colorscheme dayfox<CR>", "Day" },
+    --   D = { ":colorscheme dawnfox<CR>", "Dawn" },
+    --   f = { ":colorscheme duskfox<CR>", "Dusk" },
+    --   n = { ":colorscheme nightfox<CR>", "Night" },
+    --   N = { ":colorscheme nordfox<CR>", "Nord" },
+    --   t = { ":colorscheme terafox<CR>", "Tera" },
+    -- },
+    -- g = { ":colorscheme gruvbox<CR>", "Gruv Box" },
     i = { ":colorscheme iceberg<CR>", "Iceberg" },
-    j = { ":colorscheme jellybeans<CR>", "Jellybeans" },
-    k = { ":colorscheme kanagawa<CR>", "Kanagawa" },
-    K = { ":colorscheme melange<CR>", "Melange" },
-    L = { ":colorscheme moonfly<CR>", "Moonfly" },
-    m = { ":colorscheme molokai<CR>", "Molokai" },
+    -- j = { ":colorscheme jellybeans<CR>", "Jellybeans" },
+    -- k = { ":colorscheme kanagawa<CR>", "Kanagawa" },
+    -- K = { ":colorscheme melange<CR>", "Melange" },
+    -- L = { ":colorscheme moonfly<CR>", "Moonfly" },
+    -- m = { ":colorscheme molokai<CR>", "Molokai" },
     M = { ":colorscheme material<CR>", "Material" },
     n = { ":colorscheme neon<CR>", "Neon" },
-    N = { ":colorscheme nord<CR>", "Nord" },
+    -- N = { ":colorscheme nord<CR>", "Nord" },
     o = { ":colorscheme onedarker<CR>", "One Darker" },
-    p = { ":colorscheme purify<CR>", "Purify" },
+    -- p = { ":colorscheme purify<CR>", "Purify" },
     r = { ":colorscheme rose-pine<CR>", "Rose Pine" },
     q = { ":colorscheme sonokai<CR>", "Sonokai" },
-    s = { ":colorscheme space_vim_theme<CR>", "Space Vim" },
-    S = { ":let g:seoul256_background = 233<CR>:colorscheme seoul256<CR>", "Seoul 256" },
+    -- s = { ":colorscheme space_vim_theme<CR>", "Space Vim" },
+    -- S = { ":let g:seoul256_background = 233<CR>:colorscheme seoul256<CR>", "Seoul 256" },
     t = { ":colorscheme tokyonight<CR>", "TokyoNight" },
-    T = { ":colorscheme tender<CR>", "Tender" },
+    -- T = { ":colorscheme tender<CR>", "Tender" },
     Y = { ":colorscheme toast<CR>", "Toast" },
     -- z = { ":colorscheme zephyr<CR>", "Zephir" },
-    Z = { ":colorscheme zenburn<CR>", "Zenburn" },
+    -- Z = { ":colorscheme zenburn<CR>", "Zenburn" },
   }
 end
 
