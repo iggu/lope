@@ -1,3 +1,4 @@
+#!/bin/bash
 
 declare -A PKGs=(
     [sys]="lm-sensors uuid htop"

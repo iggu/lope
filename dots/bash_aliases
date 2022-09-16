@@ -10,7 +10,7 @@ alias emscripten-tools-import-here='eval `emsdk_env.eval`'
 function mkdcd() {
     mkdir -p "$1" && cd "$1"
 }
-alias dfh='df -h | head -n 1; df -h | grep /dev/sd'
+alias dfh='df -h | grep Filesystem ; df -h | grep -E "/dev/(sd|nvm|hd)[a-z0-9]+"'
 alias pf="fzf --preview='bat -f {}' --bind shift-up:preview-page-up,shift-down:preview-page-down"
 alias where="type -a"
 # Enable aliases to be sudo’ed
