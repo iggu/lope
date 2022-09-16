@@ -187,17 +187,15 @@ local function init_plugins_manual()
     { 'vim-scripts/Rename2' },
 
     -- EDITING
+    -- { 'ur4ltz/surround.nvim' }, -- works too, has sandwitch mode, need to be explicitely started
     { 'kylechui/nvim-surround', setup = function() -- operate on surrounding pairs - quotes, braces, tags, ts-objs
-        --[[ insert = "<C-g>s", insert_line = "<C-g>S";
+        --[[ insert = "<C-g>s", insert_line = "<C-g>S"; ! need to be explicitely started (see eof)
             q = any-quote `"', b = brace , t = tag, f = function << csqb changes newares quote to parentheses
             modes: ato=around-text-obj, acl=arounf-current-line
             normal: ato="ys", acl="yS" (curline shortcuts: yss, ySS)
             visual: ato="S", acl="gS";
             delete="ds"; change="cs" ]]
         end
-    },
-    { 'nvim-treesitter/nvim-treesitter' -- syntax aware text-objects, select, move, swap, and peek support.
-            --[[ TODO: learn it ]]
     },
 
     -- DECORATIONS
@@ -298,7 +296,7 @@ local function init_plugins_manual()
     { "sjl/badwolf" }, { 'rockerBOO/boo-colorscheme-nvim' }, { 'tomasiser/vim-code-dark' }, { 'catppuccin/nvim', as = "catppuccin" },
     { "abzcoding/doom-one.nvim" }, { 'Everblush/everblush.nvim', as = 'everblush' }, { 'cocopon/iceberg.vim' }, { 'marko-cerovac/material.nvim' },
     { 'rafamadriz/neon' }, { 'sainnhe/sonokai' }, { "rose-pine/neovim" }, -- +onedarker which is buildin
-    { "folke/tokyonight.nvim" }, { 'jsit/toast.vim' },
+    { "folke/tokyonight.nvim" }, { 'jsit/toast.vim' }, { 'sam4llis/nvim-tundra' },
     -- INFO: not working schemes: they do not color the coda
     -- { "kyoz/purify", rtp = "vim" }, { "nanotech/jellybeans.vim" }, { "arcticicestudio/nord-vim" }, { "jacoborus/tender.vim" },
     -- { "morhetz/gruvbox" }, { "tomasr/molokai" }, { "dracula/vim" }, { "jnurmine/Zenburn" },
@@ -460,6 +458,7 @@ local function init_whichkeys_menu()
     -- s = { ":colorscheme space_vim_theme<CR>", "Space Vim" },
     -- S = { ":let g:seoul256_background = 233<CR>:colorscheme seoul256<CR>", "Seoul 256" },
     t = { ":colorscheme tokyonight<CR>", "TokyoNight" },
+    T = { ":colorscheme tundra<CR>", "Tundra" },
     -- T = { ":colorscheme tender<CR>", "Tender" },
     Y = { ":colorscheme toast<CR>", "Toast" },
     -- z = { ":colorscheme zephyr<CR>", "Zephir" },
@@ -488,11 +487,15 @@ local function init_autocommands()
 end
 
 init_autocommands()
--- }}
+-- }}}
 
 
-local function load_telescope_ext(en)
-  require('telescope').load_extension(en)
+-- Plugins Force Init {{{
+local function init_plugins_force()
+    pcall( function() require('telescope').load_extension('media_files') end )
+    pcall( function() require("nvim-surround").setup() end )
+    pcall( function() require('ur4ltz/surround.nvim').setup() end )
 end
 
-pcall(load_telescope_ext, 'media_files')
+init_plugins_force()
+-- }}}
