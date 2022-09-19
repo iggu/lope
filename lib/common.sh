@@ -131,12 +131,13 @@ function :fail() # 1=errorCode, 2=erroMessage, 3..=printfParams
         local origPwd=`pwd`
         [ -d "$2" ] && cd "$2"
         case $1 in
+            *.deb)      dpkg-deb -x $1 ./ ;;
             *.tar.bz2)  tar xjf $1      ;;
             *.tar.gz)   tar xzf $1      ;;
             *.tar.xz)   tar xf $1       ;;
             *.bz2)      bunzip2 $1      ;;
             *.rar)      rar x $1        ;;
-            *.gz)       gunzip $1  ;;
+            *.gz)       gunzip $1       ;;
             *.tar)      tar xf $1       ;;
             *.tbz)      tar xjf $1      ;;
             *.tbz2)     tar xjf $1      ;;

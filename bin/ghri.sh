@@ -62,6 +62,8 @@ function gh_release_info()
     declare owner=$1 repo=$2 ver=$3
     if [[ "$ver" == "latest" ]] ; then 
         jq -r '.[0]'
+    elif [[ "$ver" =~ ^-[0-9]+$ ]] ; then # ignore first N versions
+        jq -r ".[${ver:1}]"
     else
         jq -r --arg V $ver '.[] | select(.tag_name==$V)'
     fi < $(path_dist_construct meta $owner $repo .json)
@@ -211,7 +213,7 @@ function download()
 
             local ghRelInfo=`gh_release_info $ghOwner $ghRepo $ghTag`
             [[ -z $ghRelInfo ]] && :fail 11 "Tag $ghTag not found for app $ghApp"
-            [[ $ghTag == "latest" ]] && ghTag=`echo "$ghRelInfo" | jq -r '.tag_name'`
+            ghTag=`echo "$ghRelInfo" | jq -r '.tag_name'`
 
             local ghUrl=`gh_select_url "$ghRelInfo" $arch`
             if [[ -z $ghUrl ]] ; then
@@ -244,10 +246,10 @@ function install()
         while read -r exe; do
             local n=`basename $exe`
             local l="${CliArgs[bin]}/$n"
-	    case "$n" in
-		*.sh|*.awk|*.bat) ;; # ignore those files; TODO: search only app's ./ and ./bin folders for exe
-		*) ?samelink "$l" "$exe" || ln -sfv "$exe" "$l" ;; # make a link with possible overwrite - maybe it's an update
-   	    esac
+            case "$n" in
+                *.sh|*.awk|*.bat) ;; # ignore those files; TODO: search only app's ./ and ./bin folders for exe
+                *) ?samelink "$l" "$exe" || ln -sfv "$exe" "$l" ;; # make a link with possible overwrite - maybe it's an update
+            esac
         done < <(find ${CliArgs[dist]}/$arch -type f -executable -not -path "*complet*" -not -iname "*.appimage")
     fi
 
