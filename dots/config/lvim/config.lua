@@ -329,6 +329,7 @@ local function init_whichkeys_menu()
     ["9"] = { ":<c-u>HSHighlight 9<CR>", "Do 9" },
   }
 
+  lvim.builtin.which_key.mappings.L.F = { ':lua require("nvim-surround").setup()<CR>', "Force Plugins Setup" }
   lvim.builtin.which_key.mappings["P"] = { "<cmd>Telescope projects<CR>", "Projects" }
 
   -- lvim.builtin.which_key.mappings.g.G = {":lua lvim.userdata.terminal_cmd_toggle('gitui')<cr>", "GitUI"}
@@ -494,7 +495,6 @@ init_autocommands()
 local function init_plugins_force()
     pcall( function() require('telescope').load_extension('media_files') end )
     pcall( function() require("nvim-surround").setup() end )
-    pcall( function() require('ur4ltz/surround.nvim').setup() end )
 end
 
 init_plugins_force()

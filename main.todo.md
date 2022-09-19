@@ -19,7 +19,10 @@
   - [ ] `dots`: as is 
   - [ ] `pkgs`: all ubuntu-related stuff like apt, ppa, etc
   - [ ] `notes`: all the notes, todos, hints etc...
-- [ ] `conf` reorganize - make subdirs for every entrypoint
+- [ ] `conf` reorganize
+  - [ ] make subdirs for every entrypoint 
+  - [ ] use yaml as a format - with help of for instance `mrbaseman/parse_yaml`
+    - [ ] then can setup preferrable archive types, supported oses etc
 - [ ] support for [editorconfig](http://editorconfig.org/) concept 
   - [ ] look at the [example](https://github.com/angular/angular.js/blob/master/.editorconfig)
 
@@ -90,4 +93,4 @@
   - [ ] decide how to remotely store and distribute the db
   - [ ] think of using cli-tools based on `KeePassX` backend
 - [ ] how to store encrypted notes - use what? encryption plugin for vim? which?
-  - [ ] prefer anything wide-spreaded for all oses like gpa or openssl
+  - [ ] prefer anything wide-spreaded for all oses like gpg or openssl

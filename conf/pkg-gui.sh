@@ -11,5 +11,5 @@ declare -A PKGs=(
     [noise]="anoise-gui anoise-community-extension1 anoise-community-extension2 anoise-community-extension3 anoise-community-extension4 anoise-community-extension5"
     [browse]="falkon opera-stable vivaldi-stable brave-browser librewolf"
     [youtube]="youtube-to-mp3 youtube-downloader lyrics-finder "
-    [office]="goldendict"
+    [office]="goldendict vym"
 )

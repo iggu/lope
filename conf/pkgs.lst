@@ -1,3 +1,7 @@
+# SYNTAX: ghuser/ghrepo [version], where optional 'version' is:
+#   - exact match or name
+#   - -N, where N is number - skip N latest versions (-1 - skip first)
+
 ## have releases both for x86_64 and aarch64
 microsoft/ripgrep-prebuilt # original repo only for x86_64
 ajeetdsouza/zoxide
@@ -25,7 +29,7 @@ phiresky/ripgrep-all
 ogham/exa
 sayanarijit/xplr # os only, no arch in name
 extrawurst/gitui # os only, no arch in name
-vnotex/vnote v3.14.0
+vnotex/vnote -1
 # neovim/neovim v0.7.2
 
 ## bash scripts - multiple archives, installer cant deal with
