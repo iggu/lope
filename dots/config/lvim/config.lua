@@ -217,7 +217,7 @@ local function init_plugins_manual()
 
     -- SEARCH/FIND
     { 'rlane/pounce.nvim' }, -- incremental fuzzy search on motions
-    { 'woosaaahh/sj.nvim' }, -- quick-jump search
+    -- { 'woosaaahh/sj.nvim' }, -- quick-jump search (but how does it work?)
     { 'voldikss/vim-skylight',
       setup = function() -- Search for file/symbol/word under cursor and preview in the floating window.
         vim.g.skylight_opener = 'drop' -- jump to location using the same split the search was performed in
