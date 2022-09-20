@@ -158,32 +158,44 @@ init_plugins_builtin()
 -- }}}
 
 -- Additional Plugins {{{
+local function init_plugins_vimg_options()
+    vim.g.glow_width = 200
+    vim.g.goyo_width = "80%+5%"
+    vim.g.scrollview_on_startup = 1
+    vim.g.scrollview_current_only = 1
+    vim.g.scrollview_excluded_filetypes = lvim.userdata.exclude_filetypes
+    -- vim.g.javascript_plugin_jsdoc = 1
+    vim.g.skylight_opener = 'drop' -- jump to location using the same split the search was performed in
+    vim.g.ctrlsf_position = 'left'
+    vim.g.ctrlsf_auto_focus = { at = "start" }
+    vim.g.cpp_function_highlight = 1
+    vim.g.cpp_attributes_highlight = 1
+    vim.g.cpp_member_highlight = 1
+    vim.g.cpp_simple_highlight = 1
+    vim.g.symbols_outline = { width = 40, position = "left" }
+    vim.g.tagbar_position = "right"
+    vim.g.tagbar_autofocus = 0
+    vim.g.vista_stay_on_open = 0
+    -- vim.g.vista_sidebar_position = "right" -- any attemp to use this option leads to total mess
+    vim.g.indent_blankline_filetype_exclude = lvim.userdata.exclude_filetypes
+end
+
 local function init_plugins_manual()
-  -- INFO https://github.com/rockerBOO/awesome-neovim
-  -- {'ghuser/ghprj',
-  -- setup = function()
-  --   vim.g.some_global = "some value"
-  --   vim.cmd [[let g:some_global = "some value"]]
-  -- end, },
-  lvim.plugins = {
+    -- setup globals in init_plugins_vimg_options()
+lvim.plugins = {
 
     -- {'TimUntersberger/neogit'}, -- lazygit does the same - and more pretty
     -- { 'nvim-telescope/telescope-media-files.nvim' },
 
+    -- GENERAL PURPOSE
+    { "anuvyklack/middleclass" },
+
     -- INTEGRATIONS
     { 'is0n/fm-nvim' }, -- use your favorite terminal file managers (and fuzzy finders)
     { 'aspeddro/gitui.nvim' },
-    { 'ellisonleao/glow.nvim', setup = function()
-      vim.g.glow_width = 200
-    end }, 
+    { 'ellisonleao/glow.nvim' },
     { 'junegunn/limelight.vim' },
-    { 'junegunn/goyo.vim', setup = function()
-      vim.g.goyo_width = "80%+5%"
-    end },
-    -- {'itchyny/calendar.vim', setup = function() -- it's too slow
-    --         vim.g.calendar_google_calendar = 0
-    --         vim.g.calendar_google_task = 0
-    --     end, },
+    { 'junegunn/goyo.vim' },
 
     -- HELPERS
     { 'zakharykaplan/nvim-retrail' }, -- highlight & trim trailing whitespace upon :write.
@@ -191,14 +203,13 @@ local function init_plugins_manual()
 
     -- EDITING
     -- { 'ur4ltz/surround.nvim' }, -- works too, has sandwitch mode, need to be explicitely started
-    { 'kylechui/nvim-surround', setup = function() -- operate on surrounding pairs - quotes, braces, tags, ts-objs
+    { 'kylechui/nvim-surround' -- operate on surrounding pairs - quotes, braces, tags, ts-objs
         --[[ insert = "<C-g>s", insert_line = "<C-g>S"; ! need to be explicitely started (see eof)
             q = any-quote `"', b = brace , t = tag, f = function << csqb changes newares quote to parentheses
             modes: ato=around-text-obj, acl=arounf-current-line
             normal: ato="ys", acl="yS" (curline shortcuts: yss, ySS)
             visual: ato="S", acl="gS";
             delete="ds"; change="cs" ]]
-        end
     },
 
     -- DECORATIONS
@@ -207,40 +218,19 @@ local function init_plugins_manual()
     { 'haringsrob/nvim_context_vt' }, -- Shows virtual text of the current context at the end of: functions, if, for, ...
     { 'p00f/nvim-ts-rainbow' }, -- Rainbow parentheses for neovim using tree-sitter
     -- {'wfxr/minimap.vim'} -- works weird - QuickFix appears small and ugly, layouts become broken
-    { 'dstein64/nvim-scrollview', setup = function()
-      vim.g.scrollview_on_startup = 1
-      vim.g.scrollview_current_only = 1
-      vim.g.scrollview_excluded_filetypes = lvim.userdata.exclude_filetypes
-    end },
+    { 'dstein64/nvim-scrollview' },
     -- {'petertriho/nvim-scrollbar', setup = { excluded_filetypes = lvim.userdata.exclude_filetypes }}, -- not working
-    -- {'pangloss/vim-javascript', setup = function() -- Vastly improved Javascript indentation and syntax support in Vim
-    --         vim.g.javascript_plugin_jsdoc = 1
-    --     end, }, -- this plugin gives random-character coloring around the code what is very annoying
+    -- {'pangloss/vim-javascript' }, -- Vastly improved Javascript indentation and syntax support in Vim
     -- {'pseewald/vim-anyfold'}, -- folds are pretty unusable since preview windows content is folded too
-    { "anuvyklack/windows.nvim", -- <C-W>z , <C-A> = maximize
-       requires = {
-          "anuvyklack/middleclass",
-          "anuvyklack/animation.nvim"
-       },
-       config = function()
-          vim.o.winwidth = 10
-          vim.o.winminwidth = 10
-          vim.o.equalalways = false
-          require('windows').setup()
-       end
-    },
+    -- { "anuvyklack/animation.nvim" }, -- to get smooth animation of windows resizing
+    { "anuvyklack/windows.nvim" }, -- <C-W>z , <C-A> = maximize
 
     -- SEARCH/FIND
     { 'rlane/pounce.nvim' }, -- incremental fuzzy search on motions
     -- { 'woosaaahh/sj.nvim' }, -- quick-jump search (but how does it work?)
-    { 'voldikss/vim-skylight',
-      setup = function() -- Search for file/symbol/word under cursor and preview in the floating window.
-        vim.g.skylight_opener = 'drop' -- jump to location using the same split the search was performed in
-      end, }, -- <C>w-p to jump to preview window and back
-    { 'dyng/ctrlsf.vim', setup = function()
-      vim.g.ctrlsf_position = 'left'
-      vim.g.ctrlsf_auto_focus = { at = "start" }
-    end, },
+     -- Search for file/symbol/word under cursor and preview in the floating window.
+    { 'voldikss/vim-skylight', }, -- <C>w-p to jump to preview window and back
+    { 'dyng/ctrlsf.vim' },
     { 'kevinhwang91/nvim-bqf' }, -- better quickfix window,
 
     -- FILETYPES
@@ -248,12 +238,7 @@ local function init_plugins_manual()
     { 'bfrg/vim-jq' },
     -- {'bfrg/vim-jqplay'}, -- pretty useless, have dedicated shell scripts for that
     { 'aserebryakov/vim-todo-lists' },
-    { 'bfrg/vim-cpp-modern', setup = function() -- Enhanced C and C++ syntax highlighting
-      vim.g.cpp_function_highlight = 1
-      vim.g.cpp_attributes_highlight = 1
-      vim.g.cpp_member_highlight = 1
-      vim.g.cpp_simple_highlight = 1
-    end, },
+    { 'bfrg/vim-cpp-modern' },-- Enhanced C and C++ syntax highlighting
 
     -- DIAGNOSTICS
     { "folke/trouble.nvim" },
@@ -261,35 +246,21 @@ local function init_plugins_manual()
 
     -- CODE MANIPULATIONS
     { 'sbdchd/neoformat' },
-    { 'folke/todo-comments.nvim', config = function() require("todo-comments").setup {} end, }, -- use :Todo... commands
+    { 'folke/todo-comments.nvim' }, -- use :Todo... commands
 
     -- SYMBOLS NAVIGATION
     -- { 'ludovicchabant/vim-gutentags' },
     { "romgrk/nvim-treesitter-context" },
-    { 'sidebar-nvim/sidebar.nvim', config = function() require("sidebar-nvim").setup(
-        { open = false, side = "left", sections = { "symbols", "git", "todos", "diagnostics", }, })
-    end },
+    { 'sidebar-nvim/sidebar.nvim' },
     -- main rule is: left side - tree-sitter based outliners (should be used in general as fastest),
     -- right side - ctags-based (they may be pretty slow on big files)
-    { 'simrat39/symbols-outline.nvim', setup = function() vim.g.symbols_outline = { width = 40, position = "left" } end, },
+    { 'simrat39/symbols-outline.nvim' },
     -- very concise representation, works fast, tree-sitter based
-    { 'stevearc/aerial.nvim', config = function()
-      require "aerial".setup({
-        -- backends = { cpp = {}, lua = {} }, -- gives non-stop errors on c++ sources, disable; after update 'lua' also works bad
-        -- open_automatic = true,
-        default_direction = "prefer_left",
-      })
-    end, },
+    { 'stevearc/aerial.nvim' },
     -- eats processor on huge (1000+ locs) js files, pure ctags; sometimes breaks layout when toggled after other outlines
-    { 'preservim/tagbar', setup = function()
-      vim.g.tagbar_position = "right"
-      vim.g.tagbar_autofocus = 0
-    end, },
+    { 'preservim/tagbar' },
     -- strange view, works with huge js, can have lsp backends (which aint work for cpp), by default uses ctags
-    { 'liuchengxu/vista.vim', setup = function()
-      vim.g.vista_stay_on_open = 0
-      -- vim.g.vista_sidebar_position = "right" -- any attemp to use this option leads to total mess
-    end, },
+    { 'liuchengxu/vista.vim' },
 
     -- CONTENT NAVIGATION
     { 'chentoast/marks.nvim' }, -- interact and manipulate vim marks
@@ -300,9 +271,7 @@ local function init_plugins_manual()
     { 'xiyaowong/nvim-cursorword' }, -- underline words similar to one under cursor
     { "max397574/better-escape.nvim" }, -- jk in insert mode acts as <esc>
     -- { 'Kristoffer-PBS/interesting-words.nvim' }, -- highlight words in the buffer
-    { 'lukas-reineke/indent-blankline.nvim', setup = function() -- draw vertical lines as indent markers
-      vim.g.indent_blankline_filetype_exclude = lvim.userdata.exclude_filetypes
-    end },
+    { 'lukas-reineke/indent-blankline.nvim' }, -- draw vertical lines as indent markers
     { 'jinh0/eyeliner.nvim' }, -- color unique char in the line to speed up f/F to the corresponding word
 
     -- COLORSCHEMES
@@ -312,6 +281,7 @@ local function init_plugins_manual()
     { "abzcoding/doom-one.nvim" }, { 'Everblush/everblush.nvim', as = 'everblush' }, { 'cocopon/iceberg.vim' }, { 'marko-cerovac/material.nvim' },
     { 'rafamadriz/neon' }, { 'sainnhe/sonokai' }, { "rose-pine/neovim" }, -- +onedarker which is buildin
     { "folke/tokyonight.nvim" }, { 'jsit/toast.vim' }, { 'sam4llis/nvim-tundra' },
+    { 'sainnhe/gruvbox-material' }, { 'sainnhe/everforest' },
     -- INFO: not working schemes: they do not color the coda
     -- { "kyoz/purify", rtp = "vim" }, { "nanotech/jellybeans.vim" }, { "arcticicestudio/nord-vim" }, { "jacoborus/tender.vim" },
     -- { "morhetz/gruvbox" }, { "tomasr/molokai" }, { "dracula/vim" }, { "jnurmine/Zenburn" },
@@ -319,9 +289,10 @@ local function init_plugins_manual()
     -- { 'Shatur/neovim-ayu' }, { 'EdenEast/nightfox.nvim' }, { 'rebelot/kanagawa.nvim' },
     -- { 'AlessandroYorba/Despacio', setup = function() vim.g.despacio_Pitc = 1 end },
     -- { 'junegunn/seoul256.vim', setup = function() vim.g.seoul256_background = 233 end }, --[[233=darkest, 236=lightest; not working here]]
-  }
+}
 end
 
+init_plugins_vimg_options()
 init_plugins_manual()
 -- }}}
 
@@ -444,7 +415,8 @@ local function init_whichkeys_menu()
     c = { ":colorscheme codedark<CR>", "Code Dark" },
     C = { ":colorscheme catppuccin<CR>", "Catppuccin" },
     d = { ":colorscheme doom-one<CR>", "Doom One" },
-    e = { ":colorscheme everblush<CR>", "Everblush" },
+    e = { ":colorscheme everblush<CR>", "EverBlush" },
+    E = { ":colorscheme everforest<CR>", "EverForest" },
     -- D = { ":colorscheme dracula<CR>", "Dracula" },
     -- f = { ":colorscheme despacio<CR>", "Despacio" },
     -- F = {
@@ -457,7 +429,7 @@ local function init_whichkeys_menu()
     --   N = { ":colorscheme nordfox<CR>", "Nord" },
     --   t = { ":colorscheme terafox<CR>", "Tera" },
     -- },
-    -- g = { ":colorscheme gruvbox<CR>", "Gruv Box" },
+    g = { ":colorscheme gruvbox-material<CR>", "Gruv Box Material" },
     i = { ":colorscheme iceberg<CR>", "Iceberg" },
     -- j = { ":colorscheme jellybeans<CR>", "Jellybeans" },
     -- k = { ":colorscheme kanagawa<CR>", "Kanagawa" },
@@ -507,10 +479,18 @@ init_autocommands()
 
 
 -- Plugins Force Init {{{
-local function init_plugins_force()
+local function init_plugins_setup()
     pcall( function() require('telescope').load_extension('media_files') end )
     pcall( function() require("nvim-surround").setup() end )
+    pcall( function() require("windows").setup({
+        autowidth = { enable = false, winwidth = 10, },
+        ignore = { filetype = lvim.userdata.exclude_filetypes },
+    }) end )
+    pcall( function() require("sidebar-nvim").setup(
+        { open = false, side = "left", initial_width = 25,
+          sections = { "symbols", "git", "todos", "diagnostics", },
+    }) end )
 end
 
-init_plugins_force()
+init_plugins_setup()
 -- }}}
