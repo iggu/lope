@@ -60,6 +60,9 @@ local function init_keymaps()
   -- map('n', '<A-l>', ':BufferLineMoveNext<CR>', opts)
 
   lvim.leader = "space" -- view all the defaults by pressing <leader>Lk
+  lvim.keys.normal_mode["<C-w>z"] = "<Cmd>WindowsMaximize<CR>"
+  lvim.keys.normal_mode["<C-a>"] = "<Cmd>WindowsMaximize<CR>"
+    -- vim.keymap.set('n', '<C-w>z', '<Cmd>WindowsMaximize<CR>')
   lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
   vim.cmd [[
               nmap  -  <Plug>(choosewin)
@@ -214,6 +217,18 @@ local function init_plugins_manual()
     --         vim.g.javascript_plugin_jsdoc = 1
     --     end, }, -- this plugin gives random-character coloring around the code what is very annoying
     -- {'pseewald/vim-anyfold'}, -- folds are pretty unusable since preview windows content is folded too
+    { "anuvyklack/windows.nvim", -- <C-W>z , <C-A> = maximize
+       requires = {
+          "anuvyklack/middleclass",
+          "anuvyklack/animation.nvim"
+       },
+       config = function()
+          vim.o.winwidth = 10
+          vim.o.winminwidth = 10
+          vim.o.equalalways = false
+          require('windows').setup()
+       end
+    },
 
     -- SEARCH/FIND
     { 'rlane/pounce.nvim' }, -- incremental fuzzy search on motions
