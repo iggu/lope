@@ -1,5 +1,3 @@
-
-
 # API
 
 - [ ] all top-level scripts should provide complete help (cut-off underlying stuff from text)
@@ -16,14 +14,14 @@
 - [ ] where to place patches? for **leo** and whatever else
 - [ ] root-tree reorganize: toplevel folders are: `apps`, `dots`m `pkgs` and `notes`
   - [ ] `apps`: `bin`, `lib`, `conf`
-  - [ ] `dots`: as is 
+  - [ ] `dots`: as is
   - [ ] `pkgs`: all ubuntu-related stuff like apt, ppa, etc
   - [ ] `notes`: all the notes, todos, hints etc...
 - [ ] `conf` reorganize
-  - [ ] make subdirs for every entrypoint 
+  - [ ] make subdirs for every entrypoint
   - [ ] use yaml as a format - with help of for instance `mrbaseman/parse_yaml`
     - [ ] then can setup preferrable archive types, supported oses etc
-- [ ] support for [editorconfig](http://editorconfig.org/) concept 
+- [ ] support for [editorconfig](http://editorconfig.org/) concept
   - [ ] look at the [example](https://github.com/angular/angular.js/blob/master/.editorconfig)
 
 # Configs
@@ -45,8 +43,8 @@
 # Lunar Vim
 
 - [ ] sources of inspiration:
-    [1](https://github.com/abzcoding/lvim), 
-    [2](https://github.com/danielnehrig/nvim), 
+    [1](https://github.com/abzcoding/lvim),
+    [2](https://github.com/danielnehrig/nvim),
     [3](https://github.com/kuator/nvim)
     [4](https://github.com/alex-popov-tech/.dotfiles/tree/master/nvim)
     [bloated](https://github.com/abzcoding/lvim)
@@ -78,11 +76,15 @@
 
 - [ ] **list** - https://github.com/rockerBOO/awesome-neovim
 - [ ] **encryption** - use `/dev/shm` instead of `/tmp` wherever possible
-  - [ ] `billyvg/tigris.nvim` - a NodeJS remote plugin that provides async syntax highlighting for js 
+  - [ ] `billyvg/tigris.nvim` - a NodeJS remote plugin that provides async syntax highlighting for js
 - [ ] `jackguo380/vim-lsp-cxx-highlight` - C/C++/Cuda/ObjC semantic highlighting using LSP
 - [ ] `jakewvincent/mkdnflow.nvim` - fluent navigation of documents and notebooks (AKA "wikis") in markdown
 - [ ] `oberblastmeister/neuron.nvim` - lua and the neuron binary allow one of the coolest note taking experiences
 - [ ] `tpope/vim-sleuth` or `gpanders/editorconfig.nvim` for `editorconfig`
+- [ ] `mizlan/iswap.nvim` - interactively select and swap: function arguments, list elements, function parameters, and more
+- [ ] `ray-x/lsp_signature.nvim` - function signature when you type
+- [ ] `rohit-px2/nvui` - gui app for neovim
+- [ ] `anuvyklack/vim-cppman` - use `aitjcize/cppman` to lookup "C++ 98/11/14/17/20 manual pages"
 
 # Encrypted notes
 

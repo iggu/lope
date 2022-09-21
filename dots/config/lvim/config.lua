@@ -296,7 +296,6 @@ init_plugins_vimg_options()
 init_plugins_manual()
 -- }}}
 
-
 -- Which Keys {{{
 local function init_whichkeys_menu()
   lvim.builtin.which_key.vmappings["H"] = {
@@ -477,10 +476,10 @@ end
 init_autocommands()
 -- }}}
 
-
 -- Plugins Force Init {{{
 local function init_plugins_setup()
     pcall( function() require('telescope').load_extension('media_files') end )
+    pcall( function() require("trim").setup() end )
     pcall( function() require("nvim-surround").setup() end )
     pcall( function() require("windows").setup({
         autowidth = { enable = false, winwidth = 10, },
