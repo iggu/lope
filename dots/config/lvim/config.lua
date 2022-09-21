@@ -398,7 +398,7 @@ local function init_whichkeys_menu()
     name = "+Outlines",
     -- M = { "<cmd>MinimapToggle<CR>", "Minimap Toggle" },
     -- m = { "<cmd>MinimapRefresh<CR>", "Minimap Refresh" },
-    a = { "<cmd>AerialToggle!<CR>", "Aerial Toggle" },
+    a = { "<cmd>AerialToggle! left<CR>", "Aerial Toggle" },
     b = { "<cmd>SidebarNvimToggle<CR>", "SideBar Toggle" },
     s = { "<cmd>SymbolsOutline<CR>", "SymbolsOutline Toggle" },
     t = { "<cmd>TagbarToggle<CR>", "Tagbar Toggle" },
@@ -479,6 +479,8 @@ init_autocommands()
 -- Plugins Force Init {{{
 local function init_plugins_setup()
     pcall( function() require('telescope').load_extension('media_files') end )
+    pcall( function() require("aerial").setup() end )
+    pcall( function() require("symbols-outline").setup() end )
     pcall( function() require("trim").setup() end )
     pcall( function() require("nvim-surround").setup() end )
     pcall( function() require("windows").setup({
