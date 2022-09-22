@@ -125,27 +125,27 @@ local function init_plugins_builtin()
 
   -- https://www.lunarvim.org/configuration/06-statusline.html ; lvim/core/lualine
   -- provides: mode, branch, filename, diff, python_env, diagnostics, treesitter, lsp, location, progress, spaces, encoding, filetype, scrollbar
-  local ts = require('nvim-treesitter')
+  -- local ts = require('nvim-treesitter')
   local ll = lvim.builtin.lualine
   local llc = require("lvim.core.lualine.components")
   local cc = require("lvim.core.lualine.colors")
-  local z_hhmm = { function() return os.date("%H:%M") end, cond = llc.hide_in_width, color = { fg = cc.darkblue }, }
-  local z_codecoord = { function() return ts.statusline(700) end, cond = llc.hide_in_width, color = { fg = cc.purple } }
+  local z_hhmm = { 'os.date("%H:%M")', cond = llc.hide_in_width, color = { fg = cc.darkblue }, }
   local z_fn = { "filename", cond = nil, color = { gui = "bold", fg = cc.orange }, }
+  -- local z_codecoord = { function() return ts.statusline(700) end, fmt = string.upper, cond = llc.hide_in_width, color = { fg = cc.purple } }
   ll.style = "default" -- "lvim" "none"; "default" allows to customize as lvim's docs say
-  ll.sections.lualine_a = { z_hhmm, } -- time on the color which represents current mode
-  ll.sections.lualine_b = { llc.branch, llc.diff, }
-  ll.sections.lualine_c = { z_fn, z_codecoord, }
-  ll.sections.lualine_x = { llc.diagnostics, llc.treesitter, llc.lsp, llc.filetype, }
+  ll.sections.lualine_a = { 'mode' } -- time on the color which represents current mode
+  ll.sections.lualine_b = { 'hostname', llc.branch, llc.diff, }
+  ll.sections.lualine_c = { z_fn }--, z_codecoord, }
+  ll.sections.lualine_x = { llc.diagnostics, llc.treesitter, llc.lsp, llc.filetype, "o:encoding", }
   ll.sections.lualine_y = { llc.scrollbar, llc.progress, "location" }
-  ll.sections.lualine_z = { { "o:encoding", fmt = string.upper, color = { fg = cc.darkblue } } }
+  ll.sections.lualine_z = { z_hhmm,  }
   ll.options.disabled_filetypes = lvim.userdata.exclude_filetypes
 
   lvim.builtin.treesitter.ensure_installed = {
     "bash", "python", "c", "cpp", "lua", "dockerfile", "typescript", "javascript", "css", "html", "json", "markdown", "yaml", "toml", "markdown",
 
   }
-  lvim.builtin.treesitter.ignore_install = { "lua", "haskell" } -- lua always give weird errors
+  lvim.builtin.treesitter.ignore_install = { "haskell" } -- lua always give weird errors
   lvim.builtin.treesitter.highlight.enabled = true
   lvim.builtin.treesitter.rainbow = {
     enable = true, -- disable = { "jsx", "cpp" }, list of languages you want to disable the plugin for
@@ -398,7 +398,8 @@ local function init_whichkeys_menu()
     name = "+Outlines",
     -- M = { "<cmd>MinimapToggle<CR>", "Minimap Toggle" },
     -- m = { "<cmd>MinimapRefresh<CR>", "Minimap Refresh" },
-    a = { "<cmd>AerialToggle! left<CR>", "Aerial Toggle" },
+    a = { "<cmd>AerialToggle! left<CR>", "Aerial Toggle Left" },
+    A = { "<cmd>AerialToggle! right<CR>", "Aerial Toggle Right" },
     b = { "<cmd>SidebarNvimToggle<CR>", "SideBar Toggle" },
     s = { "<cmd>SymbolsOutline<CR>", "SymbolsOutline Toggle" },
     t = { "<cmd>TagbarToggle<CR>", "Tagbar Toggle" },
@@ -478,19 +479,21 @@ init_autocommands()
 
 -- Plugins Force Init {{{
 local function init_plugins_setup()
-    pcall( function() require('telescope').load_extension('media_files') end )
-    pcall( function() require("aerial").setup() end )
-    pcall( function() require("symbols-outline").setup() end )
-    pcall( function() require("trim").setup() end )
-    pcall( function() require("nvim-surround").setup() end )
-    pcall( function() require("windows").setup({
-        autowidth = { enable = false, winwidth = 10, },
-        ignore = { filetype = lvim.userdata.exclude_filetypes },
-    }) end )
-    pcall( function() require("sidebar-nvim").setup(
-        { open = false, side = "left", initial_width = 25,
-          sections = { "symbols", "git", "todos", "diagnostics", },
-    }) end )
+    local mods = {
+        ['telescope'] = {},
+        ['aerial'] = {},
+        ['symbols-outline'] = {},
+        ['trim'] = {},
+        ['nvim-surround'] = {},
+        ['windows'] = { autowidth = { enable = false, winwidth = 10, },
+                        ignore = { filetype = lvim.userdata.exclude_filetypes }, },
+        ['sidebar-nvim'] = { open = false, side = "left", initial_width = 25,
+                             sections = { "symbols", "git", "todos", "diagnostics", }, },
+    }
+    for m, o in pairs(mods) do
+        pcall( function() require(m).setup(o) end )
+    end
+    -- pcall( function() require('telescope').load_extension('media_files') end )
 end
 
 init_plugins_setup()

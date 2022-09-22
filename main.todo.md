@@ -78,6 +78,7 @@
 - [ ] **encryption** - use `/dev/shm` instead of `/tmp` wherever possible
   - [ ] `billyvg/tigris.nvim` - a NodeJS remote plugin that provides async syntax highlighting for js
 - [ ] `jackguo380/vim-lsp-cxx-highlight` - C/C++/Cuda/ObjC semantic highlighting using LSP
+- [ ] `amerlyq/nou.vim` - notes and outline united
 - [ ] `jakewvincent/mkdnflow.nvim` - fluent navigation of documents and notebooks (AKA "wikis") in markdown
 - [ ] `oberblastmeister/neuron.nvim` - lua and the neuron binary allow one of the coolest note taking experiences
 - [ ] `tpope/vim-sleuth` or `gpanders/editorconfig.nvim` for `editorconfig`
