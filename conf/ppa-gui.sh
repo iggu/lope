@@ -3,8 +3,10 @@
 
 # PPAs from launchpad; user/repo as a key and key hash as a value
 declare -A PPA_LAUNCHPAD=(
+    [atareao/telegram]="A3D8A366869FE2DC5FFD79C36A9653F936FD5529"
     [costales/anoise]="0DD210ABE883B905B88B55E7FC14671BA89CA06C"
     [libreoffice/ppa]="36E81C9267FD1383FCC4490983FBA1751378B444"
+    [mozillateam/ppa]="0AB215679C571D1C8325275B9BDB3D89CE49EC21"
     [phd/chromium-browser]="079FA39EE6A75D23" # by default installs outdated version from the original repos, needs manual version picking
 )
 

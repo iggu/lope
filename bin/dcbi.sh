@@ -127,28 +127,28 @@ function install_nerdfonts()
 {
     # https://gist.github.com/matthewjberger/7dd7e079f282f8138a9dc3b045ebefa0?permalink_comment_id=4005789#gistcomment-4005789
     declare -a fonts=(
-        BitstreamVeraSansMono
-        CodeNewRoman
-        DroidSansMono
-        FiraCode
-        FiraMono
-        Go-Mono
-        Hack
-        Hermit
+        # BitstreamVeraSansMono
+        # CodeNewRoman
+        # DroidSansMono
+        # FiraCode
+        # FiraMono
+        # Go-Mono
+        # Hack
+        # Hermit
         JetBrainsMono
-        Meslo
-        Noto
-        Overpass
-        ProggyClean
-        RobotoMono
-        SourceCodePro
-        SpaceMono
-        Ubuntu
+        # Meslo
+        # Noto
+        # Overpass
+        # ProggyClean
+        # RobotoMono
+        # SourceCodePro
+        # SpaceMono
+        # Ubuntu
         UbuntuMono
     )
     :require-pkgs fc-cache:fontconfig
 
-    local version=${1:-2.1.0}
+    local version=${1:-2.2.2}
     local download_dir=`mktemp -d -p "${CliArgs[tmpdir]}" --suffix=.zips -t nerdfonts.XXXX`
     local fonts_dir="${CliArgs[prefix]}/share/fonts"
 
