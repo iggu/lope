@@ -4,6 +4,9 @@
 - [ ] in help - show which apps are installed and which versions
 - [ ] update/upgrade commands
 - [ ] nextg eval-based common-lib stuff (colorization etc)
+- [ ] extract encryption base from sn-cli - this is normal approach for all script which requires sensitive data
+- [ ] when installing fonts - also try to detect the latest version available and use it
+  - [ ] this will require standalone gh-api impl
 
 # Files
 
