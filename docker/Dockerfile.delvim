@@ -6,21 +6,24 @@
 ## Env Var
     # LVIM_INIT_SKIP : if set (no matter what value) - do not make any time consuming actions for LunarVim
 
-FROM deshlin:u2004
+ARG UTAG=20.04
+
+FROM deshlin:u${UTAG}
 
 ARG AptInstall="apt-get install -y --no-install-recommends"
 
-RUN ${AptInstall} gnupg2 build-essential
+RUN ${AptInstall} gnupg2 build-essential cmake
 RUN ${AptInstall} cmake universal-ctags ccal
 # RUN ${AptInstall} python3 python3-pip  && pip3 install pynvim
-# RUN ${AptInstall} nodejs && npm install -g neovim tree-sitter-cli # ?? curl -fsSL https://deb.nodesource.com/setup_18.x | bash - 
-
+# RUN ${AptInstall} nodejs && npm install -g neovim tree-sitter-cli # ?? curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
 
 # neovim ppa-unstable sometimes suggests buggy dev versions which cause fatal errors
 # ppa-stable is usually outdated and fails to work properly with latest lunarvim
 # use latest stable release built from sources until not asked not to do it
 ARG NvimForceStablePpa="no"
-RUN if [ "$NvimForceStablePpa" = "yes" ] ; then \
+# neovim could be already installed in the deshlin
+RUN command -v nvim && nvim --version || \
+    if [ "$NvimForceStablePpa" = "yes" ] ; then \
         UCN=$(cat /etc/lsb-release | grep CODENAME | cut -d'=' -f2) ;\
         echo "deb https://ppa.launchpadcontent.net/neovim-ppa/stable/ubuntu $UCN main" | tee -a /etc/apt/sources.list ;\
         apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DBB0BE9366964F134855E2255F96FCF8231B6DD ;\
@@ -49,9 +52,12 @@ ARG LVIMV=latest
 RUN if [ $LVIMV = latest ] ; then \
         LVIMV=$(curl -s https://api.github.com/repos/LunarVim/LunarVim/releases/latest | jq -r '.tag_name') ; \
         echo "LVIM release is: $LVIMV" ; fi \
-    && wget -qO - https://api.github.com/repos/LunarVim/LunarVim/tarball/$LVIMV | tar -xzC /usr/local/share/ \
+    && wget -qO - https://api.github.com/repos/LunarVim/LunarVim/tarball/$LVIMV | tar -xzC /usr/local/share/
+# starting from some release lvim becomes unable to verify core plugins - gots mismatch of something
+# because of that - simple ignore what packer tried to do
+RUN export PATH="/root/.local/bin:$PATH" \
     && /usr/local/share/LunarVim-*/utils/installer/install.sh --local --no-install-dependencies \
-    && /root/.local/bin/lvim --headless +'TSInstall bash python cpp dockerfile typescript javascript css html json yaml toml' +'sleep 10' +qa
+    ;  /root/.local/bin/lvim --headless +'TSInstall bash python cpp dockerfile typescript javascript css html json yaml toml lua' +'sleep 10' +qa
 # if config was changed - do not rebuild all the base images just because of it, take new
 COPY ./dots/config/lvim/config.lua /usr/local/share/lope/dots/config/lvim/config.lua
 RUN cp -f /usr/local/share/lope/dots/config/lvim/config.lua /root/.config/lvim/config.lua

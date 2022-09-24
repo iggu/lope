@@ -145,7 +145,7 @@ local function init_plugins_builtin()
     "bash", "python", "c", "cpp", "lua", "dockerfile", "typescript", "javascript", "css", "html", "json", "markdown", "yaml", "toml", "markdown",
 
   }
-  lvim.builtin.treesitter.ignore_install = { "lua", "haskell" } -- lua always give weird errors
+  lvim.builtin.treesitter.ignore_install = { "haskell" } -- lua always give weird errors
   lvim.builtin.treesitter.highlight.enabled = true
   lvim.builtin.treesitter.rainbow = {
     enable = true, -- disable = { "jsx", "cpp" }, list of languages you want to disable the plugin for
@@ -189,6 +189,7 @@ lvim.plugins = {
 
     -- GENERAL PURPOSE
     { "anuvyklack/middleclass" },
+    { "nathom/filetype.nvim" }, -- speed up startup time thru lazy load of filetype.vim - problems with Dockerfile
 
     -- INTEGRATIONS
     { 'is0n/fm-nvim' }, -- use your favorite terminal file managers (and fuzzy finders)
