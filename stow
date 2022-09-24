@@ -12,6 +12,22 @@ C_NOT='\033[0;35m'
 C_OK='\033[0;32m'
 C_CLR='\033[0m' # No Color
 
+# FIXME: diplicates `:acquire` function in `bin/_include.sh`
+while [ -z "$STOW" ]; do
+    command -v stow >/dev/null &&  STOW=stow || STOW=
+    if [ -z "$STOW" ] ; then
+        echo -e "${C_ERR}Cannot find 'stow' command to proceed." >&2
+        echo -e "${C_WRN}Do you want to install it?${C_CLR} (y/n) "
+        read -r -s -n 1
+        if [[ "${REPLY,,}" == "y" ]] ; then
+            sudo apt-get install stow
+        else
+            echo -e "${C_WRN}Ok then, bye${C_CLR}" ; exit 1
+        fi
+    fi
+done
+echo -e "Using '${C_OK}$STOW${C_CLR}' command for operations"
+
 echo target: $TGT
 echo modules: $SRCDIRS
 echo files: $SRCFILES
@@ -29,7 +45,7 @@ stow_dot_mod()
     for dir in $dirs ; do
         local dst="$TGT/.$mod/$dir"
         mkdir -p "$dst"
-        if ! stow $dryrun --no-folding --override=$dir -t "$dst" "$dir" ; then
+        if ! $STOW $dryrun --no-folding --override=$dir -t "$dst" "$dir" ; then
             conflicts="$dir $conflicts"
         fi
     done
@@ -69,4 +85,3 @@ if [ "$ret" -eq "0" ] ; then
 fi
 
 exit $ret
-

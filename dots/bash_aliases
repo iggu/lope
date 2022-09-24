@@ -2,6 +2,11 @@
 
 force_color_prompt=yes
 
+# this is a single file which is included by default in the vanilla .bashrc
+# so this is a single place where custom stuff may reside
+
+PATH="$HOME/.local/bin:$PATH"
+
 alias aaa='bat ~/.bash_aliases'
 alias aar='source ~/.bash_aliases'
 alias bbr="source $HOME/.bashrc"

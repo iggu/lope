@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 # Print the whole associative array
 function :echo_assarr() # 1=ArrayName 2=EchoColor
 {
@@ -99,9 +98,9 @@ function :fail() # 1=errorCode, 2=erroMessage, 3..=printfParams
 :require-py3()
 {
     :require-pkgs python3
-    local minPyV=$1
-    [ $(python3 -V | cut -d. -f2) -ge $minPyV ] || :fail 2 "Require Python >= 3.$minPyV" "but deal with" `python3 -V`
-    (pip -V | grep -q "3.$minPyV") || :fail 2 "Require pip for Python 3.$minPyV" "but deal with" `pip -V`
+    declare minPyV=$1 pyV=$(python3 -V | cut -d. -f2)
+    [ "$pyV" -ge $minPyV ] || :fail 2 "Require Python >= 3.$minPyV" "but deal with $pyV"
+    (pip -V | grep -q "3.$pyV") || :fail 2 "Require pip for Python 3.$pyV" "but deal with" `pip -V`
 }
 
 # Tests 1st param if it ends with any of supported archive extensions and returns it
@@ -114,7 +113,7 @@ function :fail() # 1=errorCode, 2=erroMessage, 3..=printfParams
         *.bz2)     echo bz2     ;;
         *.rar)     echo rar     ;;
         *.gz)      echo gz      ;;
-        *.tar)     echo tar     ;; 
+        *.tar)     echo tar     ;;
         *.tbz)     echo tbz     ;;
         *.tbz2)    echo tbz2    ;;
         *.tgz)     echo tgz     ;;
@@ -172,4 +171,3 @@ function :files_actions_apply() # $1=fromComponentName $2=toPath
 
     # TODO: place other actions like 'patch' or 'delete' below
 }
-

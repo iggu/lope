@@ -14,6 +14,7 @@ function prepare()
         msg -- "Install packages with apt (must be run as root)."
         msg -- ""
         msg -- 'Parameters (no whitespaces in values, + mandatory, - optional):'
+        flag   SYNC     -s --sync    --    "- sync packages list before trying to install (recommended)"
         param  PKG      -p --pkg     --    "- config file with list of packages available to install"
         param  PCATS    -c --pcats   --    "- comma-separated list of categories of packages to install"
         flag   PCALL    -C --pcatall --    "- install all categories of packages from list of available"
@@ -31,7 +32,7 @@ function prepare()
     [ -z "$REST" ] || :fail 2 "Extra args detected (param with space?)"
 
     :capar-rp PKG pkg opt ; :capar PCATS pcats opt; :capar PCALL pcall opt;
-    :capar-rp PPA ppa opt ; :capar-rp KEYS keys opt ;
+    :capar-rp PPA ppa opt ; :capar-rp KEYS keys opt ; :capar SYNC sync opt ;
     for pk in pkg ppa ; do
         local pv="${CliArgs[$pk]}"
         if [[ -n $pv && ! -f $pv ]] ; then
@@ -116,6 +117,7 @@ function pkg_install_all()
 
 prepare $*
 ppa_import_all
+[ -n "${CliArgs[sync]}" ] && sudo apt-get update
 pkg_install_all
 
 ###############################################################################
