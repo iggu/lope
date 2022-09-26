@@ -143,7 +143,6 @@ local function init_plugins_builtin()
 
   lvim.builtin.treesitter.ensure_installed = {
     "bash", "python", "c", "cpp", "lua", "dockerfile", "typescript", "javascript", "css", "html", "json", "markdown", "yaml", "toml", "markdown",
-
   }
   lvim.builtin.treesitter.ignore_install = { "haskell" } -- lua always give weird errors
   lvim.builtin.treesitter.highlight.enabled = true
@@ -197,6 +196,7 @@ lvim.plugins = {
     { 'ellisonleao/glow.nvim' },
     { 'junegunn/limelight.vim' },
     { 'junegunn/goyo.vim' },
+    -- { 'simplenote-vim/simplenote.vim' },
 
     -- HELPERS
     { 'zakharykaplan/nvim-retrail' }, -- highlight & trim trailing whitespace upon :write.
@@ -238,8 +238,9 @@ lvim.plugins = {
     { 'hauleth/vim-encpipe' }, -- files encoded by encpipe, with '.enc' extension
     { 'bfrg/vim-jq' },
     -- {'bfrg/vim-jqplay'}, -- pretty useless, have dedicated shell scripts for that
-    { 'aserebryakov/vim-todo-lists' },
+    -- { 'aserebryakov/vim-todo-lists' },
     { 'bfrg/vim-cpp-modern' },-- Enhanced C and C++ syntax highlighting
+    { 'phaazon/mind.nvim' },
 
     -- DIAGNOSTICS
     { "folke/trouble.nvim" },
@@ -266,7 +267,10 @@ lvim.plugins = {
     -- CONTENT NAVIGATION
     { 'chentoast/marks.nvim' }, -- interact and manipulate vim marks
     { 'zhimsel/vim-stay' }, -- restore cursor pos when reopen file
-    { 't9md/vim-choosewin' }, -- choose win in complex layouts with '-' key
+    -- choose win in complex layouts with '-' key (activates the mode where other ops are also avail)
+        -- tabs: 0=first, [=prev, ]=next, $=last, x=close
+        -- wins: ;=curr, -=prev, s=swap, S=swap-stay, <cr>=curr
+    { 't9md/vim-choosewin' },
     { 'cappyzawa/trim.nvim' }, -- trim ws on save
     { 'tpope/vim-unimpaired' }, -- complementary pairs of mappings
     { 'xiyaowong/nvim-cursorword' }, -- underline words similar to one under cursor
@@ -377,8 +381,9 @@ local function init_whichkeys_menu()
   lvim.builtin.which_key.mappings.s.j = { ":lua require('sj').run()<cr>", "Search/Jump" }
   lvim.builtin.which_key.mappings.s.p = { ":<cmd>Pounce<cr>", "Pounce" }
   lvim.builtin.which_key.mappings.s.P = { ":<cmd>PounceRepeat<cr>", "Pounce Repeat" }
+  lvim.builtin.which_key.mappings.s.T = { ":<cmd>TodoTelescope<cr>", "ToDos & FixMes" }
 
-  lvim.builtin.which_key.mappings["w"] = {
+  lvim.builtin.which_key.mappings["W"] = {
     name = "Compile",
     q = { ":lua lvim.userdata.assign_outmakers('', 'xwin/debug')<cr>", "Make XWin/Debug" },
     w = { ":lua lvim.userdata.assign_outmakers('emmake', 'wasm/relwithdebinfo')<cr>", "Make Wasm/RelWithDebInfo" }
@@ -460,19 +465,24 @@ init_whichkeys_menu()
 
 -- Autocommands {{{ (https://neovim.io/doc/user/autocmd.html)
 local function init_autocommands()
-  --      some vim's options (like vim.o.fmd) a changed multiple times by various scripts and plugins
-  --      so it's not in general possible to set them up here in hooks
-  -- lvim.autocommands.custom_groups = { -- no longer supportedm but we aint use it
-  -- { "BufWinEnter", "config.lua", "set foldmethod=marker" },
-  -- { "BufWinEnter", "markdown", [[lua lvim.useruserdata.somefunc()]] },
-  -- { "FileType", "cpp", [[lua lvim.userdata.somefunc()]] },
-  -- { "BufWinEnter", "*.lua", "setlocal ts=8 sw=8" },
-  -- }
-  vim.api.nvim_create_autocmd("BufEnter", {
-	  pattern = { "*.todo.md", "*.md", "*.mkd", "*.md.enc", "*.mkd.enc" },
-	  -- enable wrap mode for json files only
-	  command = "setlocal nospell syntax=markdown",
-  })
+    --      some vim's options (like vim.o.fmd) a changed multiple times by various scripts and plugins
+    --      so it's not in general possible to set them up here in hooks
+    -- lvim.autocommands.custom_groups = { -- no longer supportedm but we aint use it
+    -- { "BufWinEnter", "config.lua", "set foldmethod=marker" },
+    -- { "BufWinEnter", "markdown", [[lua lvim.useruserdata.somefunc()]] },
+    -- { "FileType", "cpp", [[lua lvim.userdata.somefunc()]] },
+    -- { "BufWinEnter", "*.lua", "setlocal ts=8 sw=8" },
+    -- }
+    vim.api.nvim_create_autocmd("BufEnter", {
+        pattern = { "*.md", "*.mkd", "*.md.enc", "*.mkd.enc" },
+        -- enable wrap mode for json files only
+        command = "setlocal nospell syntax=markdown",
+    })
+    vim.api.nvim_create_autocmd("BufEnter", {
+        pattern = { "Dockerfile.*" },
+        -- enable wrap mode for json files only
+        command = "setlocal ft=dockerfile",
+    })
 end
 
 init_autocommands()
@@ -482,7 +492,9 @@ init_autocommands()
 local function init_plugins_setup()
     local mods = {
         ['telescope'] = {},
+        ['todo-comments'] = {},
         ['aerial'] = {},
+        ['mind'] = {},
         ['symbols-outline'] = {},
         ['trim'] = {},
         ['nvim-surround'] = {},

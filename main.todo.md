@@ -7,6 +7,8 @@
 - [ ] extract encryption base from sn-cli - this is normal approach for all script which requires sensitive data
 - [ ] when installing fonts - also try to detect the latest version available and use it
   - [ ] this will require standalone gh-api impl
+- [ ] move project wide todos to **phaazon/mind.nvim** or to **todotxt-machine**
+    - [ ] maybe tasks themeselves more convinient to keep in todotxt while docs and notes - in mind-nvim
 
 # Files
 
