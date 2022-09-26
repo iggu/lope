@@ -189,6 +189,7 @@ lvim.plugins = {
 
     -- GENERAL PURPOSE
     { "anuvyklack/middleclass" },
+    { "nathom/filetype.nvim" }, -- speed up startup time thru lazy load of filetype.vim - problems with Dockerfile
 
     -- INTEGRATIONS
     { 'is0n/fm-nvim' }, -- use your favorite terminal file managers (and fuzzy finders)

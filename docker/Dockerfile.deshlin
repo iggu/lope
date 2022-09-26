@@ -5,8 +5,9 @@
 
 # NOTE: refer the comments for the parent image(s)
 
+ARG UTAG=20.04
 
-FROM deblin:u2004
+FROM deblin:u${UTAG}
 
 ARG AptInstall="apt-get install -y --no-install-recommends"
 # dir on host where cache of ghri resides - avoid github blockage for too frequent requests
@@ -14,7 +15,7 @@ ARG AptInstall="apt-get install -y --no-install-recommends"
 ARG GHAPPS_CACHE=./docker/.emptydir
 
 RUN ${AptInstall} tmux tree vim nano mc less htop bc file ncdu htop
-RUN ${AptInstall} git curl wget jq unzip stow
+RUN ${AptInstall} git curl wget jq unzip stow xz-utils bzip2
 
 COPY ./bin/ ./conf/ ./lib/  /usr/local/share/lope/ghapps/
 COPY $GHAPPS_CACHE /usr/local/lib/ghapps/

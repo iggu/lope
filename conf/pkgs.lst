@@ -5,7 +5,7 @@
 ## have releases both for x86_64 and aarch64
 microsoft/ripgrep-prebuilt # original repo only for x86_64
 ajeetdsouza/zoxide
-ClementTsang/bottom    
+ClementTsang/bottom
 Peltoche/lsd
 bmatsuo/jqsh
 charmbracelet/glow
@@ -19,7 +19,6 @@ ms-jpq/sad
 sharkdp/bat
 sharkdp/fd
 bootandy/dust
-wfxr/code-minimap
 koalaman/shellcheck
 aristocratos/btop
 FiloSottile/age
@@ -29,8 +28,13 @@ phiresky/ripgrep-all
 ogham/exa
 sayanarijit/xplr # os only, no arch in name
 extrawurst/gitui # os only, no arch in name
-vnotex/vnote -1
-# neovim/neovim v0.7.2
+neovim/neovim v0.7.2
+
+# FIXME: gui apps - should be listed outhere
+# vnotex/vnote -1
+
+# FIXME: i dont use them at all
+# wfxr/code-minimap
 
 ## bash scripts - multiple archives, installer cant deal with
 # dylanaraps/fff # source code only

@@ -7,6 +7,8 @@ source $(dirname `realpath $0`)/_include.sh
 declare -A AppsTags # app is user/repo
 declare -A Arches=( [x86_64]="(x86_|amd|x)64" [aarch64]="(aarch|arm)64" )
 
+:acquire jq
+
 #####################################################################################
 # Utility functions
 #####################################################################################

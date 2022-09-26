@@ -37,6 +37,7 @@ function ppa_source_auto()
 {
     declare name=$1 debstr="$2" keyurl="$3"
     echo -n "++ PPA/auto { $name } : "
+    # FIXME: deprecated, see the DEPRECATION section in 'man 8 apt-key'
     wget -qO- "$keyurl" | sudo apt-key add -
     echo "deb $debstr # $name" >> /etc/apt/sources.list.d/$name.list
 }

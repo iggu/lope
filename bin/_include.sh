@@ -24,3 +24,22 @@ source ${THIS_LIB_PATH}/common.sh
 # used with getoption.sh lib
 #     eval "$(${THIS_LIB_PATH}/getoptions.sh parser_definition) exit 1"
 declare -A CliArgs
+
+function :acquire()
+{
+    declare cmd="$1" pkg="${2:-$1}" path=
+    while [ -z "$path" ]; do
+        path=$(command -v $cmd)
+        if [ -z "$path" ] ; then
+            echo -e "${C_ERR}Cannot find '$cmd' command (from package '$pkg') to proceed." >&2
+            echo -e "${C_WRN}Do you want to install it?${C_CLR} (y/n) "
+            read -r -s -n 1
+            if [[ "${REPLY,,}" == "y" ]] ; then
+                sudo apt-get install $pkg
+            else
+                echo -e "${C_WRN}Ok then, bye${C_CLR}" ; exit 1
+            fi
+        fi
+    done
+    echo -e "Using '${C_OK}${path}${C_CLR}' command for operations"
+}

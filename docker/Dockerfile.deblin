@@ -10,15 +10,23 @@
 
 # COMMON RULES (for this image and it's descendants)
 
+# By default, images are derived from ubuntu 20.04, but 22.04 is also supported (and even 18.04 - partially).
+# To build from non-default ubuntu version pass `--build-arg UTAG=22.04` cliarg to `docker build` command
+
+# Tagging convention!
+# All 'de*' images must be named as their extensions 'de*' and ':u$UTAG' suffix : "deblin:u20.04"
+
 # This class of docker images are desgined to be run on behalf of the real user
 # They must be run with the at least following command line:
-#   $ docker run -v ...:/ws --rm -it deblin "$(id)" ?alias
+#   $ docker run -v ...:/ws --rm -it deblin:u$UTAG "$(id)" ?alias
 #       where '/ws' is mandatory mount where all required user files live
 #       $(id) passes the info about the user on the host to make a copy in the container
 #       and ?alias is an optional parameter - containter's user-defined alias.
 # Supports '-w' docker run command option
 
-FROM ubuntu:20.04
+ARG UTAG=20.04
+
+FROM ubuntu:${UTAG}
 
 # Set image locale.
 ENV LANG ru_RU.UTF-8
@@ -42,4 +50,3 @@ RUN ${AptInstall} ca-certificates locales tzdata sudo \
 
 COPY ./docker/bootstrap.sh /.bootstrap.sh
 ENTRYPOINT [ "/.bootstrap.sh" ]
-
