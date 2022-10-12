@@ -11,6 +11,7 @@ alias aaa='bat ~/.bash_aliases'
 alias aar='source ~/.bash_aliases'
 alias bbr="source $HOME/.bashrc"
 alias emscripten-tools-import-here='eval `emsdk_env.eval`'
+alias wlvim='eval `emsdk_env.eval` ; lvim'
 
 function mkdcd() {
     mkdir -p "$1" && cd "$1"
@@ -26,11 +27,11 @@ alias proc="ps -ef | grep -v grep | grep"
 alias ytm="youtube-dl --extract-audio --audio-format mp3 --embed-thumbnail --add-metadata --audio-quality 0"
 alias ytl="youtube-dl -f bestvideo+bestaudio --merge-output-format mkv"
 
-
 alias aptu='sudo apt update'
 alias aptU='sudo apt upgrade'
 alias apti='sudo apt install'
 alias aptr='sudo apt remove'
+alias aptR='sudo apt autoremove ; sudo apt autoclean'
 alias apts='apt search'
 alias apth='apt show'
 
@@ -78,5 +79,3 @@ alias psgr='ps -Af | grep $1'
 # For example, to list all directories that contain a certain file:
 # find . -name .gitattributes | map dirname
 alias map="xargs -n1"
-
-
