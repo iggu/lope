@@ -68,6 +68,9 @@ alias lt='ll -tr'        # Lists sorted by date, most recent last.
 alias lc='lt -c'         # Lists sorted by date, most recent last, shows change time.
 alias lu='lt -u'         # Lists sorted by date, most recent last, shows access time.
 alias sl='ls'            # I often screw this up.
+alias dls='docker image ls | grep -v none'
+alias dps='docker ps'
+alias mntd='mount | grep -E "^/dev/"' # only real devices
 
 alias lg='lazygit'
 
@@ -79,3 +82,11 @@ alias psgr='ps -Af | grep $1'
 # For example, to list all directories that contain a certain file:
 # find . -name .gitattributes | map dirname
 alias map="xargs -n1"
+
+function grep-w-wo() {
+    if [ -z "$1" ] || [ -z "$2" ]; then
+        echo "Find files containing one substring and not another"
+        echo "Usage: 1=string-yes, 2=string-no"
+    else
+        grep -l "$1" * | xargs -r grep -L "$2"
+    fi }
