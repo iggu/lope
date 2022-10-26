@@ -44,6 +44,7 @@
   - [ ] *hackorama/devprof* :: Development profile for bash, vim, git
   - [ ] *junegunn/dotfiles* :: from the author of `fzf`
   - [ ] *Naheel-Azawy/naheel-dotfiles* :: from the author of `fmz` and `stpv`
+  - [ ] *ViRu-ThE-ViRuS/configs* :: kitty + tmux + fish setup for macos
 
 # Lunar Vim
 
@@ -91,6 +92,7 @@
 - [ ] `ray-x/lsp_signature.nvim` - function signature when you type
 - [ ] `rohit-px2/nvui` - gui app for neovim
 - [ ] `anuvyklack/vim-cppman` - use `aitjcize/cppman` to lookup "C++ 98/11/14/17/20 manual pages"
+- [ ] `AckslD/nvim-FeMaco.lua` - edit injected language trees with correct filetype in a floating window
 
 # Encrypted notes
 
