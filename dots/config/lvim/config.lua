@@ -62,6 +62,8 @@ local function init_keymaps()
   lvim.leader = "space" -- view all the defaults by pressing <leader>Lk
   lvim.keys.normal_mode["<C-w>z"] = "<Cmd>WindowsMaximize<CR>"
   lvim.keys.normal_mode["<C-a>"] = "<Cmd>WindowsMaximize<CR>"
+  lvim.keys.normal_mode["<C-j>"] = "<Cmd>StripTrailingWhitespace<CR>"
+  lvim.keys.normal_mode["<C-k>"] = "<Cmd>ClangdSwitchSourceHeader<CR>"
     -- vim.keymap.set('n', '<C-w>z', '<Cmd>WindowsMaximize<CR>')
   lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
   vim.cmd [[
@@ -199,7 +201,7 @@ lvim.plugins = {
     -- { 'simplenote-vim/simplenote.vim' },
 
     -- HELPERS
-    { 'zakharykaplan/nvim-retrail' }, -- highlight & trim trailing whitespace upon :write.
+    { 'axelf4/vim-strip-trailing-whitespace' }, -- removes trailing whitespace from modified lines on save OR :StripTrailingWhitespace
     { 'vim-scripts/Rename2' },
 
     -- EDITING
@@ -227,6 +229,7 @@ lvim.plugins = {
     { "anuvyklack/windows.nvim" }, -- <C-W>z , <C-A> = maximize
 
     -- SEARCH/FIND
+    { "princejoogie/dir-telescope.nvim" }, -- do telescope in  in selected directories; :GrepInDirectory & :FileInDirectory
     { 'rlane/pounce.nvim' }, -- incremental fuzzy search on motions
     -- { 'woosaaahh/sj.nvim' }, -- quick-jump search (but how does it work?)
      -- Search for file/symbol/word under cursor and preview in the floating window.
@@ -258,7 +261,7 @@ lvim.plugins = {
     -- right side - ctags-based (they may be pretty slow on big files)
     { 'simrat39/symbols-outline.nvim' },
     -- very concise representation, works fast, tree-sitter based
-    { 'stevearc/aerial.nvim' },
+    { 'stevearc/aerial.nvim', branch = 'nvim-0.5' }, -- branch 'main' requires neovim-0.8
     -- eats processor on huge (1000+ locs) js files, pure ctags; sometimes breaks layout when toggled after other outlines
     { 'preservim/tagbar' },
     -- strange view, works with huge js, can have lsp backends (which aint work for cpp), by default uses ctags
@@ -271,7 +274,6 @@ lvim.plugins = {
         -- tabs: 0=first, [=prev, ]=next, $=last, x=close
         -- wins: ;=curr, -=prev, s=swap, S=swap-stay, <cr>=curr
     { 't9md/vim-choosewin' },
-    { 'cappyzawa/trim.nvim' }, -- trim ws on save
     { 'tpope/vim-unimpaired' }, -- complementary pairs of mappings
     { 'xiyaowong/nvim-cursorword' }, -- underline words similar to one under cursor
     { "max397574/better-escape.nvim" }, -- jk in insert mode acts as <esc>
@@ -286,7 +288,7 @@ lvim.plugins = {
     { "abzcoding/doom-one.nvim" }, { 'Everblush/everblush.nvim', as = 'everblush' }, { 'cocopon/iceberg.vim' }, { 'marko-cerovac/material.nvim' },
     { 'rafamadriz/neon' }, { 'sainnhe/sonokai' }, { "rose-pine/neovim" }, -- +onedarker which is buildin
     { "folke/tokyonight.nvim" }, { 'jsit/toast.vim' }, { 'sam4llis/nvim-tundra' },
-    { 'sainnhe/gruvbox-material' }, { 'sainnhe/everforest' },
+    { 'sainnhe/gruvbox-material' }, { 'sainnhe/everforest' }, { 'Tsuzat/NeoSolarized.nvim' }
     -- INFO: not working schemes: they do not color the coda
     -- { "kyoz/purify", rtp = "vim" }, { "nanotech/jellybeans.vim" }, { "arcticicestudio/nord-vim" }, { "jacoborus/tender.vim" },
     -- { "morhetz/gruvbox" }, { "tomasr/molokai" }, { "dracula/vim" }, { "jnurmine/Zenburn" },
@@ -298,6 +300,7 @@ lvim.plugins = {
 end
 
 init_plugins_vimg_options()
+  lvim.builtin.which_key.mappings["P"] = { "<cmd>Telescope projects<CR>", "Projects" }
 init_plugins_manual()
 -- }}}
 
@@ -320,7 +323,6 @@ local function init_whichkeys_menu()
   }
 
   lvim.builtin.which_key.mappings.L.F = { ':lua require("nvim-surround").setup()<CR>', "Force Plugins Setup" }
-  lvim.builtin.which_key.mappings["P"] = { "<cmd>Telescope projects<CR>", "Projects" }
 
   -- lvim.builtin.which_key.mappings.g.G = {":lua lvim.userdata.terminal_cmd_toggle('gitui')<cr>", "GitUI"}
   lvim.builtin.which_key.mappings.H = {
@@ -367,7 +369,7 @@ local function init_whichkeys_menu()
     t = { ":lua lvim.userdata.terminal_cmd_toggle('tudu')<cr>", "TuDu" },
     T = { ":lua lvim.userdata.terminal_cmd_toggle('hnb')<cr>", "HierNoteBook" },
     p = { ":lua lvim.userdata.terminal_cmd_toggle('htop')<cr>", "Top" },
-    P = { ":lua lvim.userdata.terminal_cmd_toggle('btm')<cr>", "Bottom" },
+    P = { ":lua lvim.userdata.terminal_cmd_toggle('btop')<cr>", "BTop" },
     w = { ":lua lvim.userdata.terminal_cmd_toggle('curl ru.wttr.in && read -n 1')<cr>", "Weather" },
   }
 
@@ -381,7 +383,9 @@ local function init_whichkeys_menu()
   lvim.builtin.which_key.mappings.s.j = { ":lua require('sj').run()<cr>", "Search/Jump" }
   lvim.builtin.which_key.mappings.s.p = { ":<cmd>Pounce<cr>", "Pounce" }
   lvim.builtin.which_key.mappings.s.P = { ":<cmd>PounceRepeat<cr>", "Pounce Repeat" }
-  lvim.builtin.which_key.mappings.s.T = { ":<cmd>TodoTelescope<cr>", "ToDos & FixMes" }
+  lvim.builtin.which_key.mappings.s.D = { ":<cmd>TodoTelescope<cr>", "ToDos & FixMes" }
+  lvim.builtin.which_key.mappings.s.T = { ":<cmd>GrepInDirectory<cr>", "Grep in Dir" }
+  lvim.builtin.which_key.mappings.s.F = { ":<cmd>FileInDirectory<cr>", "File in Dir" }
 
   lvim.builtin.which_key.mappings["W"] = {
     name = "Compile",
@@ -444,6 +448,7 @@ local function init_whichkeys_menu()
     -- m = { ":colorscheme molokai<CR>", "Molokai" },
     M = { ":colorscheme material<CR>", "Material" },
     n = { ":colorscheme neon<CR>", "Neon" },
+    N = { ":colorscheme NeoSolarized<CR>", "NeoSolarized" },
     -- N = { ":colorscheme nord<CR>", "Nord" },
     o = { ":colorscheme onedarker<CR>", "One Darker" },
     -- p = { ":colorscheme purify<CR>", "Purify" },
@@ -496,7 +501,7 @@ local function init_plugins_setup()
         ['aerial'] = {},
         ['mind'] = {},
         ['symbols-outline'] = {},
-        ['trim'] = {},
+        ['dir-telescope'] = { hidden = true, respect_gitignore = true, },
         ['nvim-surround'] = {},
         ['windows'] = { autowidth = { enable = false, winwidth = 10, },
                         ignore = { filetype = lvim.userdata.exclude_filetypes }, },
@@ -507,6 +512,7 @@ local function init_plugins_setup()
         pcall( function() require(m).setup(o) end )
     end
     -- pcall( function() require('telescope').load_extension('media_files') end )
+    require("telescope").load_extension("dir") -- `:Telescope dir live_grep` or `:Telescope dir find_files`
 end
 
 init_plugins_setup()
