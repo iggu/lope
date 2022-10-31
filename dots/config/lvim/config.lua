@@ -64,6 +64,9 @@ local function init_keymaps()
   lvim.keys.normal_mode["<C-a>"] = "<Cmd>WindowsMaximize<CR>"
   lvim.keys.normal_mode["<C-j>"] = "<Cmd>StripTrailingWhitespace<CR>"
   lvim.keys.normal_mode["<C-k>"] = "<Cmd>ClangdSwitchSourceHeader<CR>"
+  -- open Mind only when it is required and close it when done
+  lvim.keys.normal_mode["<M-w>"] = "<Cmd>MindOpenProject<CR><C-W>L<Cmd>Goyo<CR>" -- <Cmd>vertical resize 50%<CR><C-W>h"
+  lvim.keys.normal_mode["<M-W>"] = "<Cmd>Goyo!<CR><Cmd>MindClose<CR>"
     -- vim.keymap.set('n', '<C-w>z', '<Cmd>WindowsMaximize<CR>')
   lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
   vim.cmd [[
@@ -176,10 +179,12 @@ local function init_plugins_vimg_options()
     vim.g.symbols_outline = { width = 40, position = "left" }
     vim.g.tagbar_position = "right"
     vim.g.tagbar_autofocus = 0
+    vim.g.tagbar_file_size_limit = 10000
     vim.g.vista_stay_on_open = 0
     -- vim.g.vista_sidebar_position = "right" -- any attemp to use this option leads to total mess
     vim.g.indent_blankline_filetype_exclude = lvim.userdata.exclude_filetypes
 end
+init_plugins_vimg_options()
 
 local function init_plugins_manual()
     -- setup globals in init_plugins_vimg_options()
@@ -298,9 +303,6 @@ lvim.plugins = {
     -- { 'junegunn/seoul256.vim', setup = function() vim.g.seoul256_background = 233 end }, --[[233=darkest, 236=lightest; not working here]]
 }
 end
-
-init_plugins_vimg_options()
-  lvim.builtin.which_key.mappings["P"] = { "<cmd>Telescope projects<CR>", "Projects" }
 init_plugins_manual()
 -- }}}
 
@@ -373,6 +375,7 @@ local function init_whichkeys_menu()
     w = { ":lua lvim.userdata.terminal_cmd_toggle('curl ru.wttr.in && read -n 1')<cr>", "Weather" },
   }
 
+  lvim.builtin.which_key.mappings.s.B = { "<cmd>Telescope buffers<CR>", "Buffers" }
   lvim.builtin.which_key.mappings.b.E = { ":BufferLineSortByExtension<cr>", "Sort by extenstion" }
   lvim.builtin.which_key.mappings.b.F = { ":BufferLineSortByRelativeDir<cr>", "Sort by reldir" }
   lvim.builtin.which_key.mappings.b.R = { ":bufdo checktime<cr>", "Reload all open buffers if changed" }
@@ -383,6 +386,7 @@ local function init_whichkeys_menu()
   lvim.builtin.which_key.mappings.s.j = { ":lua require('sj').run()<cr>", "Search/Jump" }
   lvim.builtin.which_key.mappings.s.p = { ":<cmd>Pounce<cr>", "Pounce" }
   lvim.builtin.which_key.mappings.s.P = { ":<cmd>PounceRepeat<cr>", "Pounce Repeat" }
+  lvim.builtin.which_key.mappings.s.A= { "<cmd>Telescope projects<CR>", "Projects" }
   lvim.builtin.which_key.mappings.s.D = { ":<cmd>TodoTelescope<cr>", "ToDos & FixMes" }
   lvim.builtin.which_key.mappings.s.T = { ":<cmd>GrepInDirectory<cr>", "Grep in Dir" }
   lvim.builtin.which_key.mappings.s.F = { ":<cmd>FileInDirectory<cr>", "File in Dir" }

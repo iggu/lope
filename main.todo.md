@@ -49,11 +49,17 @@
 # Lunar Vim
 
 - [ ] sources of inspiration:
-    [1](https://github.com/abzcoding/lvim),
-    [2](https://github.com/danielnehrig/nvim),
-    [3](https://github.com/kuator/nvim)
-    [4](https://github.com/alex-popov-tech/.dotfiles/tree/master/nvim)
-    [bloated](https://github.com/abzcoding/lvim)
+    - https://github.com/abzcoding/lvim
+    - https://github.com/danielnehrig/nvim
+    - https://github.com/kuator/nvim
+    - https://github.com/alex-popov-tech/.dotfiles/tree/master/nvim
+    - https://github.com/mathiasbynens/dotfiles
+    - https://github.com/ThePrimeagen/.dotfiles
+    - https://github.com/zanshin/dotfiles
+    - https://github.com/caarlos0/dotfiles.fish
+    - https://github.com/samoshkin/dotfiles
+    - https://github.com/abzcoding/lvim
+    - https://github.com/kuator/nvim/
 
 # GitHubApps
 
@@ -93,6 +99,14 @@
 - [ ] `rohit-px2/nvui` - gui app for neovim
 - [ ] `anuvyklack/vim-cppman` - use `aitjcize/cppman` to lookup "C++ 98/11/14/17/20 manual pages"
 - [ ] `AckslD/nvim-FeMaco.lua` - edit injected language trees with correct filetype in a floating window
+- [ ] `ldelossa/litee.nvim` - library for building "IDE-lite" experiences
+- [ ] `sindrets/diffview.nvim` - simple, unified, single tabpage diff interface
+- [ ] `ray-x/navigator.lua` - code analysis and navigate tool
+- [ ] `nvim-treesitter/nvim-treesitter-textobjects` - text-objects, select, move, swap, and peek support
+- [ ] `svermeulen/vim-subversive` -  two new operator motions to make it very easy to perform quick substitutions
+- [ ] `wellle/targets.vim` - adds various text objects for  more targets to operate on
+- [ ] `ggandor/leap.nvim` - general-purpose motion plugin
+- [ ] `ThePrimeagen/harpoon` - mark and create persisting key strokes to go to the files of interest
 
 # Encrypted notes
 

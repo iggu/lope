@@ -85,8 +85,9 @@ alias map="xargs -n1"
 
 function grep-w-wo() {
     if [ -z "$1" ] || [ -z "$2" ]; then
-        echo "Find files containing one substring and not another"
-        echo "Usage: 1=string-yes, 2=string-no"
+        echo -e "  Too few args\n  Usage: 1=string-yes, 2=string-no\n  Find files containing one substring and not another"
+    elif command -v rg &>/dev/null ; then
+        rg -l "$1" * | xargs -r rg --files-without-match "$2"
     else
         grep -l "$1" * | xargs -r grep -L "$2"
     fi }
