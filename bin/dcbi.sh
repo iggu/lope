@@ -36,12 +36,18 @@ function _ghclone_make_install()
 
 ###############################################################################
 
+function install_fzy()
+{
+    _ghclone_make_install make,cc,gcc jhawthorn/fzy${1:+/$1}
+}
+
+###############################################################################
+
 function install_jq()
 {
     _ghclone_make_install make,cc,gcc stedolan/jq${1:+/$1} \
         "--disable-maintainer-mode --with-oniguruma=builtin"
 }
-
 
 ###############################################################################
 
@@ -50,7 +56,6 @@ function install_encpipe()
     _ghclone_make_install make,cc,gcc jedisct1/encpipe${1:+/$1}
 }
 
-
 ###############################################################################
 
 function install_doneyet()
@@ -58,7 +63,6 @@ function install_doneyet()
     _ghclone_make_install pkg-config,autoconf,automake,make,g++ \
                       gtaubman/doneyet${1:+/$1} "" "" "cp -bv doneyet ${CliArgs[prefix]}/bin"
 }
-
 
 ###############################################################################
 
@@ -229,4 +233,3 @@ prepare $*
 main
 
 ###############################################################################
-

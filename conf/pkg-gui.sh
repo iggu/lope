@@ -5,7 +5,7 @@ declare -A PKGs=(
     [desktop]="wmctrl xdotool"
     [code]="gitk kdiff3 codium sublime-text"
     [files]="dolphin-plugins doublecmd-qt doublecmd-plugins"
-    [media]="w3m-img sxiv imagemagick-6.q16hdri mplayer smplayer smplayer-themes smtube qmmp ffmpegthumbnailer ffmpeg"
+    [media]="w3m-img sxiv imagemagick-6.q16hdri mplayer smplayer smplayer-themes smtube qmmp ffmpegthumbnailer ffmpeg mpv"
     [dev]="libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev"
     [term]="xterm yakuake tilix fonts-firacode"
     [noise]="anoise-gui anoise-community-extension2 anoise-community-extension3" # all=basic, 1=boring, 2=places, 3=noises, 4=lakes&rivers, 5=birds
