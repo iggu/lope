@@ -176,13 +176,42 @@ local function init_plugins_vimg_options()
     vim.g.cpp_attributes_highlight = 1
     vim.g.cpp_member_highlight = 1
     vim.g.cpp_simple_highlight = 1
-    vim.g.symbols_outline = { width = 40, position = "left" }
     vim.g.tagbar_position = "right"
     vim.g.tagbar_autofocus = 0
-    vim.g.tagbar_file_size_limit = 10000
+    vim.g.tagbar_file_size_limit = 200000 -- doesnt save from freezing
     vim.g.vista_stay_on_open = 0
     -- vim.g.vista_sidebar_position = "right" -- any attemp to use this option leads to total mess
     vim.g.indent_blankline_filetype_exclude = lvim.userdata.exclude_filetypes
+
+    -- https://www.reddit.com/r/vim/comments/d77t6j/guide_how_to_setup_ctags_with_gutentags_properly/
+    -- from: https://github.com/kuator/nvim/blob/master/lua/plugins/vim-gutentags.lua
+    vim.g.gutentags_ctags_exclude = {
+        '*.git', '*.svg', '*.hg',
+        '*/tests/*', 'build', 'dist', 'bin', '*sites/*/files/*',
+        'cache', 'compiled', 'example', 'docs', '*.md',
+        -- '*.css', '*.less', '*.scss',
+        'node_modules', 'bower_components', 'bundle', 'vendor', '*bundle*.js', '*build*.js',
+        '*-lock.json', '*.lock', '.*rc*', '*.json', '*.min.*', '*.map',
+        '*.bak', '*.zip', '*.pyc', '*.class',
+        '*.sln', '*.Master', '*.csproj', '*.csproj.user', '*.cache', '*.pdb', '*.exe', '*.dll',
+        '*.tmp', 'tags*', 'cscope.*',
+        '*.mp3', '*.ogg', '*.flac',
+        '*.swp', '*.swo',
+        '*.bmp', '*.gif', '*.ico', '*.jpg', '*.png',
+        '*.rar', '*.zip', '*.tar', '*.tar.gz', '*.tar.xz', '*.tar.bz2',
+        '*.pdf', '*.doc', '*.docx', '*.ppt', '*.pptx',
+    }
+
+    vim.g.gutentags_add_default_project_roots = false
+    vim.g.gutentags_project_root = {'package.json', '.git'}
+    vim.g.gutentags_cache_dir = vim.fn.expand('~/.cache/nvim/ctags/')
+    vim.g.gutentags_generate_on_new = true
+    vim.g.gutentags_generate_on_missing = true
+    vim.g.gutentags_generate_on_write = true
+    vim.g.gutentags_generate_on_empty_buffer = true
+    vim.cmd([[command! -nargs=0 GutentagsClearCache call system('rm ' . g:gutentags_cache_dir . '/*')]])
+    vim.g.gutentags_ctags_extra_args = {'--tag-relative=yes', '--fields=+ailmnS', }
+
 end
 init_plugins_vimg_options()
 
@@ -259,18 +288,19 @@ lvim.plugins = {
     { 'folke/todo-comments.nvim' }, -- use :Todo... commands
 
     -- SYMBOLS NAVIGATION
-    -- { 'ludovicchabant/vim-gutentags' },
-    { "romgrk/nvim-treesitter-context" },
-    { 'sidebar-nvim/sidebar.nvim' },
+    -- { 'c0r73x/neotags.lua' },
+    { 'romgrk/nvim-treesitter-context' },
     -- main rule is: left side - tree-sitter based outliners (should be used in general as fastest),
     -- right side - ctags-based (they may be pretty slow on big files)
+    { 'sidebar-nvim/sidebar.nvim' },
     { 'simrat39/symbols-outline.nvim' },
     -- very concise representation, works fast, tree-sitter based
     { 'stevearc/aerial.nvim', branch = 'nvim-0.5' }, -- branch 'main' requires neovim-0.8
-    -- eats processor on huge (1000+ locs) js files, pure ctags; sometimes breaks layout when toggled after other outlines
-    { 'preservim/tagbar' },
     -- strange view, works with huge js, can have lsp backends (which aint work for cpp), by default uses ctags
     { 'liuchengxu/vista.vim' },
+    -- eats processor and freezes ui on almost every file, pure ctags; sometimes breaks layout when toggled after other outlines
+    { 'preservim/tagbar' }, -- builds tags in-momory for a limited scope, doesnt affect tag file
+    { 'ludovicchabant/vim-gutentags' }, -- general-purpose project-wide tags management tool
 
     -- CONTENT NAVIGATION
     { 'chentoast/marks.nvim' }, -- interact and manipulate vim marks
@@ -365,7 +395,8 @@ local function init_whichkeys_menu()
     -- Y = {":Calendar -view=year -first_day=monday<cr>", "Calendar Year"},
     -- T = {":Calendar -view=clock<cr>", "Clock"},
     j = { [[:lua lvim.userdata.terminal_cmd_toggle('jqsh')<cr>]], "JQ shell" },
-    l = { [[:lua lvim.userdata.terminal_cmd_toggle('lf')<cr>]], "LF" },
+    l = { [[<Cmd>Lf<cr>]], "LF" },
+    -- l = { [[:lua lvim.userdata.terminal_cmd_toggle('lf')<cr>]], "LF" },
     L = { [[:lua lvim.userdata.terminal_cmd_toggle('xplr')<cr>]], "XPLR" },
     --n = {":lua lvim.userdata.terminal_cmd_toggle('nnn-nerd-static')<cr>", "NNN"},
     t = { ":lua lvim.userdata.terminal_cmd_toggle('tudu')<cr>", "TuDu" },
@@ -504,7 +535,9 @@ local function init_plugins_setup()
         ['todo-comments'] = {},
         ['aerial'] = {},
         ['mind'] = {},
-        ['symbols-outline'] = {},
+        ['eyeliner'] = { highlight_on_key = true },
+        -- ['neotags'] = { enable = true, ctags = { run = true, directory = '~/.cache/nvim/ctags' } },
+        ['symbols-outline'] = { width = 15, position = "left" },
         ['dir-telescope'] = { hidden = true, respect_gitignore = true, },
         ['nvim-surround'] = {},
         ['windows'] = { autowidth = { enable = false, winwidth = 10, },

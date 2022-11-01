@@ -83,6 +83,15 @@ alias psgr='ps -Af | grep $1'
 # find . -name .gitattributes | map dirname
 alias map="xargs -n1"
 
+function grep-w-w() {
+    if [ -z "$1" ] || [ -z "$2" ]; then
+        echo -e "  Too few args\n  Usage: 1=string-yes, 2=string-yes2\n  Find files containing both substrings"
+    elif command -v rg &>/dev/null ; then
+        rg -l "$1" * | xargs -r rg -l "$2"
+    else
+        grep -l "$1" * | xargs -r grep -l "$2"
+    fi }
+
 function grep-w-wo() {
     if [ -z "$1" ] || [ -z "$2" ]; then
         echo -e "  Too few args\n  Usage: 1=string-yes, 2=string-no\n  Find files containing one substring and not another"
