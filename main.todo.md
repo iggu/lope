@@ -9,6 +9,7 @@
   - [ ] this will require standalone gh-api impl
 - [ ] move project wide todos to **phaazon/mind.nvim** or to **todotxt-machine**
     - [ ] maybe tasks themeselves more convinient to keep in todotxt while docs and notes - in mind-nvim
+    - [ ] use `jonatanpedersen/git-json-merge` to git-merge it's jsons
 
 # Files
 
@@ -45,6 +46,7 @@
   - [ ] *junegunn/dotfiles* :: from the author of `fzf`
   - [ ] *Naheel-Azawy/naheel-dotfiles* :: from the author of `fmz` and `stpv`
   - [ ] *ViRu-ThE-ViRuS/configs* :: kitty + tmux + fish setup for macos
+- [ ] `doom-neovim/doom-nvim` :: configuration basis
 
 # Lunar Vim
 
@@ -118,3 +120,20 @@
   - [ ] think of using cli-tools based on `KeePassX` backend
 - [ ] how to store encrypted notes - use what? encryption plugin for vim? which?
   - [ ] prefer anything wide-spreaded for all oses like gpg or openssl
+
+# Utils
+
+## Console Sounds
+
+- use `radio.sh` and `ogg123 -rz /usr/share/anoise/sounds/` as a basis
+    - choose terminal emulator which supports panes and pre-configuration
+        - this can be clone of tmux
+        - https://github.com/cdleon/awesome-terminals
+    - on startup - several panes, in one - radio, in another - anoise sounds
+    - custom shortcuts which can mute/stop/change the sounds
+        - https://wiki.archlinux.org/title/PulseAudio/Troubleshooting#Muted_application
+        - there can be single popup with a menu for all
+    
+
+        
+

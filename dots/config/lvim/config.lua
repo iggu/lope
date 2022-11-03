@@ -354,7 +354,8 @@ local function init_whichkeys_menu()
     ["9"] = { ":<c-u>HSHighlight 9<CR>", "Do 9" },
   }
 
-  lvim.builtin.which_key.mappings.L.F = { ':lua require("nvim-surround").setup()<CR>', "Force Plugins Setup" }
+  lvim.builtin.which_key.mappings.L.F = { ':lua init_plugins_setup()<CR>', "Force Plugins Setup" }
+  lvim.builtin.which_key.mappings.M = { ':make<CR>', "Make" }
 
   -- lvim.builtin.which_key.mappings.g.G = {":lua lvim.userdata.terminal_cmd_toggle('gitui')<cr>", "GitUI"}
   lvim.builtin.which_key.mappings.H = {
@@ -406,7 +407,7 @@ local function init_whichkeys_menu()
     w = { ":lua lvim.userdata.terminal_cmd_toggle('curl ru.wttr.in && read -n 1')<cr>", "Weather" },
   }
 
-  lvim.builtin.which_key.mappings.s.B = { "<cmd>Telescope buffers<CR>", "Buffers" }
+  lvim.builtin.which_key.mappings.b.b = { "<cmd>Telescope buffers<CR>", "Buffers" }
   lvim.builtin.which_key.mappings.b.E = { ":BufferLineSortByExtension<cr>", "Sort by extenstion" }
   lvim.builtin.which_key.mappings.b.F = { ":BufferLineSortByRelativeDir<cr>", "Sort by reldir" }
   lvim.builtin.which_key.mappings.b.R = { ":bufdo checktime<cr>", "Reload all open buffers if changed" }
@@ -554,3 +555,5 @@ end
 
 init_plugins_setup()
 -- }}}
+
+

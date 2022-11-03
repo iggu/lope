@@ -31,7 +31,7 @@ declare -A stations=(
 )
 
 if command -v fzf &>/dev/null; then
-    station=$(fzf <<< "${!stations[@]}")
+    station=$(fzf --cycle --prompt "Radio: " <<< $(printf "%s\n" "${!stations[@]}"))
 else
     select station in $(sort <<< "${!stations[@]}"); do
         break
