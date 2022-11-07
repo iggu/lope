@@ -18,6 +18,7 @@ declare -A stations=(
   [CEU Medieval Radio]=http://stream3.virtualisan.net:7020
   [Chilled Cow]=https://youtu.be/5qap5aO4i9A
   [Code Radio]=https://coderadio-admin.freecodecamp.org/radio/8010/radio.mp3
+  [Hang Drum Live]=https://www.youtube.com/watch?v=szyyoAzDWHM
   [FUTURE FNK]=http://node-16.zeno.fm:80/etbbu6a3dnruv
   [Gensokyo Radio]=https://stream.gensokyoradio.net/1
   [Kohina]=http://kohina.duckdns.org:8000/stream.ogg

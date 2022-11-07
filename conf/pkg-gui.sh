@@ -9,7 +9,7 @@ declare -A PKGs=(
     [dev]="libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev"
     [term]="xterm yakuake tilix fonts-firacode"
     [noise]="anoise-gui anoise-community-extension2 anoise-community-extension3" # all=basic, 1=boring, 2=places, 3=noises, 4=lakes&rivers, 5=birds
-    [browse]="falkon opera-stable vivaldi-stable brave-browser librewolf chromium-codecs-ffmpeg-extra telegram"
+    [browse]="falkon opera-stable firefox-esr vivaldi-stable brave-browser librewolf chromium-codecs-ffmpeg-extra telegram"
     [youtube]="youtube-to-mp3 youtube-downloader lyrics-finder "
     [office]="goldendict vym"
 )
