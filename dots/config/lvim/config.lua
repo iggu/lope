@@ -120,7 +120,7 @@ local function init_plugins_builtin()
   lvim.builtin.autopairs.active = false -- hate auto pairs
 
   --lvim.builtin.dashboard.active = true
-  lvim.builtin.notify.active = true -- gh:'rcarriga/nvim-notify', popup notifications
+  -- lvim.builtin.notify.active = true -- gh:'rcarriga/nvim-notify', popup notifications
   lvim.builtin.terminal.active = true
   lvim.builtin.nvimtree.setup.view.side = "right"
   -- lvim.builtin.nvimtree.show_icons.git = 0
@@ -313,7 +313,7 @@ lvim.plugins = {
     { 'xiyaowong/nvim-cursorword' }, -- underline words similar to one under cursor
     { "max397574/better-escape.nvim" }, -- jk in insert mode acts as <esc>
     -- { 'Kristoffer-PBS/interesting-words.nvim' }, -- highlight words in the buffer
-    { 'lukas-reineke/indent-blankline.nvim' }, -- draw vertical lines as indent markers
+    -- { 'lukas-reineke/indent-blankline.nvim' }, -- draw vertical lines as indent markers; already in lvim
     { 'jinh0/eyeliner.nvim' }, -- color unique char in the line to speed up f/F to the corresponding word
 
     -- COLORSCHEMES
@@ -322,7 +322,8 @@ lvim.plugins = {
     { "sjl/badwolf" }, { 'rockerBOO/boo-colorscheme-nvim' }, { 'tomasiser/vim-code-dark' }, { 'catppuccin/nvim', as = "catppuccin" },
     { "abzcoding/doom-one.nvim" }, { 'Everblush/everblush.nvim', as = 'everblush' }, { 'cocopon/iceberg.vim' }, { 'marko-cerovac/material.nvim' },
     { 'rafamadriz/neon' }, { 'sainnhe/sonokai' }, { "rose-pine/neovim" }, -- +onedarker which is buildin
-    { "folke/tokyonight.nvim" }, { 'jsit/toast.vim' }, { 'sam4llis/nvim-tundra' },
+    -- { "folke/tokyonight.nvim" },
+    { 'jsit/toast.vim' }, { 'sam4llis/nvim-tundra' },
     { 'sainnhe/gruvbox-material' }, { 'sainnhe/everforest' }, { 'Tsuzat/NeoSolarized.nvim' }
     -- INFO: not working schemes: they do not color the coda
     -- { "kyoz/purify", rtp = "vim" }, { "nanotech/jellybeans.vim" }, { "arcticicestudio/nord-vim" }, { "jacoborus/tender.vim" },
