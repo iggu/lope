@@ -321,7 +321,7 @@ lvim.plugins = {
     -- INFO: color schemes as they appear in <leader>C menu
     { "sjl/badwolf" }, { 'rockerBOO/boo-colorscheme-nvim' }, { 'tomasiser/vim-code-dark' }, { 'catppuccin/nvim', as = "catppuccin" },
     { "abzcoding/doom-one.nvim" }, { 'Everblush/everblush.nvim', as = 'everblush' }, { 'cocopon/iceberg.vim' }, { 'marko-cerovac/material.nvim' },
-    { 'rafamadriz/neon' }, { 'sainnhe/sonokai' }, { "rose-pine/neovim" }, -- +onedarker which is buildin
+    { 'rafamadriz/neon' }, { 'sainnhe/sonokai' }, { "rose-pine/neovim" }, { "lunarvim/Onedarker.nvim" },
     -- { "folke/tokyonight.nvim" },
     { 'jsit/toast.vim' }, { 'sam4llis/nvim-tundra' },
     { 'sainnhe/gruvbox-material' }, { 'sainnhe/everforest' }, { 'Tsuzat/NeoSolarized.nvim' }
@@ -481,6 +481,7 @@ local function init_whichkeys_menu()
     -- j = { ":colorscheme jellybeans<CR>", "Jellybeans" },
     -- k = { ":colorscheme kanagawa<CR>", "Kanagawa" },
     -- K = { ":colorscheme melange<CR>", "Melange" },
+    l = { ":colorscheme lunar<CR>", "Lunar" },
     -- L = { ":colorscheme moonfly<CR>", "Moonfly" },
     -- m = { ":colorscheme molokai<CR>", "Molokai" },
     M = { ":colorscheme material<CR>", "Material" },
