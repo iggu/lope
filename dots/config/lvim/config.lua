@@ -261,6 +261,7 @@ lvim.plugins = {
     -- {'pseewald/vim-anyfold'}, -- folds are pretty unusable since preview windows content is folded too
     -- { "anuvyklack/animation.nvim" }, -- to get smooth animation of windows resizing
     { "anuvyklack/windows.nvim" }, -- <C-W>z , <C-A> = maximize
+    { "nyngwang/murmur.lua" }, -- highlight word under cursor - some themes do it themeselves
 
     -- SEARCH/FIND
     { "princejoogie/dir-telescope.nvim" }, -- do telescope in  in selected directories; :GrepInDirectory & :FileInDirectory
@@ -321,10 +322,9 @@ lvim.plugins = {
     -- INFO: color schemes as they appear in <leader>C menu
     { "sjl/badwolf" }, { 'rockerBOO/boo-colorscheme-nvim' }, { 'tomasiser/vim-code-dark' }, { 'catppuccin/nvim', as = "catppuccin" },
     { "abzcoding/doom-one.nvim" }, { 'Everblush/everblush.nvim', as = 'everblush' }, { 'cocopon/iceberg.vim' }, { 'marko-cerovac/material.nvim' },
-    { 'rafamadriz/neon' }, { 'sainnhe/sonokai' }, { "rose-pine/neovim" }, { "lunarvim/Onedarker.nvim" },
-    -- { "folke/tokyonight.nvim" },
-    { 'jsit/toast.vim' }, { 'sam4llis/nvim-tundra' },
-    { 'sainnhe/gruvbox-material' }, { 'sainnhe/everforest' }, { 'Tsuzat/NeoSolarized.nvim' }
+    { 'rafamadriz/neon' }, { 'sainnhe/sonokai' }, {'sainnhe/edge'}, { "rose-pine/neovim" }, { 'LunarVim/onedarker.nvim' }, { "folke/tokyonight.nvim" },
+    { 'jsit/toast.vim' }, { 'sam4llis/nvim-tundra' }, {'elianiva/gruvy.nvim', requires={'rktjmp/lush.nvim'}},
+    { 'sainnhe/gruvbox-material' }, { 'sainnhe/everforest' }, { 'Tsuzat/NeoSolarized.nvim' },
     -- INFO: not working schemes: they do not color the coda
     -- { "kyoz/purify", rtp = "vim" }, { "nanotech/jellybeans.vim" }, { "arcticicestudio/nord-vim" }, { "jacoborus/tender.vim" },
     -- { "morhetz/gruvbox" }, { "tomasr/molokai" }, { "dracula/vim" }, { "jnurmine/Zenburn" },
@@ -333,6 +333,7 @@ lvim.plugins = {
     -- { 'AlessandroYorba/Despacio', setup = function() vim.g.despacio_Pitc = 1 end },
     -- { 'junegunn/seoul256.vim', setup = function() vim.g.seoul256_background = 233 end }, --[[233=darkest, 236=lightest; not working here]]
 }
+
 end
 init_plugins_manual()
 -- }}}
@@ -462,7 +463,7 @@ local function init_whichkeys_menu()
     c = { ":colorscheme codedark<CR>", "Code Dark" },
     C = { ":colorscheme catppuccin<CR>", "Catppuccin" },
     d = { ":colorscheme doom-one<CR>", "Doom One" },
-    e = { ":colorscheme everblush<CR>", "EverBlush" },
+    e = { ":colorscheme edge<CR>", "Edge" },
     E = { ":colorscheme everforest<CR>", "EverForest" },
     -- D = { ":colorscheme dracula<CR>", "Dracula" },
     -- f = { ":colorscheme despacio<CR>", "Despacio" },
@@ -477,6 +478,7 @@ local function init_whichkeys_menu()
     --   t = { ":colorscheme terafox<CR>", "Tera" },
     -- },
     g = { ":colorscheme gruvbox-material<CR>", "Gruv Box Material" },
+    G = { ":colorscheme gruvy<CR>", "Gruvy" },
     i = { ":colorscheme iceberg<CR>", "Iceberg" },
     -- j = { ":colorscheme jellybeans<CR>", "Jellybeans" },
     -- k = { ":colorscheme kanagawa<CR>", "Kanagawa" },
@@ -538,6 +540,7 @@ local function init_plugins_setup()
         ['todo-comments'] = {},
         ['aerial'] = {},
         ['mind'] = {},
+        ['murmur'] = {},
         ['eyeliner'] = { highlight_on_key = true },
         -- ['neotags'] = { enable = true, ctags = { run = true, directory = '~/.cache/nvim/ctags' } },
         ['symbols-outline'] = { width = 15, position = "left" },
