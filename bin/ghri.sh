@@ -44,13 +44,16 @@ function path_dist_construct()
 # GitHub related functions.
 #####################################################################################
 
-function gh_release_spec()
+function gh_get_release_spec()
 {
     declare owner=$1 repo=$2
     local hh="Accept: application/vnd.github.v3+json"
     local allReleasesJson=`path_dist_construct meta $owner $repo .json`
+
     echo -ne " > ${IntenseBlack}"
-    if [ ! -f "$allReleasesJson" ] ; then
+    # download meta only of it is missing or 'updout' set and outdated (to avoid api limit exceed)
+    if [ ! -f "$allReleasesJson" ] || \
+       [[ "${CliArgs[updout]}" && "$(find "$allReleasesJson" -mtime "+${CliArgs[updout]}")" ]] ; then
         echo -en "${Cyan}"
         curl -s -H $hh "https://api.github.com/repos/$owner/$repo/releases" > $allReleasesJson
     fi
@@ -62,7 +65,7 @@ function gh_release_spec()
 function gh_release_info()
 {
     declare owner=$1 repo=$2 ver=$3
-    if [[ "$ver" == "latest" ]] ; then 
+    if [[ "$ver" == "latest" ]] ; then
         jq -r '.[0]'
     elif [[ "$ver" =~ ^-[0-9]+$ ]] ; then # ignore first N versions
         jq -r ".[${ver:1}]"
@@ -158,6 +161,7 @@ function prepare()
         param  BINPATH  -b --bin     --    "- install application files to this root"
         param  REGEX    -r --regex   --    "- matching filter for the apps from list"
         param  ARCH     -a --arch    --    "- download apps for this machine type"
+        param  UPDOUT   -U --updout  --    "- update outdated (older then some days, <0 to force)"
         flag   NO_COLOR --no-color   --    "- do not colorize output"
         flag   NO_FAIL  -I --nofail  --    "- do not fail when app is not suitable, just skip it"
         disp   :usage   -h --help    --    "- print help, ignore any other cliargs"
@@ -182,7 +186,7 @@ function prepare()
     [ -z "$REST" ] || :fail 2 "Extra args detected (param with space?)"
     [[ -z $ARCH || -v "Arches[$ARCH]" ]] || :fail 3 "Unsupported machine architecture '$ARCH'" "(expect: ${!Arches[@]})"
     par APPLIST list ; par DISTDIR dist ;
-    par BINPATH bin opt ; par REGEX regex opt ;  par ARCH arch opt ;  par NO_FAIL nofail opt ;
+    par BINPATH bin opt ; par REGEX regex opt ;  par ARCH arch opt ;  par NO_FAIL nofail opt ;  par UPDOUT updout opt ;
     [ -f ${CliArgs[list]} ] || :fail 4 "File with list of packages does not exist" "(${CliArgs[list]})"
 
     :echo_assarr CliArgs IntenseBlack
@@ -198,7 +202,23 @@ function prepare()
             *) :fail 9 "${CliArgs[list]}:$ln - invalid line format '$line'" "(accept only 'ghUser/ghRepo ?tag)";;
         esac
     done < ${CliArgs[list]}
-    :echo_assarr AppsTags IntenseBlack
+
+    # :echo_assarr AppsTags IntenseBlack
+}
+
+###############################################################################
+
+function delete_dist_dirs()
+{
+    if [ -n "${CliArgs[updout]}" ] ; then
+        declare ghOwner="$1" ghRepo="$2" arch=${CliArgs[arch]:-`arch`}
+        local rmPath="$(path_dist_construct $arch $ghOwner $ghRepo)"
+        local rmDirs=$(find $(dirname $rmPath) -name "*$(basename $rmPath)*" -type d -printf '%p ')
+        if [ -n "$rmDirs" ] ; then
+            echo -e " > ${Purple}$(echo $rmDirs | xargs basename) ${IntenseBlack}${ResetColor}"
+            rm -rf $rmDirs
+        fi
+    fi
 }
 
 ###############################################################################
@@ -211,7 +231,7 @@ function download()
             declare ghRepo="${ghApp#*/}" ghOwner="${ghApp%/*}" ghTag=${AppsTags[$ghApp]}
 
             echo -e "**** ${Green}$ghOwner/$ghRepo${ResetColor} : ${Green}$ghTag${ResetColor} ****"
-            gh_release_spec $ghOwner $ghRepo
+            gh_get_release_spec $ghOwner $ghRepo
 
             local ghRelInfo=`gh_release_info $ghOwner $ghRepo $ghTag`
             [[ -z $ghRelInfo ]] && :fail 11 "Tag $ghTag not found for app $ghApp"
@@ -226,10 +246,11 @@ function download()
                     continue
                 fi
             fi
-            echo -e " > ${Yellow}$ghTag ${IntenseBlack}$ghUrl${ResetColor}"
 
+            echo -e " > ${Yellow}$ghTag ${IntenseBlack}$ghUrl${ResetColor}"
             if [[ -n ${CliArgs[bin]} ]] ; then
                 gh_download_url $ghOwner $ghRepo $ghTag $arch $ghUrl
+                delete_dist_dirs $ghOwner $ghRepo
                 gh_unpack_dist $ghOwner $ghRepo $ghTag $arch
             fi
         fi
@@ -239,12 +260,13 @@ function download()
 function install()
 {
     local arch=${CliArgs[arch]:-`arch`}
-    function ?samelink() { [[ -L $1 && "$(realpath `readlink $1`)" == "$(realpath $2)" ]] && return 0 || return 1 ; }
+    function ?samelink() { [[ -L $1 && "$(realpath -q `readlink $1`)" == "$(realpath -q $2)" ]] && return 0 || return 1 ; }
 
     # install every binary file except completion scripts and appimages
     if [ -n "${CliArgs[bin]}" ] ; then
         mkdir -p ${CliArgs[bin]}
         echo -e "**** ${Green}Installing executables${ResetColor} => ${Green}${CliArgs[bin]}${ResetColor} ****"
+        # TODO: install from tagged dirs only - steal idea from download()
         while read -r exe; do
             local n=`basename $exe`
             local l="${CliArgs[bin]}/$n"
@@ -269,9 +291,10 @@ function install()
 
 ###############################################################################
 
-:require-pkgs jq curl
-prepare $*
-download $*
-install $*
+function MAIN() { :; }
+    :require-pkgs jq curl
+    prepare $*
+    download $*
+    install $*
 
 ###############################################################################
