@@ -11,7 +11,7 @@ declare -A Self=(
 
 declare -A Ghri=(
     [exe]="${Self[bin]}/ghri.sh"
-    [conf]="${Self[conf]}/pkgs.lst"
+    [conf]="${Self[conf]}/ghapps.lst"
     [dist]="$HOME/.local/lib/ghri"
     [inst]="$HOME/.local/bin"
 )
