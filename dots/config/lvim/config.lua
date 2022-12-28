@@ -322,10 +322,10 @@ lvim.plugins = {
     -- INFO: color schemes as they appear in <leader>C menu
     { "sjl/badwolf" }, { 'rockerBOO/boo-colorscheme-nvim' }, { 'tomasiser/vim-code-dark' }, { 'catppuccin/nvim', as = "catppuccin" },
     { "abzcoding/doom-one.nvim" }, { 'Everblush/everblush.nvim', as = 'everblush' }, { 'cocopon/iceberg.vim' }, { 'marko-cerovac/material.nvim' },
-    { 'rafamadriz/neon' }, { 'sainnhe/sonokai' }, {'sainnhe/edge'}, { "rose-pine/neovim" }, { 'LunarVim/onedarker.nvim' }, { "folke/tokyonight.nvim" },
+    { 'rafamadriz/neon' }, { 'sainnhe/sonokai' }, {'sainnhe/edge'}, { "rose-pine/neovim" }, { 'LunarVim/onedarker.nvim' },
     { 'jsit/toast.vim' }, { 'sam4llis/nvim-tundra' }, {'elianiva/gruvy.nvim', requires={'rktjmp/lush.nvim'}},
     { 'sainnhe/gruvbox-material' }, { 'sainnhe/everforest' }, { 'Tsuzat/NeoSolarized.nvim' },
-    -- INFO: not working schemes: they do not color the coda
+    -- INFO: not working schemes: they do not color the code, and this is already in: { "folke/tokyonight.nvim" },
     -- { "kyoz/purify", rtp = "vim" }, { "nanotech/jellybeans.vim" }, { "arcticicestudio/nord-vim" }, { "jacoborus/tender.vim" },
     -- { "morhetz/gruvbox" }, { "tomasr/molokai" }, { "dracula/vim" }, { "jnurmine/Zenburn" },
     -- { 'savq/melange' }, { 'bluz71/vim-moonfly-colors' }, { 'liuchengxu/space-vim-theme' },
