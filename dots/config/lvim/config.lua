@@ -1,6 +1,13 @@
 -- VimCore & LVim Options {{{
 -- https://www.lunarvim.org/configuration/01-settings.html#example-options
 
+
+table.appendt = function ( tbl, t )
+	for i=1, #t do
+        tbl[ #tbl+1 ] = t[i]
+	end
+end
+
 -- {{{ VARS
 local function init_userdata()
   local function get_terminal() return require('toggleterm.terminal').Terminal end
@@ -215,10 +222,11 @@ local function init_plugins_vimg_options()
 end
 init_plugins_vimg_options()
 
-local function init_plugins_manual()
-    -- setup globals in init_plugins_vimg_options()
-lvim.plugins = {
+-- setup globals in init_plugins_vimg_options()
+lvim.plugins = {}
 
+local function init_plugins_tools()
+    table.appendt(lvim.plugins, {
     -- {'TimUntersberger/neogit'}, -- lazygit does the same - and more pretty
     -- { 'nvim-telescope/telescope-media-files.nvim' },
 
@@ -232,13 +240,23 @@ lvim.plugins = {
     { 'ellisonleao/glow.nvim' },
     { 'junegunn/limelight.vim' },
     { 'junegunn/goyo.vim' },
+    { 'phaazon/mind.nvim' },
     -- { 'simplenote-vim/simplenote.vim' },
 
     -- HELPERS
-    { 'axelf4/vim-strip-trailing-whitespace' }, -- removes trailing whitespace from modified lines on save OR :StripTrailingWhitespace
     { 'vim-scripts/Rename2' },
+    { 'dstein64/nvim-scrollview' },
+    { "anuvyklack/windows.nvim" }, -- <C-W>z , <C-A> = maximize
+    -- { "anuvyklack/animation.nvim" }, -- to get smooth animation of windows resizing
 
+    })
+end
+init_plugins_tools()
+
+local function init_plugins_editor()
+    table.appendt(lvim.plugins, {
     -- EDITING
+    { 'axelf4/vim-strip-trailing-whitespace' }, -- removes trailing whitespace from modified lines on save OR :StripTrailingWhitespace
     -- { 'ur4ltz/surround.nvim' }, -- works too, has sandwitch mode, need to be explicitely started
     { 'kylechui/nvim-surround' -- operate on surrounding pairs - quotes, braces, tags, ts-objs
         --[[ insert = "<C-g>s", insert_line = "<C-g>S"; ! need to be explicitely started (see eof)
@@ -248,19 +266,12 @@ lvim.plugins = {
             visual: ato="S", acl="gS";
             delete="ds"; change="cs" ]]
     },
-
     -- DECORATIONS
     { 'm-demare/hlargs.nvim' }, -- highlight arguments' definitions and usages, asynchronously, using Treesitter
     { 'Pocco81/HighStr.nvim' }, -- Permanently highlight selection
     { 'haringsrob/nvim_context_vt' }, -- Shows virtual text of the current context at the end of: functions, if, for, ...
     { 'p00f/nvim-ts-rainbow' }, -- Rainbow parentheses for neovim using tree-sitter
-    -- {'wfxr/minimap.vim'} -- works weird - QuickFix appears small and ugly, layouts become broken
-    { 'dstein64/nvim-scrollview' },
-    -- {'petertriho/nvim-scrollbar', setup = { excluded_filetypes = lvim.userdata.exclude_filetypes }}, -- not working
-    -- {'pangloss/vim-javascript' }, -- Vastly improved Javascript indentation and syntax support in Vim
     -- {'pseewald/vim-anyfold'}, -- folds are pretty unusable since preview windows content is folded too
-    -- { "anuvyklack/animation.nvim" }, -- to get smooth animation of windows resizing
-    { "anuvyklack/windows.nvim" }, -- <C-W>z , <C-A> = maximize
     { "nyngwang/murmur.lua" }, -- highlight word under cursor - some themes do it themeselves
 
     -- SEARCH/FIND
@@ -274,11 +285,18 @@ lvim.plugins = {
 
     -- FILETYPES
     { 'hauleth/vim-encpipe' }, -- files encoded by encpipe, with '.enc' extension
+    -- { 'aserebryakov/vim-todo-lists' },
     { 'bfrg/vim-jq' },
     -- {'bfrg/vim-jqplay'}, -- pretty useless, have dedicated shell scripts for that
-    -- { 'aserebryakov/vim-todo-lists' },
     { 'bfrg/vim-cpp-modern' },-- Enhanced C and C++ syntax highlighting
-    { 'phaazon/mind.nvim' },
+    -- {'pangloss/vim-javascript' }, -- Vastly improved Javascript indentation and syntax support in Vim
+
+    })
+end
+init_plugins_editor()
+
+local function init_plugins_ide()
+    table.appendt(lvim.plugins, {
 
     -- DIAGNOSTICS
     { "folke/trouble.nvim" },
@@ -317,25 +335,31 @@ lvim.plugins = {
     -- { 'lukas-reineke/indent-blankline.nvim' }, -- draw vertical lines as indent markers; already in lvim
     { 'jinh0/eyeliner.nvim' }, -- color unique char in the line to speed up f/F to the corresponding word
 
+    })
+end
+init_plugins_ide()
+
+local function init_plugins_colorshemes()
+    table.appendt(lvim.plugins, {
     -- COLORSCHEMES
-    -- { "abzcoding/zephyr-nvim" }, << this theme uses treesitter in an invalid way which gives permanent erros
+    { "abzcoding/zephyr-nvim" }, --<< this theme uses treesitter in an invalid way which gives permanent erros
     -- INFO: color schemes as they appear in <leader>C menu
     { "sjl/badwolf" }, { 'rockerBOO/boo-colorscheme-nvim' }, { 'tomasiser/vim-code-dark' }, { 'catppuccin/nvim', as = "catppuccin" },
     { "abzcoding/doom-one.nvim" }, { 'Everblush/everblush.nvim', as = 'everblush' }, { 'cocopon/iceberg.vim' }, { 'marko-cerovac/material.nvim' },
-    { 'rafamadriz/neon' }, { 'sainnhe/sonokai' }, {'sainnhe/edge'}, { "rose-pine/neovim" }, { 'LunarVim/onedarker.nvim' },
+    { 'rafamadriz/neon' }, { 'sainnhe/sonokai' }, {'sainnhe/edge'}, { "rose-pine/neovim" }, -- { 'LunarVim/onedarker.nvim' },
     { 'jsit/toast.vim' }, { 'sam4llis/nvim-tundra' }, {'elianiva/gruvy.nvim', requires={'rktjmp/lush.nvim'}},
     { 'sainnhe/gruvbox-material' }, { 'sainnhe/everforest' }, { 'Tsuzat/NeoSolarized.nvim' },
-    -- INFO: not working schemes: they do not color the code, and this is already in: { "folke/tokyonight.nvim" },
-    -- { "kyoz/purify", rtp = "vim" }, { "nanotech/jellybeans.vim" }, { "arcticicestudio/nord-vim" }, { "jacoborus/tender.vim" },
-    -- { "morhetz/gruvbox" }, { "tomasr/molokai" }, { "dracula/vim" }, { "jnurmine/Zenburn" },
-    -- { 'savq/melange' }, { 'bluz71/vim-moonfly-colors' }, { 'liuchengxu/space-vim-theme' },
-    -- { 'Shatur/neovim-ayu' }, { 'EdenEast/nightfox.nvim' }, { 'rebelot/kanagawa.nvim' },
+    { "morhetz/gruvbox" }, { "tomasr/molokai" }, { "Mofiqul/dracula.nvim" }, { "jnurmine/Zenburn" },
+    { "kyoz/purify", rtp = "vim" }, { "nanotech/jellybeans.vim" }, { "arcticicestudio/nord-vim" }, { "jacoborus/tender.vim" },
+    { 'savq/melange' }, { 'bluz71/vim-moonfly-colors' }, { 'liuchengxu/space-vim-theme' },
+    { 'Shatur/neovim-ayu' }, { 'EdenEast/nightfox.nvim' }, { 'rebelot/kanagawa.nvim' },
+    -- not working schemes: they do not color the code, and this is already in: { "folke/tokyonight.nvim" },
     -- { 'AlessandroYorba/Despacio', setup = function() vim.g.despacio_Pitc = 1 end },
     -- { 'junegunn/seoul256.vim', setup = function() vim.g.seoul256_background = 233 end }, --[[233=darkest, 236=lightest; not working here]]
-}
-
+    })
 end
-init_plugins_manual()
+init_plugins_colorshemes()
+
 -- }}}
 
 -- Which Keys {{{
@@ -456,8 +480,8 @@ local function init_whichkeys_menu()
 
   lvim.builtin.which_key.mappings["C"] = {
     name = "+ColorSchemes",
-    -- a = { ":colorscheme ayu-dark<CR>", "Ayu Dark" },
-    -- A = { ":colorscheme ayu-mirage<CR>", "Ayu Mirage" },
+    a = { ":colorscheme ayu-dark<CR>", "Ayu Dark" },
+    A = { ":colorscheme ayu-mirage<CR>", "Ayu Mirage" },
     b = { ":colorscheme badwolf<CR>", "Bad Wolf" },
     B = { ":colorscheme boo<CR>", "Boo" },
     c = { ":colorscheme codedark<CR>", "Code Dark" },
@@ -465,43 +489,43 @@ local function init_whichkeys_menu()
     d = { ":colorscheme doom-one<CR>", "Doom One" },
     e = { ":colorscheme edge<CR>", "Edge" },
     E = { ":colorscheme everforest<CR>", "EverForest" },
-    -- D = { ":colorscheme dracula<CR>", "Dracula" },
+    D = { ":colorscheme dracula<CR>", "Dracula" },
     -- f = { ":colorscheme despacio<CR>", "Despacio" },
-    -- F = {
-    --   name = "Fox",
-    --   c = { ":colorscheme carbonfox<CR>", "Carbon" },
-    --   d = { ":colorscheme dayfox<CR>", "Day" },
-    --   D = { ":colorscheme dawnfox<CR>", "Dawn" },
-    --   f = { ":colorscheme duskfox<CR>", "Dusk" },
-    --   n = { ":colorscheme nightfox<CR>", "Night" },
-    --   N = { ":colorscheme nordfox<CR>", "Nord" },
-    --   t = { ":colorscheme terafox<CR>", "Tera" },
-    -- },
+    F = {
+      name = "Fox",
+      c = { ":colorscheme carbonfox<CR>", "Carbon" },
+      d = { ":colorscheme dayfox<CR>", "Day" },
+      D = { ":colorscheme dawnfox<CR>", "Dawn" },
+      f = { ":colorscheme duskfox<CR>", "Dusk" },
+      n = { ":colorscheme nightfox<CR>", "Night" },
+      N = { ":colorscheme nordfox<CR>", "Nord" },
+      t = { ":colorscheme terafox<CR>", "Tera" },
+    },
     g = { ":colorscheme gruvbox-material<CR>", "Gruv Box Material" },
     G = { ":colorscheme gruvy<CR>", "Gruvy" },
     i = { ":colorscheme iceberg<CR>", "Iceberg" },
-    -- j = { ":colorscheme jellybeans<CR>", "Jellybeans" },
-    -- k = { ":colorscheme kanagawa<CR>", "Kanagawa" },
-    -- K = { ":colorscheme melange<CR>", "Melange" },
+    j = { ":colorscheme jellybeans<CR>", "Jellybeans" },
+    k = { ":colorscheme kanagawa<CR>", "Kanagawa" },
+    K = { ":colorscheme melange<CR>", "Melange" },
     l = { ":colorscheme lunar<CR>", "Lunar" },
     -- L = { ":colorscheme moonfly<CR>", "Moonfly" },
     -- m = { ":colorscheme molokai<CR>", "Molokai" },
     M = { ":colorscheme material<CR>", "Material" },
     n = { ":colorscheme neon<CR>", "Neon" },
     N = { ":colorscheme NeoSolarized<CR>", "NeoSolarized" },
-    -- N = { ":colorscheme nord<CR>", "Nord" },
+    O = { ":colorscheme nord<CR>", "Nord" },
     o = { ":colorscheme onedarker<CR>", "One Darker" },
     -- p = { ":colorscheme purify<CR>", "Purify" },
     r = { ":colorscheme rose-pine<CR>", "Rose Pine" },
     q = { ":colorscheme sonokai<CR>", "Sonokai" },
-    -- s = { ":colorscheme space_vim_theme<CR>", "Space Vim" },
+    Q = { ":colorscheme tender<CR>", "Tender" },
+    s = { ":colorscheme space_vim_theme<CR>", "Space Vim" },
     -- S = { ":let g:seoul256_background = 233<CR>:colorscheme seoul256<CR>", "Seoul 256" },
     t = { ":colorscheme tokyonight<CR>", "TokyoNight" },
     T = { ":colorscheme tundra<CR>", "Tundra" },
-    -- T = { ":colorscheme tender<CR>", "Tender" },
     Y = { ":colorscheme toast<CR>", "Toast" },
-    -- z = { ":colorscheme zephyr<CR>", "Zephir" },
-    -- Z = { ":colorscheme zenburn<CR>", "Zenburn" },
+    z = { ":colorscheme zephyr<CR>", "Zephir" },
+    Z = { ":colorscheme zenburn<CR>", "Zenburn" },
   }
 end
 
