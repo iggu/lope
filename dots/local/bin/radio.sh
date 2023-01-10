@@ -8,27 +8,28 @@ declare -x IFS=$'\n'
 
 # search here: https://www.aimp.ru/forum/index.php?topic=22023.0
 declare -A stations=(
-  [Ультра / Ultra]=http://nashe1.hostingradio.ru:80/ultra-192.mp3
-  [Aurum Inutile]=http://a5.radioheart.ru:8014/auruminutile
-  [Фреш Рок / Fresh Rock]=http://stream.freshrock.net/320.mp3
-  [Русский Рок / Russian Rock]=http://stream.skymedia.ee/live/rrock
-  [Мировая Попса / World Pop]=http://nashe1.hostingradio.ru/best-256
-  [Maximum]=http://radio.tp.tver.ru:8000/maximum_mp3
-  [Наше Радио / Nashe]=http://online2.gkvr.ru:8000/nashe_kaz_64.aac
-  [CEU Medieval Radio]=http://stream3.virtualisan.net:7020
-  [Chilled Cow]=https://youtu.be/5qap5aO4i9A
-  [Code Radio]=https://coderadio-admin.freecodecamp.org/radio/8010/radio.mp3
-  [Hang Drum Live]=https://www.youtube.com/watch?v=szyyoAzDWHM
-  [FUTURE FNK]=http://node-16.zeno.fm:80/etbbu6a3dnruv
-  [Gensokyo Radio]=https://stream.gensokyoradio.net/1
-  [Kohina]=http://kohina.duckdns.org:8000/stream.ogg
-  [Nightride FM]=https://stream.nightride.fm/nightride.ogg
-  [Nightwave Plaza]=https://radio.plaza.one/mp3
-  [No-Life Radio]=http://listen.nolife-radio.com:8000
-  [Radio Monacensis]=https://monacensis.stream.laut.fm/monacensis
-  [Chinamerica]=https://laradiofm.ru/download/2480-ru-m3u
-  [Chinese Traditional]=https://laradiofm.ru/download/605-ru-m3u
-  [Shonan Beach FM]=http://shonanbeachfm.out.airtime.pro:8000/shonanbeachfm_c
+  [Rock: Ультра / Ultra]=http://nashe1.hostingradio.ru:80/ultra-192.mp3
+  [Rock: Aurum Inutile]=http://a5.radioheart.ru:8014/auruminutile
+  [Rock: Фреш Рок / Fresh Rock]=http://stream.freshrock.net/320.mp3
+  [Rock: Русский Рок / Russian Rock]=http://stream.skymedia.ee/live/rrock
+  [Rock: Наше Радио / Nashe]=http://online2.gkvr.ru:8000/nashe_kaz_64.aac
+  [Rock: Maximum]=http://radio.tp.tver.ru:8000/maximum_mp3
+  [Pop: Мировая Попса / World Pop]=http://nashe1.hostingradio.ru/best-256
+  [Pop: Future Fnk]=http://node-16.zeno.fm:80/etbbu6a3dnruv
+  [Pop: Gensokyo Radio]=https://stream.gensokyoradio.net/1
+  [Pop: Chinamerica]=https://laradiofm.ru/download/2480-ru-m3u
+  [Instr: Shonan Beach FM]=http://shonanbeachfm.out.airtime.pro:8000/shonanbeachfm_c
+  [Instr: CEU Medieval Radio]=http://stream3.virtualisan.net:7020
+  [Instr: Nightwave Plaza]=https://radio.plaza.one/mp3
+  [Instr: Radio Monacensis]=https://monacensis.stream.laut.fm/monacensis
+  [Instr: Chinese Traditional]=https://laradiofm.ru/download/605-ru-m3u
+  [Electro: Kohina]=http://kohina.duckdns.org:8000/stream.ogg
+  [Electro: Nightride FM]=https://stream.nightride.fm/nightride.ogg
+  [Chill: Japanese Lofi]=https://www.youtube.com/watch?v=-9gEgshJUuY
+  [Chill: Code Radio]=https://coderadio-admin.freecodecamp.org/radio/8010/radio.mp3
+  [Relax: Effect And Product]=https://www.youtube.com/watch?v=n7IVI4MO9Xk
+  [Relax: Hang Drum]=https://www.youtube.com/watch?v=szyyoAzDWHM
+  [Relax: Mantra]=http://c22.radioboss.fm/playlist/291/stream.m3u
 )
 
 if command -v fzf &>/dev/null; then
