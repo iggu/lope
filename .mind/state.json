@@ -1,1 +1,188 @@
-{"is_expanded":true,"data":".mind\/data\/20221012133428-lope.md","uid":"20221012105828","children":[{"is_expanded":true,"contents":[{"text":"lvim"}],"children":[{"is_expanded":true,"contents":[{"text":"mind plugin"}],"children":[{"is_expanded":true,"contents":[{"text":"confopt: sidebar position (left\/right)"}],"children":[{"contents":[{"text":"normalize json on save and load - help to resolve conflicts"}],"is_expanded":false}]},{"contents":[{"text":"preview of content in floating window"}],"is_expanded":false},{"contents":[{"text":"fix indent for items with and without children"}],"is_expanded":false},{"is_expanded":true,"contents":[{"text":"proper git merge for mind-json"}],"children":[{"contents":[{"text":"mind-json is a single-line json"}],"is_expanded":false},{"contents":[{"text":"on save - indent it gracefully"}],"is_expanded":false},{"contents":[{"text":"on merge - involve gh:jonatanpedersen\/git-json-merge"}],"is_expanded":false}]}]},{"contents":[{"text":"gutentag_plus and cscope - can i use it?"}],"is_expanded":false},{"contents":[{"text":"per-project settings - at least call TagbarTogglePause"}],"is_expanded":false}]},{"is_expanded":true,"contents":[{"text":"tmux"}],"children":[{"is_expanded":true,"contents":[{"text":"launchers and sessions"}],"children":[{"contents":[{"text":"tmux-dash - configurable dashboard in py"}],"is_expanded":false},{"contents":[{"text":"tmuxp - session manager for tmux"}],"is_expanded":false},{"contents":[{"text":"tmuxomatic - visual tmux session manager"}],"is_expanded":false}]}]},{"is_expanded":true,"contents":[{"text":"PKGs & PPAs"}],"children":[{"contents":[{"text":"upgrade keys - trusted.gpg is deprecated in apt-key"}],"is_expanded":false},{"contents":[{"text":"edge browser ppa: key EB3E94ADBE1229CF, https:\/\/www.ubuntuupdates.org\/ppa\/microsoft_edge"}],"is_expanded":false}]}],"contents":[{"text":"lope"}],"type":1,"icon":" "}
+{
+  "children": [
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "contents": [
+                    {
+                      "text": "normalize json on save and load - help to resolve conflicts"
+                    }
+                  ],
+                  "is_expanded": false
+                }
+              ],
+              "contents": [
+                {
+                  "text": "confopt: sidebar position (left/right)"
+                }
+              ],
+              "is_expanded": true
+            },
+            {
+              "contents": [
+                {
+                  "text": "preview of content in floating window"
+                }
+              ],
+              "is_expanded": false
+            },
+            {
+              "contents": [
+                {
+                  "text": "fix indent for items with and without children"
+                }
+              ],
+              "is_expanded": false
+            },
+            {
+              "children": [
+                {
+                  "contents": [
+                    {
+                      "text": "mind-json is a single-line json"
+                    }
+                  ],
+                  "is_expanded": false
+                },
+                {
+                  "contents": [
+                    {
+                      "text": "on save - indent it gracefully"
+                    }
+                  ],
+                  "is_expanded": false
+                },
+                {
+                  "contents": [
+                    {
+                      "text": "on merge - involve gh:jonatanpedersen/git-json-merge"
+                    }
+                  ],
+                  "is_expanded": false
+                }
+              ],
+              "contents": [
+                {
+                  "text": "proper git merge for mind-json"
+                }
+              ],
+              "is_expanded": true
+            }
+          ],
+          "contents": [
+            {
+              "text": "mind plugin"
+            }
+          ],
+          "is_expanded": true
+        },
+        {
+          "contents": [
+            {
+              "text": "gutentag_plus and cscope - can i use it?"
+            }
+          ],
+          "is_expanded": false
+        },
+        {
+          "contents": [
+            {
+              "text": "per-project settings - at least call TagbarTogglePause"
+            }
+          ],
+          "is_expanded": false
+        }
+      ],
+      "contents": [
+        {
+          "text": "lvim"
+        }
+      ],
+      "is_expanded": true
+    },
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "contents": [
+                {
+                  "text": "tmux-dash - configurable dashboard in py"
+                }
+              ],
+              "is_expanded": false
+            },
+            {
+              "contents": [
+                {
+                  "text": "tmuxp - session manager for tmux"
+                }
+              ],
+              "is_expanded": false
+            },
+            {
+              "contents": [
+                {
+                  "text": "tmuxomatic - visual tmux session manager"
+                }
+              ],
+              "is_expanded": false
+            }
+          ],
+          "contents": [
+            {
+              "text": "launchers and sessions"
+            }
+          ],
+          "is_expanded": true
+        }
+      ],
+      "contents": [
+        {
+          "text": "tmux"
+        }
+      ],
+      "is_expanded": true
+    },
+    {
+      "children": [
+        {
+          "contents": [
+            {
+              "text": "upgrade keys - trusted.gpg is deprecated in apt-key"
+            }
+          ],
+          "is_expanded": false
+        },
+        {
+          "contents": [
+            {
+              "text": "edge browser ppa: key EB3E94ADBE1229CF, https://www.ubuntuupdates.org/ppa/microsoft_edge"
+            }
+          ],
+          "is_expanded": false
+        }
+      ],
+      "contents": [
+        {
+          "text": "PKGs & PPAs"
+        }
+      ],
+      "is_expanded": true
+    }
+  ],
+  "contents": [
+    {
+      "text": "lope"
+    }
+  ],
+  "data": ".mind/data/20221012133428-lope.md",
+  "icon": " ",
+  "is_expanded": true,
+  "type": 1,
+  "uid": "20221012105828"
+}
