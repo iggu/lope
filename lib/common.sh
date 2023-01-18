@@ -163,11 +163,11 @@ function :files_actions_apply() # $1=fromComponentName $2=toPath
     local dirOutRoot="$2"
 
     # perform 'overwrite' action for files
-    while read -r inFile ; do # paths relative to patches/leo, can use as is
+    while read -r inFile ; do # inFile is path relative to the patchset root
         local outDir="$dirOutRoot/$(dirname $inFile)"
         mkdir -p "$outDir"
         cp -fv "$dirInOvwr/$inFile" "$outDir/$(basename $inFile)"
     done < <(cd $dirInOvwr && find -type f -printf '%P\n')
 
-    # TODO: place other actions like 'patch' or 'delete' below
+    # TODO: place other actions like 'link', 'patch' or 'delete' below
 }
