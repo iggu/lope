@@ -100,3 +100,26 @@ function grep-w-wo() {
     else
         grep -l "$1" * | xargs -r grep -L "$2"
     fi }
+
+function mind_find_pretty_state_files() {
+    declare dir=${1:-`pwd`} tmpState=`mktemp`
+    while read mindDir ; do
+        local fState="$mindDir/state.json"
+        if [ ! -f "$fState" ]; then continue ; fi
+        mv "$fState" $tmpState
+        cat "$tmpState" | jq -M -S . > "$fState"
+    done <<< $(find "$dir" -type d -name ".mind")
+    rm -f $tmpState ; }
+
+function git-root() {
+    local dir=${1:-`pwd`}
+    while [ "$dir" != "/" ]; do
+        if [ -d "$dir/.git" ]; then
+            echo $dir
+            break
+        else
+            dir=`readlink -m "$dir/.."`
+        fi
+    done }
+
+alias mind-pretty='mind_find_pretty_state_files $(git-root)'

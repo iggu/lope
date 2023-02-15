@@ -91,6 +91,7 @@
 - [ ] **list** - https://github.com/rockerBOO/awesome-neovim
 - [ ] **encryption** - use `/dev/shm` instead of `/tmp` wherever possible
   - [ ] `billyvg/tigris.nvim` - a NodeJS remote plugin that provides async syntax highlighting for js
+- [ ] `sindrets/diffview.nvim` - single tabpage interface for easily cycling through diffs for all modified files for any git rev
 - [ ] `jackguo380/vim-lsp-cxx-highlight` - C/C++/Cuda/ObjC semantic highlighting using LSP
 - [ ] `amerlyq/nou.vim` - notes and outline united
 - [ ] `jakewvincent/mkdnflow.nvim` - fluent navigation of documents and notebooks (AKA "wikis") in markdown
