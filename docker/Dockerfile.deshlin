@@ -23,7 +23,7 @@ COPY ./dots /usr/local/share/lope/dots
 COPY ./stow /usr/local/share/lope
 
 RUN THIS_LIB_PATH=/usr/local/share/lope/ghapps \
-        /usr/local/share/lope/ghapps/ghri.sh -l /usr/local/share/lope/ghapps/pkgs.lst -I \
+        /usr/local/share/lope/ghapps/ghri.sh -l /usr/local/share/lope/ghapps/ghapps.lst -I \
                                              -d /usr/local/lib/ghapps -b /usr/local/bin
 
 RUN printf 'sudo -u $1 /usr/local/share/lope/stow >/dev/null ; \n\
