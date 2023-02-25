@@ -36,6 +36,25 @@ function _ghclone_make_install()
 
 ###############################################################################
 
+function _appimage_install()
+{
+    declare url="$2" app="$1"
+    dpkg -l libfuse2 >/dev/null || sudo apt install libfuse2
+    dpkg -l libfuse2 >/dev/null \
+        && wget -c $url -O $app \
+        && chmod a+x $app
+}
+
+###############################################################################
+
+function install_vnote()
+{
+    _appimage_install "$HOME/.local/bin/vnote"
+        "https://github.com/vnotex/vnote/releases/download/v3.16.0/vnote-linux-x64_v3.16.0.AppImage"
+}
+
+###############################################################################
+
 function install_fzy()
 {
     _ghclone_make_install make,cc,gcc jhawthorn/fzy${1:+/$1}
@@ -221,9 +240,9 @@ function main()
         declare name=${cmd%%:*} tag=${cmd#*:}
         [[ $name = $tag ]] && tag=
         echo -e "**** ${Green} $name${tag:+ : $tag} ${ResetColor} ****"
-        pushd `pwd`
+        pushd `pwd` &>/dev/null
         install_$name $tag
-        popd
+        popd &>/dev/null
     done
 }
 

@@ -3,6 +3,7 @@
 
 # PPAs from launchpad; user/repo as a key and key hash as a value
 declare -A PPA_LAUNCHPAD=(
+    [pbek/qownnotes]="FDF1BE5B4B0286C8D8B0587F54223C6547878405"
     [atareao/telegram]="A3D8A366869FE2DC5FFD79C36A9653F936FD5529"
     [costales/anoise]="0DD210ABE883B905B88B55E7FC14671BA89CA06C"
     [libreoffice/ppa]="36E81C9267FD1383FCC4490983FBA1751378B444"
