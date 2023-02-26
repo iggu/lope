@@ -1,3 +1,4 @@
 # start XTerm in fullscreen using patched Nerd font (suitable for console icons in vim/nvim)
 
-xterm -geom 1000x1000 -fa "Hack Nerd Font Mono:size=9" &
+TERM=xterm-256color
+xterm -ti vt340 -geom 1000x1000 -fa "UbuntuMono Nerd Font:size=12" &
