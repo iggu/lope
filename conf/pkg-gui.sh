@@ -2,7 +2,7 @@
 
 declare -A PKGs=(
     [remote]="remmina remmina-plugin-rdp remmina-plugin-vnc x11vnc"
-    [desktop]="wmctrl xdotool"
+    [desktop]="wmctrl xdotool xsecurelock"
     [code]="gitk kdiff3 codium sublime-text"
     [files]="doublecmd-qt doublecmd-plugins"
     [media]="w3m-img sxiv imagemagick-6.q16hdri mplayer smplayer smplayer-themes smtube qmmp ffmpegthumbnailer ffmpeg mpv"
