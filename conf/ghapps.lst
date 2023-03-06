@@ -28,7 +28,8 @@ phiresky/ripgrep-all
 ogham/exa
 sayanarijit/xplr # os only, no arch in name
 extrawurst/gitui # os only, no arch in name
-neovim/neovim v0.8.1
+neovim/neovim -1
+smallhadroncollider/taskell
 
 # FIXME: gui apps - should be listed outhere
 # vnotex/vnote -1

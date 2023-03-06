@@ -29,7 +29,8 @@ map ad push $mkdir<space>""<left>
 map af push $touch<space>""<left>
 map b rmi
 map <delete> rmi
-map T cd ~/.trash
+map T $taskell
+map H $hnb
 map ~ cd ~
 map . set hidden!
 
