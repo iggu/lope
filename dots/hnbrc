@@ -54,13 +54,13 @@ macro define 'style_standard'
     style background     default/default normal
     end
 macro define 'style_fancy'
-    style menuitem       magenta/white reverse
-    style menutext       yellow/default    normal
-    style parentnode     default/default underline
+    style menuitem       magenta/white   reverse
+    style menutext       yellow/default  normal
+    style parentnode     default/default normal # underline
     style node           default/default normal
     style bullet         blue/default    normal
-    style selected       cyan/default      normal
-    style parentselected green/default      underline
+    style selected       cyan/default    normal
+    style parentselected green/default   normal # underline
     style background     default/default normal
     end
 
@@ -96,6 +96,7 @@ context main
     bind g  "go root"
     bind home  "go root"
 
+    bind q  'context quitsave'
     bind ^Q 'context quitsave'
 
     bind ^G 'context grab'
@@ -145,19 +146,14 @@ context main
     bind ^D  toggle_done
         bind D   toggle_done
 
-        bind u   restore_state
-    bind ^C copy
-        bind y   copy
-    bind ^X save_state
-    bind .. cut
-        bind d   save_state
-        bind ..  cut
-    bind ^V paste
-    bind .. down
-        bind p   paste
-        bind ..  down
+    bind u   restore_state # ^Z
+    bind y   copy # ^C
+    bind d   save_state # ^X
+    bind ..  cut
+    bind p   paste # ^V
+    bind ..  down
+    bind D    remove
     bind del    remove
-        bind D    remove
 
     # TODO: save state - with macro?
     bind sleft "movenode left"
