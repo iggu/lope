@@ -8,7 +8,7 @@ else
 fi
 export FZF_DEFAULT_OPTS="--preview 'tree -C {}'"
 
-toPath=`fzf \
+toPath=`fzf --cycle \
             --header "=== FIND DIRECTORY BY NAME ===" \
             --prompt "FN>> " \
             --bind shift-up:preview-page-up,shift-down:preview-page-down`
