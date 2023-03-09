@@ -56,12 +56,12 @@ macro define 'style_standard'
 macro define 'style_fancy'
     style menuitem       magenta/white   reverse
     style menutext       yellow/default  normal
-    style parentnode     default/default normal # underline
+    style parentnode     default/default bold
     style node           default/default normal
-    style bullet         blue/default    normal
-    style selected       cyan/default    normal
-    style parentselected green/default   normal # underline
-    style background     default/default normal
+    style bullet         default/default normal
+    style selected       white/red       normal
+    style parentselected white/red       bold
+    style background     default/default normal # spaces btw bullet and item
     end
 
 macro style_fancy

@@ -55,6 +55,20 @@ function install_vnote()
 
 ###############################################################################
 
+function install_passh()
+{
+    _ghclone_make_install make,cc,gcc clarkwang/passh${1:+/$1} "" "" "cp -bv passh ${CliArgs[prefix]}/bin"
+}
+
+###############################################################################
+
+function install_kabmat()
+{
+    _ghclone_make_install make,cc,gcc PlankCipher/kabmat${1:+/$1} "" "" "cp -bv kabmat ${CliArgs[prefix]}/bin"
+}
+
+###############################################################################
+
 function install_fzy()
 {
     _ghclone_make_install make,cc,gcc jhawthorn/fzy${1:+/$1}

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 declare -A PKGs=(
-    [sys]="lm-sensors uuid htop direnv"
+    [sys]="lm-sensors uuid htop direnv net-tools"
     [arc]="atool rar unrar libunrar5 zip unzip p7zip-full p7zip-rar"
     [comp]="automake autoconf pkg-config cmake build-essential libtool python3 python3-pip"
     [media]="chafa exif mpg321 vorbis-tools"
