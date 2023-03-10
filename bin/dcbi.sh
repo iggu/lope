@@ -62,6 +62,14 @@ function install_passh()
 
 ###############################################################################
 
+function install_rdrview()
+{
+    :require-pkgs /usr/include/seccomp.h:libseccomp-dev /usr/include/x86_64-linux-gnu/curl/curl.h:libcurl4-gnutls-dev
+    _ghclone_make_install make,cc,gcc eafer/rdrview${1:+/$1} "" "" "cp -bv rdrview ${CliArgs[prefix]}/bin"
+}
+
+###############################################################################
+
 function install_kabmat()
 {
     _ghclone_make_install make,cc,gcc PlankCipher/kabmat${1:+/$1} "" "" "cp -bv kabmat ${CliArgs[prefix]}/bin"
