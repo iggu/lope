@@ -269,6 +269,7 @@ local function init_plugins_editor()
             visual: ato="S", acl="gS";
             delete="ds"; change="cs" ]]
         },
+        { 'gennaro-tedesco/nvim-peekup' }, -- "" to show registers menu, "x to clear them all, C-j, C-k to scroll
         -- DECORATIONS
         { 'm-demare/hlargs.nvim' }, -- highlight arguments' definitions and usages, asynchronously, using Treesitter
         { 'Pocco81/HighStr.nvim' }, -- Permanently highlight selection
@@ -309,6 +310,7 @@ local function init_plugins_ide()
         -- CODE MANIPULATIONS
         { 'sbdchd/neoformat' },
         { 'folke/todo-comments.nvim' }, -- use :Todo... commands
+        { 'Wansmer/treesj' }, -- :TSJToggle, :TSJSplit, :TSJJoin
 
         -- SYMBOLS NAVIGATION
         -- { 'c0r73x/neotags.lua' },
@@ -326,7 +328,6 @@ local function init_plugins_ide()
         { 'ludovicchabant/vim-gutentags' }, -- general-purpose project-wide tags management tool
 
         -- CONTENT NAVIGATION
-        { 'chentoast/marks.nvim' }, -- interact and manipulate vim marks
         { 'zhimsel/vim-stay' }, -- restore cursor pos when reopen file
         -- choose win in complex layouts with '-' key (activates the mode where other ops are also avail)
         -- tabs: 0=first, [=prev, ]=next, $=last, x=close
@@ -358,9 +359,10 @@ local function init_plugins_colorshemes()
         { 'sainnhe/gruvbox-material' }, { 'sainnhe/everforest' }, { 'Tsuzat/NeoSolarized.nvim' },
         { "morhetz/gruvbox" }, { "tomasr/molokai" }, { "Mofiqul/dracula.nvim" }, { "jnurmine/Zenburn" },
         { "kyoz/purify", rtp = "vim" }, { "nanotech/jellybeans.vim" }, { "arcticicestudio/nord-vim" },
-        { "jacoborus/tender.vim" },
+        { "jacoborus/tender.vim" }, { 'safv12/andromeda.vim' }, { 'NTBBloodbath/sweetie.nvim' },
         { 'savq/melange' }, { 'bluz71/vim-moonfly-colors' }, { 'liuchengxu/space-vim-theme' },
         { 'Shatur/neovim-ayu' }, { 'EdenEast/nightfox.nvim' }, { 'rebelot/kanagawa.nvim' },
+        { 'noorwachid/nvim-nightsky' }, { 'talha-akram/noctis.nvim' }, --<< very good
         -- not working schemes: they do not color the code, and this is already in: { "folke/tokyonight.nvim" },
         -- { 'AlessandroYorba/Despacio', setup = function() vim.g.despacio_Pitc = 1 end },
         -- { 'junegunn/seoul256.vim', setup = function() vim.g.seoul256_background = 233 end }, --[[233=darkest, 236=lightest; not working here]]
@@ -373,6 +375,16 @@ init_plugins_colorshemes()
 
 -- Which Keys {{{
 local function init_whichkeys_menu()
+
+    local function format()
+        lvim.builtin.which_key.mappings["F"] = {
+            name = "Format",
+            j = { ":TSJJoin<CR>", "{} Block Join" },
+            s = { ":TSJSplit<CR>", "{} Block Split" },
+        }
+    end
+
+    format()
 
     local function highlights()
         lvim.builtin.which_key.vmappings["H"] = {
@@ -483,8 +495,9 @@ local function init_whichkeys_menu()
         lvim.builtin.which_key.mappings.s.w = { ":Skylight! word<cr>", "Word UC in ThisBuf" }
         lvim.builtin.which_key.mappings.s.s = { ":Telescope resume<cr>", "Resume last search" }
         lvim.builtin.which_key.mappings.s.G = { ":Telescope grep_string<cr>", "Fuzzy for Word UC" }
+        lvim.builtin.which_key.mappings.s.m = { ":Telescope marks<cr>", "Search for Media" }
         lvim.builtin.which_key.mappings.s.g = { ":Telescope current_buffer_fuzzy_find<cr>", "Fizzy in Buffer" }
-        lvim.builtin.which_key.mappings.s.m = { ":Telescope media_files<cr>", "Search for Media" }
+        lvim.builtin.which_key.mappings.s.M = { ":Telescope media_files<cr>", "Search for Media" }
         lvim.builtin.which_key.mappings.s.p = { ":<cmd>Pounce<cr>", "Pounce" }
         lvim.builtin.which_key.mappings.s.P = { ":<cmd>PounceRepeat<cr>", "Pounce Repeat" }
         lvim.builtin.which_key.mappings.s.A = { "<cmd>Telescope projects<CR>", "Projects" }
@@ -616,11 +629,13 @@ init_autocommands()
 
 -- Plugins Force Init {{{
 local function init_plugins_setup()
-    local mods = {
+    local hasSetup = {
         ['telescope'] = {},
         ['todo-comments'] = {},
         ['aerial'] = {},
         ['mind'] = {},
+        ['glow'] = {},
+        ['treesj'] = { use_default_keymaps = false, },
         ['murmur'] = {},
         ['eyeliner'] = { highlight_on_key = true },
         -- ['neotags'] = { enable = true, ctags = { run = true, directory = '~/.cache/nvim/ctags' } },
@@ -632,8 +647,15 @@ local function init_plugins_setup()
         ['sidebar-nvim'] = { open = false, side = "left", initial_width = 25,
             sections = { "symbols", "git", "todos", "diagnostics", }, },
     }
-    for m, o in pairs(mods) do
+    for m, o in pairs(hasSetup) do
         pcall(function() require(m).setup(o) end)
+    end
+
+    local hasInit = {
+        ['toggle_lsp_diagnostics'] = {},
+    }
+    for m, o in pairs(hasInit) do
+        pcall(function() require(m).init(o) end)
     end
     -- pcall( function() require('telescope').load_extension('media_files') end )
     require("telescope").load_extension("dir") -- `:Telescope dir live_grep` or `:Telescope dir find_files`

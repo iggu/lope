@@ -27,7 +27,7 @@ declare -A stations=(
   [Electro: Nightride FM]=https://stream.nightride.fm/nightride.ogg
   [Chill: Japanese Lofi]=https://www.youtube.com/watch?v=-9gEgshJUuY
   [Chill: Code Radio]=https://coderadio-admin.freecodecamp.org/radio/8010/radio.mp3
-  [Relax: Effect And Product]=https://www.youtube.com/watch?v=n7IVI4MO9Xk
+  [Chill: Calm Focus Mix]=https://www.youtube.com/watch?v=BYl7v0YsX9g
   [Relax: Hang Drum]=https://www.youtube.com/watch?v=szyyoAzDWHM
   [Relax: Mantra]=http://c22.radioboss.fm/playlist/291/stream.m3u
 )
