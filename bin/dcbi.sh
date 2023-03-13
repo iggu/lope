@@ -193,6 +193,14 @@ function install_nerdfonts()
 
 ###############################################################################
 
+function install_qmmpskins()
+{
+    local zip=`mktemp --dry-run --suffix=.zip`
+    wget -qO $zip http://imbicile.pp.ru/wp-content/uploads/2015/12/skins.zip &&
+        unzip -n $zip -d ~/.qmmp/ &&
+        rm $zip
+}
+
 function prepare()
 {
     local na=$#
