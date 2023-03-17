@@ -8,7 +8,7 @@ else
 fi
 export FZF_DEFAULT_OPTS="--preview 'bat -f {}'" #'--no-height --color=bg+:#343d46,gutter:-1,pointer:#ff3c3c,info:#0dbc79,hl:#0dbc79,hl+:#23d18b'
 
-toPath=`fzf \
+toPath=`fzf --cycle \
             --header "=== FIND BY FILENAME ===" \
             --prompt "FN>> " \
             --preview-window 'right,60%,border-bottom,+{2}+3/3,~3' \

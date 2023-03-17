@@ -10,7 +10,7 @@ export FZF_DEFAULT_COMMAND=${INITIAL_QUERY:+"$RG_PREFIX $(printf %q "$INITIAL_QU
 
 
 IFS=: read -ra selected < <(
-  fzf --ansi \
+  fzf --cycle --ansi \
       --disabled --query "$INITIAL_QUERY" \
       --header "=== FIND BY CONTENT ===" \
       --prompt "TEXT>> " \

@@ -55,6 +55,28 @@ function install_vnote()
 
 ###############################################################################
 
+function install_passh()
+{
+    _ghclone_make_install make,cc,gcc clarkwang/passh${1:+/$1} "" "" "cp -bv passh ${CliArgs[prefix]}/bin"
+}
+
+###############################################################################
+
+function install_rdrview()
+{
+    :require-pkgs /usr/include/seccomp.h:libseccomp-dev /usr/include/x86_64-linux-gnu/curl/curl.h:libcurl4-gnutls-dev
+    _ghclone_make_install make,cc,gcc eafer/rdrview${1:+/$1} "" "" "cp -bv rdrview ${CliArgs[prefix]}/bin"
+}
+
+###############################################################################
+
+function install_kabmat()
+{
+    _ghclone_make_install make,cc,gcc PlankCipher/kabmat${1:+/$1} "" "" "cp -bv kabmat ${CliArgs[prefix]}/bin"
+}
+
+###############################################################################
+
 function install_fzy()
 {
     _ghclone_make_install make,cc,gcc jhawthorn/fzy${1:+/$1}
@@ -192,6 +214,14 @@ function install_nerdfonts()
 }
 
 ###############################################################################
+
+function install_qmmpskins()
+{
+    local zip=`mktemp --dry-run --suffix=.zip`
+    wget -qO $zip http://imbicile.pp.ru/wp-content/uploads/2015/12/skins.zip &&
+        unzip -n $zip -d ~/.qmmp/ &&
+        rm $zip
+}
 
 function prepare()
 {

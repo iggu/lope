@@ -19,6 +19,8 @@ cmap <down> cmd-history-next
 
 map <c-g> quit
 
+map w :bash
+
 # execute current file (must be executable)
 map x $$f
 map X !$f
@@ -29,7 +31,8 @@ map ad push $mkdir<space>""<left>
 map af push $touch<space>""<left>
 map b rmi
 map <delete> rmi
-map T cd ~/.trash
+map T $taskell
+map H $hnb
 map ~ cd ~
 map . set hidden!
 
@@ -99,7 +102,13 @@ cmd open ${{
 cmd rmi ${{
     set -f
     # if dialog --defaultno --yesno "Delete '$fx'?" 0 0; then rm -rf $fx; fi
-    read -p "delete '$fx'? [y/n] " -n1 ans
+    n=`echo "$fx" | wc -l`
+    echo
+    echo "Files to delete ($n):"
+    while read F ; do
+        echo "  - $F"
+    done <<< "$fx"
+    read -p "Proceed with DELETE? [y/n] " -n1 ans
     [ $ans = "y" ] && rm -rf $fx
     echo
 }}
@@ -114,6 +123,13 @@ cmd extract ${{
         *.rar) unrar x $f;;
         *.7z) 7z x $f;;
     esac
+}}
+
+cmd bash ${{
+    BashRC=`mktemp`
+    echo -e "source $HOME/.bashrc \nPS1=\"\$PS1\[\033[00;31m\]|>LF<|\[\033[00m\] \" \n" > "$BashRC"
+    bash --rcfile "$BashRC"
+    rm "$BashRC"
 }}
 
 # compress current file or selected files with tar and gunzip

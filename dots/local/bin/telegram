@@ -1,0 +1,11 @@
+#!/bin/bash
+
+declare -a T_EXE=( "/opt/telegram/Telegram" )
+
+for texe in ${T_EXE[@]} ; do
+    if [ -x "$texe" ] ; then
+        echo $texe
+        $texe
+        break
+    fi
+done

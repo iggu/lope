@@ -73,24 +73,44 @@ function :fail() # 1=errorCode, 2=erroMessage, 3..=printfParams
     [ "${UID}" != "0" ] && :fail ${1:-1} "Must be root" "(you are: `whoami`)"
 }
 
-# List commands:packages which are stictly required
-# If command and package are the same - then no : is required, a single word is enough
-# Example: gettext libtool:libtool-bin
+# # Check for packages to be installed via testing given commands or files.
+# Args: anyof command[:package], /file/to/exist:package
+# If package for command is omitted - then it is assumed that it has the same name as command.
+# Example: gettext libtool:libtool-bin /usr/include/seccomp.h:libseccomp-dev
 :require-pkgs()
 {
-    declare -a absent
+    declare -a absentcommands absentfiles
     for meta in $@ ; do
-        local exe=`echo $meta | cut -d':' -f1`
-        command -v $exe >/dev/null || absent+=($meta)
+        local term=`echo $meta | cut -d':' -f1`
+        if [[ $term == /* ]] ; then
+            [ -f "$term" ] || absentfiles+=($meta)
+        else
+            command -v $term >/dev/null || absentcommands+=($meta)
+        fi
     done
 
-    if [ -n "$absent" ] ; then
-        declare -a pkgs cmds
-        for a in ${absent[@]}; do
-            cmds+=(`echo $a | cut -d':' -f1`)
-            pkgs+=(`echo $a | cut -d':' -f2`)
-        done
-        :fail 2 "Require packages" "[" ${pkgs[@]} "] for commands [" ${cmds[@]} "]"
+    declare allMissingPackages=""
+    for sfx in command file ; do
+        declare -n absent="absent${sfx}s"
+        if [ -n "${absent}" ] ; then
+            for a in ${absent[@]}; do
+                local test=(`echo $a | cut -d':' -f1`)
+                local pkg=(`echo $a | cut -d':' -f2`) # for single field returns it despite the requested number
+                echo "Test for $sfx '$test' from package '$pkg' failed"
+                allMissingPackages+="$pkg " 2>&1
+            done
+            # echo -e "${Red}Missing packages [${BoldRed}" ${pkgs[@]} "${Red}] for $sfx [" ${tests[@]} "]${ResetColor}" >&2
+            hasMissing=yes
+        fi
+    done
+    if [ -n "${allMissingPackages}" ] ; then
+        read -p "Install missing packages [ ${allMissingPackages[@]} ] ? (y/...) "
+        if [ "${REPLY,,}" = y ]; then
+            sudo apt-get install -y ${allMissingPackages[@]}
+            :require-pkgs "$@"
+        else
+            :fail 2 "[ ${allMissingPackages[@]} ]" "Install missing packages to continue"
+        fi
     fi
 }
 
@@ -163,11 +183,11 @@ function :files_actions_apply() # $1=fromComponentName $2=toPath
     local dirOutRoot="$2"
 
     # perform 'overwrite' action for files
-    while read -r inFile ; do # paths relative to patches/leo, can use as is
+    while read -r inFile ; do # inFile is path relative to the patchset root
         local outDir="$dirOutRoot/$(dirname $inFile)"
         mkdir -p "$outDir"
         cp -fv "$dirInOvwr/$inFile" "$outDir/$(basename $inFile)"
     done < <(cd $dirInOvwr && find -type f -printf '%P\n')
 
-    # TODO: place other actions like 'patch' or 'delete' below
+    # TODO: place other actions like 'link', 'patch' or 'delete' below
 }
