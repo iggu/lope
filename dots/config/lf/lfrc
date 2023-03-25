@@ -23,7 +23,14 @@ map w :bash
 
 # execute current file (must be executable)
 map x $$f
-map X !$f
+map X !f
+
+# toggle executable flag for a single file under cursor
+map + %{{
+    if [ -x "$f" ] ; then op="-" ; else op="+"; fi
+    chmod a${op}x $f
+    lf -remote "send $id reload"
+}}
 
 map P :Link
 # `mkdir` and `touch` mappings
@@ -43,7 +50,7 @@ map I $less -XR $f
 map L $command pistol $f | less -XR
 
 map ; redraw # default '<c-l>' clashes with tmux and vim navigations
-map | push !cat<space>$f<space>|<space>
+map | push !cat<space>$f<space>|<space> # pipe one command with another
 
 
 map C $fzf-cd
@@ -68,7 +75,7 @@ cmd rename_nx %[ -e $1 ] && printf "file exists" || mv $f $1
 map ra ${{
 	# cursor at the end
 	filename="${f##*/}"
-	# quote it so we won't deal with quotes in the lf -remote command
+	# quote it so we wont deal with quotes in the lf -remote command
 	filename="$(printf '%q' "$filename")"
 	filename="${filename// /<space>}"
 	lf -remote "send $id push :rename_nx<space>$filename"
