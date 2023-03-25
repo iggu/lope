@@ -72,10 +72,12 @@ local function init_keymaps()
     lvim.keys.normal_mode["<C-j>"] = "<Cmd>StripTrailingWhitespace<CR>"
     lvim.keys.normal_mode["<C-k>"] = "<Cmd>ClangdSwitchSourceHeader<CR>"
     -- open Mind only when it is required and close it when done
-    lvim.keys.normal_mode["<M-w>"] = "<Cmd>MindOpenProject<CR><C-W>L<Cmd>Goyo<CR>" -- <Cmd>vertical resize 50%<CR><C-W>h"
-    lvim.keys.normal_mode["<M-W>"] = "<Cmd>Goyo!<CR><Cmd>MindClose<CR>"
+    -- lvim.keys.normal_mode["<M-w>"] = "<Cmd>MindOpenProject<CR><C-W>L<Cmd>Goyo<CR>" -- <Cmd>vertical resize 50%<CR><C-W>h"
+    -- lvim.keys.normal_mode["<M-W>"] = "<Cmd>Goyo!<CR><Cmd>MindClose<CR>"
     -- vim.keymap.set('n', '<C-w>z', '<Cmd>WindowsMaximize<CR>')
     lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
+    lvim.keys.normal_mode["\"`"] = ":Telescope marks<cr>"
+    lvim.keys.normal_mode["\"\""] = ":Telescope registers<cr>"
     vim.cmd [[
               nmap  -  <Plug>(choosewin)
               nmap     <C-F>f <Plug>CtrlSFPrompt
@@ -159,11 +161,6 @@ local function init_plugins_builtin()
     }
     lvim.builtin.treesitter.ignore_install = { "haskell" } -- lua always give weird errors
     lvim.builtin.treesitter.highlight.enabled = true
-    lvim.builtin.treesitter.rainbow = {
-        enable = true, -- disable = { "jsx", "cpp" }, list of languages you want to disable the plugin for
-        extended_mode = true, -- Also highlight non-bracket delimiters like html tags, boolean or table: lang -> boolean
-        max_file_lines = nil, -- Do not enable for files with more than n lines, int
-    }
 end
 
 init_plugins_builtin()
@@ -190,6 +187,7 @@ local function init_plugins_vimg_options()
     vim.g.vista_stay_on_open = 0
     -- vim.g.vista_sidebar_position = "right" -- any attemp to use this option leads to total mess
     vim.g.indent_blankline_filetype_exclude = lvim.userdata.exclude_filetypes
+    vim.opt.fillchars:append { diff = "╱" } -- diagonal lines in place of deleted lines in diff-mode instead of '-'
 
     -- https://www.reddit.com/r/vim/comments/d77t6j/guide_how_to_setup_ctags_with_gutentags_properly/
     -- from: https://github.com/kuator/nvim/blob/master/lua/plugins/vim-gutentags.lua
@@ -238,11 +236,12 @@ local function init_plugins_tools()
 
         -- INTEGRATIONS
         { 'is0n/fm-nvim' }, -- use your favorite terminal file managers (and fuzzy finders)
+        { 'sindrets/diffview.nvim' }, -- single tabpage interface for cycling through diffs for any git rev.
         { 'aspeddro/gitui.nvim' },
         { 'ellisonleao/glow.nvim' },
         { 'junegunn/limelight.vim' },
         { 'junegunn/goyo.vim' },
-        { 'phaazon/mind.nvim' },
+        -- { 'phaazon/mind.nvim' }, -- `hnb` tui behaves better
         -- { 'simplenote-vim/simplenote.vim' },
 
         -- HELPERS
@@ -268,13 +267,13 @@ local function init_plugins_editor()
             normal: ato="ys", acl="yS" (curline shortcuts: yss, ySS)
             visual: ato="S", acl="gS";
             delete="ds"; change="cs" ]]
+        -- { 'gennaro-tedesco/nvim-peekup' }, -- "" to show registers menu, "x to clear them all, C-j, C-k to scroll
         },
-        { 'gennaro-tedesco/nvim-peekup' }, -- "" to show registers menu, "x to clear them all, C-j, C-k to scroll
         -- DECORATIONS
         { 'm-demare/hlargs.nvim' }, -- highlight arguments' definitions and usages, asynchronously, using Treesitter
         { 'Pocco81/HighStr.nvim' }, -- Permanently highlight selection
         { 'haringsrob/nvim_context_vt' }, -- Shows virtual text of the current context at the end of: functions, if, for, ...
-        { 'p00f/nvim-ts-rainbow' }, -- Rainbow parentheses for neovim using tree-sitter
+        { 'HiPhish/nvim-ts-rainbow2' }, -- p00f/nvim-ts-rainbow is archived; suddenly all kind of rainbow plugins stopped to work
         -- {'pseewald/vim-anyfold'}, -- folds are pretty unusable since preview windows content is folded too
         { "nyngwang/murmur.lua" }, -- highlight word under cursor - some themes do it themeselves
 
@@ -446,13 +445,7 @@ local function init_whichkeys_menu()
 
     local function git()
         lvim.builtin.which_key.mappings.g.G = { ":Gitui<cr>", "GitUI" }
-        lvim.builtin.which_key.mappings.g.f = {
-            name = "+Fuzzy",
-            l = { ":lua lvim.userdata.terminal_cmd_toggle('git fuzzy log')<cr>", "Log" },
-            r = { ":lua lvim.userdata.terminal_cmd_toggle('git fuzzy reflog')<cr>", "RefLog" },
-            s = { ":lua lvim.userdata.terminal_cmd_toggle('git fuzzy status')<cr>", "Status" },
-            S = { ":lua lvim.userdata.terminal_cmd_toggle('git fuzzy stash')<cr>", "Stash" },
-        }
+        lvim.builtin.which_key.mappings.g.v = { ":DiffviewOpen<cr>", "Diffview" }
     end
 
     git()
@@ -471,12 +464,13 @@ local function init_whichkeys_menu()
             -- l = { [[:lua lvim.userdata.terminal_cmd_toggle('lf')<cr>]], "LF" },
             L = { [[:lua lvim.userdata.terminal_cmd_toggle('xplr')<cr>]], "XPLR" },
             --n = {":lua lvim.userdata.terminal_cmd_toggle('nnn-nerd-static')<cr>", "NNN"},
-            t = { ":lua lvim.userdata.terminal_cmd_toggle('taskell .todo.taskell')<cr>", "Taskell" },
-            T = { ":lua lvim.userdata.terminal_cmd_toggle('tudu -f .todo.tudu')<cr>", "TuDu" },
-            h = { ":lua lvim.userdata.terminal_cmd_toggle('hnb .todo.hnb')<cr>", "HierNoteBook" },
             p = { ":lua lvim.userdata.terminal_cmd_toggle('htop')<cr>", "Top" },
             P = { ":lua lvim.userdata.terminal_cmd_toggle('btop')<cr>", "BTop" },
             w = { ":lua lvim.userdata.terminal_cmd_toggle('curl ru.wttr.in && read -n 1')<cr>", "Weather" },
+            -- open todo files in project's root - where .git folder is living
+            h = { ":lua lvim.userdata.terminal_cmd_toggle('_GR=$(git rev-parse --show-toplevel); hnb \"$_GR${_GR:+/.todo.hnb}\"')<cr>", "HierNoteBook" },
+            t = { ":lua lvim.userdata.terminal_cmd_toggle('_GR=$(git rev-parse --show-toplevel); taskell \"$_GR${_GR:+/.todo.taskell}\"')<cr>", "Taskell" },
+            T = { ":lua lvim.userdata.terminal_cmd_toggle('_GR=$(git rev-parse --show-toplevel); tudu ${_GR:+-f} \"$_GR${_GR:+/.todo.tudu}\"')<cr>", "TuDu" },
         }
     end
 
@@ -613,14 +607,20 @@ local function init_autocommands()
     -- { "BufWinEnter", "*.lua", "setlocal ts=8 sw=8" },
     -- }
     vim.api.nvim_create_autocmd("BufEnter", {
-        pattern = { "*.md", "*.mkd", "*.md.enc", "*.mkd.enc" },
-        -- enable wrap mode for json files only
+        pattern = { "*.md", "*.mkd", "*.md.enc", "*.mkd.enc", "*.taskell" },
         command = "setlocal nospell syntax=markdown",
     })
     vim.api.nvim_create_autocmd("BufEnter", {
+        pattern = { "*.tudu", "*.hnb", "*.tines" },
+        command = "setlocal nospell syntax=xml",
+    })
+    vim.api.nvim_create_autocmd("BufEnter", {
         pattern = { "Dockerfile.*" },
-        -- enable wrap mode for json files only
         command = "setlocal ft=dockerfile",
+    })
+    vim.api.nvim_create_autocmd("User", {
+        pattern = { "DiffviewViewOpened" },
+        command = "nmap <buffer> q :DiffviewClose<CR>",
     })
 end
 
@@ -633,7 +633,7 @@ local function init_plugins_setup()
         ['telescope'] = {},
         ['todo-comments'] = {},
         ['aerial'] = {},
-        ['mind'] = {},
+        -- ['mind'] = {},
         ['glow'] = {},
         ['treesj'] = { use_default_keymaps = false, },
         ['murmur'] = {},
@@ -646,6 +646,8 @@ local function init_plugins_setup()
             ignore = { filetype = lvim.userdata.exclude_filetypes }, },
         ['sidebar-nvim'] = { open = false, side = "left", initial_width = 25,
             sections = { "symbols", "git", "todos", "diagnostics", }, },
+        ["nvim-treesitter.configs"] = { rainbow = { enable = true, query = 'rainbow-parens',
+                                            strategy = require 'ts-rainbow.strategy.global', } },
     }
     for m, o in pairs(hasSetup) do
         pcall(function() require(m).setup(o) end)
@@ -659,6 +661,9 @@ local function init_plugins_setup()
     end
     -- pcall( function() require('telescope').load_extension('media_files') end )
     require("telescope").load_extension("dir") -- `:Telescope dir live_grep` or `:Telescope dir find_files`
+    -- sumneko_lua asks about working environment on every startup - get rid of it
+    require('lspconfig')['sumneko_lua'].setup {
+        settings = { Lua = { workspace = { checkThirdParty = false, } } } }
 end
 
 init_plugins_setup()
