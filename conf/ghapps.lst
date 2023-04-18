@@ -4,34 +4,38 @@
 
 ## have releases both for x86_64 and aarch64
 microsoft/ripgrep-prebuilt # original repo only for x86_64
-ajeetdsouza/zoxide
+ajeetdsouza/zoxide # remembers which directories you use most frequently
 ClementTsang/bottom # top-like
-Peltoche/lsd
-bmatsuo/jqsh
-charmbracelet/glow
+lsd-rs/lsd # ls with lots of added feature
+bmatsuo/jqsh # nteractive wrapper to the jq
+charmbracelet/glow # render markdown
 dandavison/delta # diff viewer
-eth-p/bat-extras
+eth-p/bat-extras # batgrep, batman, batpipe, batwatch, batdiff, prettybat
 gokcehan/lf # 3-pane file manager
 jesseduffield/lazydocker # docker tui
 jesseduffield/lazygit # git tui
 junegunn/fzf # fyzzy finder tui
 ms-jpq/sad # Batch File Edit tool, sed with preview
-sharkdp/bat
-sharkdp/fd
-bootandy/dust
-koalaman/shellcheck
-aristocratos/btop
-FiloSottile/age
+sharkdp/bat # syntax highlighting
+sharkdp/fd # alternative to find
+bootandy/dust # du alternative
+koalaman/shellcheck # warnings and suggestions for bash/sh shell scripts
+aristocratos/btop # resource monitor with lots of stats
+FiloSottile/age #  file encryption tool, format, and Go library.
 muesli/duf # Disk Usage/Free Utility
 zyedidia/micro # nano editor on steroids - customizations + plugins
+charmbracelet/gum # tool for glamorous shell scripts (widgets).
+noahgorstein/jqp # TUI playground for exploring jq
 
 ## x86 only - use with -I for other arches
-phiresky/ripgrep-all
-ogham/exa
+phiresky/ripgrep-all # look for a regex in a multitude of file types
+ogham/exa # ls alternative
 sayanarijit/xplr # os only, no arch in name
 extrawurst/gitui # os only, no arch in name
+smallhadroncollider/taskell # kanban board/task manager
+ArthurSonzogni/json-tui # interactive json viewer with branch collapsing
+
 neovim/neovim -1
-smallhadroncollider/taskell
 
 # FIXME: gui apps - should be listed outhere
 # vnotex/vnote -1

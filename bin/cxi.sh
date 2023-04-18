@@ -8,6 +8,26 @@ source $THIS_SELF_DIR/_include.sh
 
 ###############################################################################
 
+function install_gittools()
+{
+    local grv="${CliArgs[bin]}/grv"
+    if [[ -x "$grv" ]] ; then
+        echo "GRV tool seems to be already installed: $grv"
+    else
+        wget "https://github.com/rgburke/grv/releases/download/v0.3.2/grv_v0.3.2_linux64" -O "$grv"
+        chmod a+x -v "$grv"
+    fi
+
+    if command -v git-crecord >/dev/null; then
+        echo "GIT CRECORD plugin seems to be already installed"
+    else
+        :require-py3 8
+        pip install git-crecord
+    fi
+}
+
+###############################################################################
+
 function install_leo()
 {
     :require-py3 8
