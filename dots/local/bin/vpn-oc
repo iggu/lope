@@ -17,7 +17,7 @@ function conn_establish()
     return
 }
 
-function conn_setup()
+function opts_create()
 {
     function prereq_check() { :; }
         local fpPfx="$1"
@@ -75,6 +75,27 @@ function conn_setup()
 
 }
 
-conn_setup "$@"
+function opts_reenc()
+{
+    local fpOptsPfx="$1" fpOptsEnc="$1.enc"
+    [ ! -f "$fpOptsEnc" ] && echo "Options enc-file '$fpOptsEnc' not found" && exit 2
+
+    while true; do
+        echo -n "Enter old VPN/enc password: " ; read -r -s sVpnPswdOld ; echo
+        encpipe -d -p "$sVpnPswdOld" -i "$fpOptsEnc" >/dev/null && break
+    done
+
+    local sVpnPswdNew1=1 sVpnPswdNew2=2
+    while [ -z "$sVpnPswdNew1" ] || [ -z "$sVpnPswdNew2" ] || [ "$sVpnPswdNew1" != "$sVpnPswdNew2" ] ; do
+        echo -n "Enter new VPN/enc password: " ; read -r -s sVpnPswdNew1 ; echo
+        echo -n "Confirm new VPN/enc password: " ; read -r -s sVpnPswdNew2 ; echo
+        echo
+    done
+
+    encpipe -d -i "$fpOptsEnc" -p "$sVpnPswdOld" | encpipe -e -o "$fpOptsPfx.new.enc" -p "$sVpnPswdNew1"
+    mv "$fpOptsEnc" "$fpOptsPfx.old.enc" ; mv "$fpOptsPfx.new.enc" "$fpOptsEnc"
+}
+
+opts_reenc "$@"
 
 exit 0
