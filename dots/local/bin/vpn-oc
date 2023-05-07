@@ -1,0 +1,80 @@
+#!/bin/bash
+
+function conn_establish()
+{
+    local fpOpts="$1" sVpnPswd="$2" sOcCa="$3"
+
+    [ ! -f "$fpOpts" ] && echo "Options enc-file '$fpOpts' not found" && exit 2
+    eval "declare -A aaOpts=( $(encpipe -d -p "$sVpnPswd" -i "$fpOpts") )"
+    # echo "${!aaOpts[@]} => ${aaOpts[@]}"
+    # false
+    return
+
+    echo -e "$sPfxPswd\n$sVpnPswd\n" | \
+        sudo -n openconnect --passwd-on-stdin $sOcCa \
+             -c "$fpPfx" -u "$sPfxDomain\\$sPfxUser" "$sSrvrAddr"
+
+    return
+}
+
+function conn_setup()
+{
+    function prereq_check() { :; }
+        local fpPfx="$1"
+        [ ! -f "$fpPfx" ] && echo "PFX file is not available: '$fpPfx'" && exit 1
+        if ! command -v encpipe > /dev/null ; then  echo "'encpipe' command not found" && exit 1 ; fi
+        if ! command -v openconnect > /dev/null ; then  echo "'openconnect' command not found" && exit 1 ; fi
+
+    function srvr_addr_ask() { :; }
+        while true ; do
+            echo -n "???? Server address: " ; read -r sSrvrAddr ; echo
+            ping -q -c 1 "$sSrvrAddr" > /dev/null && break
+        done
+
+    function root_pswd_ask() { :; }
+        while true; do
+            echo -n "???? Local root password: " ; read -r -s sRootPswd ; echo
+            sudo -k # force to ask for password
+            echo "$sRootPswd" | sudo -p "  " -S true && echo && break
+        done
+
+    function pfx_pswd_ask() { :; }
+        while true; do
+            echo -n "???? PFX certifiate password ($fpPfx): " ; read -r -s sPfxPswd ; echo
+            sPfxCertBody=$(sPfxPswd="$sPfxPswd" openssl pkcs12 -in "$fpPfx" -clcerts -nokeys -passin env:sPfxPswd)
+            [ "$?" = "0" ] && break
+        done
+
+    function pfx_cert_vals() { :; }
+        local sPfxLogin=$(echo $sPfxCertBody | head -n3 | tail -n1 | cut -d',' -f6 | cut -d'=' -f2 | tr -d ' ')
+        local sPfxDomain=${sPfxLogin##*@}
+        local sPfxUser=${sPfxLogin%%@*}
+        [ -z "$sPfxUser" ] && echo "Username is not set in the certificate" && exit 1
+        [ -z "$sPfxDomain" ] && echo "Domain is not set in the certificate" && exit 1
+
+    function props_enc_write() { :; }
+        local fpTmpOpts="$(mktemp -u).enc"
+
+        while true; do
+            echo -n "???? VPN password (will be used as settings file encryption password either): "
+            read -r -s sVpnPswd ; echo
+            echo "[certpasswd]=$sPfxPswd [rootpswd]=$sRootPswd [login]=$sPfxDomain\\$sPfxUser [server]=$sSrvrAddr" | \
+                encpipe -e -p "$sVpnPswd" > "${fpTmpOpts}"
+
+            echo "**** I will now try the settings via connection to your VPN ****"
+            echo "       connection details: $sPfxDomain\\$sPfxUser @ $sSrvrAddr"
+
+            if conn_establish "$fpTmpOpts" "$sVpnPswd" "--authenticate" ; then
+                echo "Settings entered above accepted by server; finalizing them to '$fpPfx.enc'"
+                mv "$fpTmpOpts" "$fpPfx.enc"
+                break
+            fi
+
+            echo "~~~~ Server didn't accept your settings. Try re-enter VPN password"
+        done
+
+}
+
+conn_setup "$@"
+
+exit 0
