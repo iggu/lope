@@ -5,23 +5,25 @@
 ## have releases both for x86_64 and aarch64
 microsoft/ripgrep-prebuilt # original repo only for x86_64
 ajeetdsouza/zoxide
-ClementTsang/bottom
+ClementTsang/bottom # top-like
 Peltoche/lsd
 bmatsuo/jqsh
 charmbracelet/glow
-dandavison/delta
+dandavison/delta # diff viewer
 eth-p/bat-extras
-gokcehan/lf
-jesseduffield/lazydocker
-jesseduffield/lazygit
-junegunn/fzf
-ms-jpq/sad
+gokcehan/lf # 3-pane file manager
+jesseduffield/lazydocker # docker tui
+jesseduffield/lazygit # git tui
+junegunn/fzf # fyzzy finder tui
+ms-jpq/sad # Batch File Edit tool, sed with preview
 sharkdp/bat
 sharkdp/fd
 bootandy/dust
 koalaman/shellcheck
 aristocratos/btop
 FiloSottile/age
+muesli/duf # Disk Usage/Free Utility
+zyedidia/micro # nano editor on steroids - customizations + plugins
 
 ## x86 only - use with -I for other arches
 phiresky/ripgrep-all
@@ -40,5 +42,4 @@ smallhadroncollider/taskell
 ## bash scripts - multiple archives, installer cant deal with
 # dylanaraps/fff # source code only
 
-##  bad release urls - only arch, or only os, or another mess
-# doronbehar/pistol # single binary, no extra name, no archive
+##  bad release urls - only arch, or only os, or another me doronbehar/pistol # single binary, no extra name, no archive

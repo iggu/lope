@@ -8,5 +8,5 @@ declare -A PKGs=(
     [shell]="tmux silversearcher-ag fd-find ncdu tree mc bash-completion stow jq gawk"
     [get]="youtube-dl yt-dlp wget curl"
     #[lua]="lua5.1 luajit luarocks liblua5.1-0 liblua5.1-0-dev libapr1 libapr1-dev libaprutil1 libaprutil1-dev libaprutil1-dbd-sqlite3 libapreq2-3 libapreq2-dev"
-    [text]="pandoc poppler-utils micro hnb"
+    [text]="pandoc poppler-utils hnb"
 )

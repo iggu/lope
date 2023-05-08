@@ -59,8 +59,8 @@ macro define 'style_fancy'
     style parentnode     default/default bold
     style node           default/default normal
     style bullet         default/default normal
-    style selected       white/red       normal
-    style parentselected white/red       bold
+    style selected       black/white     normal
+    style parentselected black/white     normal
     style background     default/default normal # spaces btw bullet and item
     end
 
@@ -203,9 +203,10 @@ context nodeedit
     bind up    up
     bind down  down
     bind left  left
-    bind ^K    left
+    bind ^I    left # ctrl-i is tab
+    bind tab   left
     bind right right
-    bind ^L    right
+    bind ^O    right
 
     bind return  confirm # ^M hardcoded
     bind esc     cancel
@@ -227,7 +228,7 @@ context nodeedit
     # bkill_word is currently not implemented.
     # bind ^W   bkill_word
     bind ^P   skipword
-    bind ^O   bskipword
+    bind ^U   bskipword
 
 context lineedit
     helptext lineedit
@@ -235,11 +236,13 @@ context lineedit
     bind up      up
     bind down    down
     bind left    left
-    bind ^B      left
+    bind ^I      left
+    bind tab   left
     bind right   right
-    bind ^F      right
+    bind ^O      right
 
     bind return  confirm
+    bind ^C      cancel
     bind esc     cancel
     bind tab     complete
 
@@ -254,6 +257,9 @@ context lineedit
     bind home bol
     bind ^E   eol
     bind end  eol
+
+    bind ^P   skipword
+    bind ^U   bskipword
 
 context confirm
     helptext "| |y| confirm || |return| confirm || |any key| cancel"
