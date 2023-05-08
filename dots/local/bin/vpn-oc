@@ -1,16 +1,34 @@
 #!/bin/bash
 
+
+function crypt_ossl()
+{
+    local args=
+    case "$1" in
+        +) ;;
+        -) args="-d" ;;
+        *) echo "Not supported option '$1' (expect + or -)"; exit 1
+    esac
+    openssl aes-256-cbc $args -salt -pbkdf2 -md sha256 ${2:+-in $2} ${3:+-pass pass:$3}
+    return
+}
+
+function opts_pswd_acq()
+{
+    while true ; do
+        echo -n "Enter VPN/enc password: " ; read -r -s ; echo
+        crypt_ossl - "$1" "$REPLY" >/dev/null && return
+    done
+}
+
 function conn_establish()
 {
     local fpPfx="$1" fpOpts="$2" sVpnPswd="$3" sOcCliArgs="$4"
         [ ! -f "$fpOpts" ] && echo "Options enc-file '$fpOpts' not found" && exit 2
         [ ! -f "$fpPfx" ] && echo "PFX file '$fpPfx' not found" && exit 2
-        encpipe -d -p "$sVpnPswd" -i "$fpOpts" >/dev/null || exit 2
+        crypt_ossl - "$fpOpts" "$sVpnPswd" >/dev/null || exit 2
 
-    eval "declare -A aaOpts=( $(encpipe -d -p "$sVpnPswd" -i "$fpOpts") )"
-    # echo "${!aaOpts[@]} => ${aaOpts[@]}"
-    # false
-    # return
+    eval "declare -A aaOpts=( $(crypt_ossl - "$fpOpts" "$sVpnPswd") )"
 
     echo -e "${aaOpts[certpasswd]}\n$sVpnPswd\n" | \
         sudo openconnect --passwd-on-stdin $sOcCliArgs \
@@ -24,7 +42,7 @@ function opts_create()
     function prereq_check() { :; }
         local fpPfx="$1"
         [ ! -f "$fpPfx" ] && echo "PFX file is not available: '$fpPfx'" && exit 1
-        if ! command -v encpipe > /dev/null ; then  echo "'encpipe' command not found" && exit 1 ; fi
+        if ! command -v openssl > /dev/null ; then  echo "'openssl' command not found" && exit 1 ; fi
         if ! command -v openconnect > /dev/null ; then  echo "'openconnect' command not found" && exit 1 ; fi
 
     function srvr_addr_ask() { :; }
@@ -48,20 +66,20 @@ function opts_create()
         [ -z "$sPfxDomain" ] && echo "Domain is not set in the certificate" && exit 1
 
     function props_enc_write() { :; }
-        local fpTmpOpts="$(mktemp -u).enc"
+        local fpTmpOpts="$(mktemp -u).aes"
 
         while true; do
             echo -n "???? VPN password (will be used as settings file encryption password either): "
             read -r -s sVpnPswd ; echo
             echo "[certpasswd]=$sPfxPswd [login]=$sPfxDomain\\$sPfxUser [server]=$sSrvrAddr" | \
-                encpipe -e -p "$sVpnPswd" > "${fpTmpOpts}"
+                crypt_ossl + "" "$sVpnPswd" > "${fpTmpOpts}"
 
             echo "**** I will now try the settings via connection to your VPN ****"
             echo "       connection details: $sPfxDomain\\$sPfxUser @ $sSrvrAddr"
 
             if conn_establish "$fpPfx" "$fpTmpOpts" "$sVpnPswd" "--authenticate" ; then
-                echo "Settings entered above accepted by server; finalizing them to '$fpPfx.enc'"
-                mv "$fpTmpOpts" "$fpPfx.enc"
+                echo "Settings entered above accepted by server; finalizing them to '$fpPfx.aes'"
+                mv "$fpTmpOpts" "$fpPfx.aes"
                 break
             fi
 
@@ -72,12 +90,12 @@ function opts_create()
 
 function opts_reenc()
 {
-    local fpOptsPfx="$1" fpOptsEnc="$1.enc"
+    local fpOptsPfx="$1" fpOptsEnc="$1.aes"
     [ ! -f "$fpOptsEnc" ] && echo "Options enc-file '$fpOptsEnc' not found" && exit 2
 
     while true; do
         echo -n "Enter old VPN/enc password: " ; read -r -s sVpnPswdOld ; echo
-        encpipe -d -p "$sVpnPswdOld" -i "$fpOptsEnc" >/dev/null && break
+        crypt_ossl - "$fpOptsEnc" "$sVpnPswdOld" >/dev/null && break
     done
 
     local sVpnPswdNew1=1 sVpnPswdNew2=2
@@ -87,23 +105,25 @@ function opts_reenc()
         echo
     done
 
-    encpipe -d -i "$fpOptsEnc" -p "$sVpnPswdOld" | encpipe -e -o "$fpOptsPfx.new.enc" -p "$sVpnPswdNew1"
-    mv "$fpOptsEnc" "$fpOptsPfx.old.enc" ; mv "$fpOptsPfx.new.enc" "$fpOptsEnc"
+    local fpOptsPfxNewEnc="$fpOptsPfx.new.aes"
+    if crypt_ossl - "$fpOptsEnc" "$sVpnPswdOld" | crypt_ossl + "" "$sVpnPswdNew1" > "$fpOptsPfxNewEnc" ; then
+        mv "$fpOptsEnc" "$fpOptsPfx.old.aes" ; mv "$fpOptsPfx.new.aes" "$fpOptsEnc"
+    fi
+}
+
+function opts_show()
+{
+    local fpOpts="${1}.aes"
+    opts_pswd_acq "$fpOpts"
+    crypt_ossl - "$fpOpts" "$REPLY"
 }
 
 function connect()
 {
     local fpPfx="$1"
-    local fpOpts="${fpPfx}.enc"
-
-    while true ; do
-        echo -n "Enter VPN/enc password: " ; read -r -s sVpnPswd ; echo
-        encpipe -d -p "$sVpnPswd" -i "$fpOpts" >/dev/null && break
-    done
-
-    if ! conn_establish "$fpPfx" "$fpOpts" "$sVpnPswd" ; then
-        echo "ooops :("
-    fi
+    local fpOpts="${fpPfx}.aes"
+    opts_pswd_acq "$fpOpts"
+    conn_establish "$fpPfx" "$fpOpts" "$REPLY"
 }
 
 function mode_run()
@@ -112,6 +132,7 @@ function mode_run()
         connect) connect "${@:2}" ;;
         addconn) opts_create "${@:2}" ;;
         chgpswd) opts_reenc "${@:2}" ;;
+        showcon) opts_show  "${@:2}" ;;
         *)
             tput bold
             echo "vpn-oc <command> <path-to-pfx>"
@@ -120,14 +141,15 @@ function mode_run()
             echo "Arguments:"
             echo "  path-to-pfx: file to PFX file with cert and pri-key which to be used to connect to VPN"
             echo "                 where appropriate, it is assumed that connection setting can be found"
-            echo "                 by the same path as PFX file, but with '.enc' extension (if not - error)."
+            echo "                 by the same path as PFX file, but with '.aes' extension (if not - error)."
             echo
             echo "Commands:"
             echo "  connect: established connection using giving PFX and appropriate encrypted settings"
+            echo "  showcon: show the content of the encrypted settings file"
             echo "  addconn: create connection settings for given PFX file;"
-            echo "            some questions to be asked and afterwards <path-to-pfx>.enc file"
+            echo "            some questions to be asked and afterwards <path-to-pfx>.aes file"
             echo "            encrypted with VPN's password created, with all connection details"
-            echo "  chgpswd: re-encrypt connection settings .enc file with another VPN password"
+            echo "  chgpswd: re-encrypt connection settings .aes file with another VPN password"
         esac
     exit 0
 }
