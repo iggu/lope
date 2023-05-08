@@ -2,17 +2,18 @@
 
 function conn_establish()
 {
-    local fpOpts="$1" sVpnPswd="$2" sOcCa="$3"
+    local fpPfx="$1" fpOpts="$2" sVpnPswd="$3" sOcCliArgs="$4"
+        [ ! -f "$fpOpts" ] && echo "Options enc-file '$fpOpts' not found" && exit 2
+        [ ! -f "$fpPfx" ] && echo "PFX file '$fpPfx' not found" && exit 2
 
-    [ ! -f "$fpOpts" ] && echo "Options enc-file '$fpOpts' not found" && exit 2
     eval "declare -A aaOpts=( $(encpipe -d -p "$sVpnPswd" -i "$fpOpts") )"
     # echo "${!aaOpts[@]} => ${aaOpts[@]}"
     # false
-    return
+    # return
 
     echo -e "$sPfxPswd\n$sVpnPswd\n" | \
-        sudo -n openconnect --passwd-on-stdin $sOcCa \
-             -c "$fpPfx" -u "$sPfxDomain\\$sPfxUser" "$sSrvrAddr"
+        sudo openconnect --passwd-on-stdin $sOcCliArgs \
+             -c "$fpPfx" -u "${aaOpts[login]}" "${aaOpts[server]}"
 
     return
 }
@@ -29,13 +30,6 @@ function opts_create()
         while true ; do
             echo -n "???? Server address: " ; read -r sSrvrAddr ; echo
             ping -q -c 1 "$sSrvrAddr" > /dev/null && break
-        done
-
-    function root_pswd_ask() { :; }
-        while true; do
-            echo -n "???? Local root password: " ; read -r -s sRootPswd ; echo
-            sudo -k # force to ask for password
-            echo "$sRootPswd" | sudo -p "  " -S true && echo && break
         done
 
     function pfx_pswd_ask() { :; }
@@ -58,13 +52,13 @@ function opts_create()
         while true; do
             echo -n "???? VPN password (will be used as settings file encryption password either): "
             read -r -s sVpnPswd ; echo
-            echo "[certpasswd]=$sPfxPswd [rootpswd]=$sRootPswd [login]=$sPfxDomain\\$sPfxUser [server]=$sSrvrAddr" | \
+            echo "[certpasswd]=$sPfxPswd [login]=$sPfxDomain\\$sPfxUser [server]=$sSrvrAddr" | \
                 encpipe -e -p "$sVpnPswd" > "${fpTmpOpts}"
 
             echo "**** I will now try the settings via connection to your VPN ****"
             echo "       connection details: $sPfxDomain\\$sPfxUser @ $sSrvrAddr"
 
-            if conn_establish "$fpTmpOpts" "$sVpnPswd" "--authenticate" ; then
+            if conn_establish "$fpPfx" "$fpTmpOpts" "$sVpnPswd" "--authenticate" ; then
                 echo "Settings entered above accepted by server; finalizing them to '$fpPfx.enc'"
                 mv "$fpTmpOpts" "$fpPfx.enc"
                 break
@@ -96,6 +90,29 @@ function opts_reenc()
     mv "$fpOptsEnc" "$fpOptsPfx.old.enc" ; mv "$fpOptsPfx.new.enc" "$fpOptsEnc"
 }
 
-opts_reenc "$@"
 
-exit 0
+function mode_run()
+{
+    case "$1" in
+        addconn) opts_create "${@:2}" ;;
+        chgpswd) opts_reenc "${@:2}" ;;
+        *)
+            tput bold
+            echo "vpn-oc <command> <path-to-pfx>"
+            tput sgr0
+            echo
+            echo "Arguments:"
+            echo "  path-to-pfx: file to PFX file with cert and pri-key which to be used to connect to VPN"
+            echo "                 where appropriate, it is assumed that connection setting can be found"
+            echo "                 by the same path as PFX file, but with '.enc' extension (if not - error)."
+            echo
+            echo "Commands:"
+            echo "  addconn: create connection settings for given PFX file;"
+            echo "            some questions to be asked and afterwards <path-to-pfx>.enc file"
+            echo "            encrypted with VPN's password created, with all connection details"
+            echo "  chgpswd: re-encrypt connection settings .enc file with another VPN password"
+        esac
+    exit 0
+}
+
+mode_run "$@"
