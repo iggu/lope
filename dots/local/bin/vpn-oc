@@ -5,13 +5,14 @@ function conn_establish()
     local fpPfx="$1" fpOpts="$2" sVpnPswd="$3" sOcCliArgs="$4"
         [ ! -f "$fpOpts" ] && echo "Options enc-file '$fpOpts' not found" && exit 2
         [ ! -f "$fpPfx" ] && echo "PFX file '$fpPfx' not found" && exit 2
+        encpipe -d -p "$sVpnPswd" -i "$fpOpts" >/dev/null || exit 2
 
     eval "declare -A aaOpts=( $(encpipe -d -p "$sVpnPswd" -i "$fpOpts") )"
     # echo "${!aaOpts[@]} => ${aaOpts[@]}"
     # false
     # return
 
-    echo -e "$sPfxPswd\n$sVpnPswd\n" | \
+    echo -e "${aaOpts[certpasswd]}\n$sVpnPswd\n" | \
         sudo openconnect --passwd-on-stdin $sOcCliArgs \
              -c "$fpPfx" -u "${aaOpts[login]}" "${aaOpts[server]}"
 
@@ -90,10 +91,25 @@ function opts_reenc()
     mv "$fpOptsEnc" "$fpOptsPfx.old.enc" ; mv "$fpOptsPfx.new.enc" "$fpOptsEnc"
 }
 
+function connect()
+{
+    local fpPfx="$1"
+    local fpOpts="${fpPfx}.enc"
+
+    while true ; do
+        echo -n "Enter VPN/enc password: " ; read -r -s sVpnPswd ; echo
+        encpipe -d -p "$sVpnPswd" -i "$fpOpts" >/dev/null && break
+    done
+
+    if ! conn_establish "$fpPfx" "$fpOpts" "$sVpnPswd" ; then
+        echo "ooops :("
+    fi
+}
 
 function mode_run()
 {
     case "$1" in
+        connect) connect "${@:2}" ;;
         addconn) opts_create "${@:2}" ;;
         chgpswd) opts_reenc "${@:2}" ;;
         *)
@@ -107,6 +123,7 @@ function mode_run()
             echo "                 by the same path as PFX file, but with '.enc' extension (if not - error)."
             echo
             echo "Commands:"
+            echo "  connect: established connection using giving PFX and appropriate encrypted settings"
             echo "  addconn: create connection settings for given PFX file;"
             echo "            some questions to be asked and afterwards <path-to-pfx>.enc file"
             echo "            encrypted with VPN's password created, with all connection details"
