@@ -75,4 +75,4 @@
 set -eu
 in="$1"
 out=${2:-$1.aes}
-openssl aes-256-cbc -salt -md sha256 -in "$in" -out "$out"
+openssl aes-256-cbc -salt -pbkdf2 -md sha256 -in "$in" -out "$out"
