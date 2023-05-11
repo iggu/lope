@@ -90,6 +90,15 @@ map re ${{
 	lf -remote "send $id push :rename_nx<space>$filename<a-b><c-b>"
 }}
 
+cmd z %{{
+	result="$(zoxide query --exclude $PWD $@)"
+	lf -remote "send $id cd $result"
+}}
+
+cmd zi ${{
+	result="$(zoxide query -i)"
+	lf -remote "send $id cd $result"
+}}
 
 cmd open ${{
     test -L $f && f=$(readlink -f $f)

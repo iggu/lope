@@ -54,7 +54,7 @@ macro define 'style_standard'
     style background     default/default normal
     end
 macro define 'style_fancy'
-    style menuitem       magenta/white   reverse
+    style menuitem       black/cyan   reverse
     style menutext       yellow/default  normal
     style parentnode     default/default bold
     style node           default/default normal

@@ -157,7 +157,7 @@ local function init_plugins_builtin()
 
     lvim.builtin.treesitter.ensure_installed = {
         "bash", "python", "c", "cpp", "lua", "dockerfile", "typescript", "javascript", "css", "html", "json", "markdown",
-        "yaml", "toml", "markdown",
+        "yaml", "toml",
     }
     lvim.builtin.treesitter.ignore_install = { "haskell" } -- lua always give weird errors
     lvim.builtin.treesitter.highlight.enabled = true
@@ -241,8 +241,12 @@ local function init_plugins_tools()
         { 'ellisonleao/glow.nvim' },
         { 'junegunn/limelight.vim' },
         { 'junegunn/goyo.vim' },
+
+        -- NOTES TAKING
+        -- { 'simplenote-vim/simplenote.vim' }, -- works pretty slow
+        -- file type 'board' for notes, define shortcuts to directories, files, and various commands.
+        -- { 'azabiong/vim-board' }, -- not sure that understand the idea and what it is for... fast notes?
         -- { 'phaazon/mind.nvim' }, -- `hnb` tui behaves better
-        -- { 'simplenote-vim/simplenote.vim' },
 
         -- HELPERS
         { 'vim-scripts/Rename2' },
@@ -262,7 +266,7 @@ local function init_plugins_editor()
         -- { 'ur4ltz/surround.nvim' }, -- works too, has sandwitch mode, need to be explicitely started
         { 'kylechui/nvim-surround' -- operate on surrounding pairs - quotes, braces, tags, ts-objs
             --[[ insert = "<C-g>s", insert_line = "<C-g>S"; ! need to be explicitely started (see eof)
-            q = any-quote `"', b = brace , t = tag, f = function << csqb changes newares quote to parentheses
+            q = any-quote `"', b = brace , t = tag, f = function << csqb changes nearest quote to parentheses
             modes: ato=around-text-obj, acl=arounf-current-line
             normal: ato="ys", acl="yS" (curline shortcuts: yss, ySS)
             visual: ato="S", acl="gS";
@@ -293,6 +297,12 @@ local function init_plugins_editor()
         -- {'bfrg/vim-jqplay'}, -- pretty useless, have dedicated shell scripts for that
         { 'bfrg/vim-cpp-modern' }, -- Enhanced C and C++ syntax highlighting
         -- {'pangloss/vim-javascript' }, -- Vastly improved Javascript indentation and syntax support in Vim
+
+        -- https://medium.com/@schtoeffel/you-don-t-need-more-than-one-cursor-in-vim-2c44117d51db
+        -- { 'mg979/vim-visual-multi' }, -- mulitple cursors for vim
+        -- { 'Rasukarusan/nvim-select-multi-line' }, -- select multi lines, even  not adjacent
+        -- NOTE: not sure that need plugins above
+
 
     })
 end
@@ -325,6 +335,9 @@ local function init_plugins_ide()
         -- eats processor and freezes ui on almost every file, pure ctags; sometimes breaks layout when toggled after other outlines
         { 'preservim/tagbar' }, -- builds tags in-momory for a limited scope, doesnt affect tag file
         { 'ludovicchabant/vim-gutentags' }, -- general-purpose project-wide tags management tool
+        -- navigation in large markdown files - doesnt sync with the doc, strip empty lines, do not use
+        -- { 'Scuilion/markdown-drawer' },
+        { 'SidOfc/mkdx' },
 
         -- CONTENT NAVIGATION
         { 'zhimsel/vim-stay' }, -- restore cursor pos when reopen file
@@ -350,9 +363,9 @@ local function init_plugins_colorshemes()
         { "abzcoding/zephyr-nvim" }, --<< this theme uses treesitter in an invalid way which gives permanent erros
         -- INFO: color schemes as they appear in <leader>C menu
         { "sjl/badwolf" }, { 'rockerBOO/boo-colorscheme-nvim' }, { 'tomasiser/vim-code-dark' },
-        { 'catppuccin/nvim', as = "catppuccin" },
+        { 'catppuccin/nvim', as = "catppuccin" }, { 'nvimdev/oceanic-material' },
         { "abzcoding/doom-one.nvim" }, { 'Everblush/everblush.nvim', as = 'everblush' }, { 'cocopon/iceberg.vim' },
-        { 'marko-cerovac/material.nvim' },
+        { 'marko-cerovac/material.nvim' }, { 'nyoom-engineering/oxocarbon.nvim' },
         { 'rafamadriz/neon' }, { 'sainnhe/sonokai' }, { 'sainnhe/edge' }, { "rose-pine/neovim" }, -- { 'LunarVim/onedarker.nvim' },
         { 'jsit/toast.vim' }, { 'sam4llis/nvim-tundra' }, { 'elianiva/gruvy.nvim', requires = { 'rktjmp/lush.nvim' } },
         { 'sainnhe/gruvbox-material' }, { 'sainnhe/everforest' }, { 'Tsuzat/NeoSolarized.nvim' },
@@ -602,13 +615,15 @@ local function init_autocommands()
     --      so it's not in general possible to set them up here in hooks
     -- lvim.autocommands.custom_groups = { -- no longer supportedm but we aint use it
     -- { "BufWinEnter", "config.lua", "set foldmethod=marker" },
-    -- { "BufWinEnter", "markdown", [[lua lvim.useruserdata.somefunc()]] },
     -- { "FileType", "cpp", [[lua lvim.userdata.somefunc()]] },
     -- { "BufWinEnter", "*.lua", "setlocal ts=8 sw=8" },
     -- }
     vim.api.nvim_create_autocmd("BufEnter", {
         pattern = { "*.md", "*.mkd", "*.md.enc", "*.mkd.enc", "*.taskell" },
-        command = "setlocal nospell syntax=markdown",
+        command = "setlocal nospell syntax=markdown ts=2 sw=2",
+        -- tabstop=2 to reduce problem that nested list items are colored as inline code
+        -- cause in syntax file no check to detect if a line with 4 spaces or a tab is in fact a list.
+        -- with such ts problems arise only with 4th nesting level, not 3rd
     })
     vim.api.nvim_create_autocmd("BufEnter", {
         pattern = { "*.tudu", "*.hnb", "*.tines" },
@@ -634,7 +649,7 @@ local function init_plugins_setup()
         ['todo-comments'] = {},
         ['aerial'] = {},
         -- ['mind'] = {},
-        ['glow'] = {},
+        ['glow'] = { width = 200, width_ratio = 0.8, height_ratio = 0.8 },
         ['treesj'] = { use_default_keymaps = false, },
         ['murmur'] = {},
         ['eyeliner'] = { highlight_on_key = true },
@@ -662,8 +677,14 @@ local function init_plugins_setup()
     -- pcall( function() require('telescope').load_extension('media_files') end )
     require("telescope").load_extension("dir") -- `:Telescope dir live_grep` or `:Telescope dir find_files`
     -- sumneko_lua asks about working environment on every startup - get rid of it
-    require('lspconfig')['sumneko_lua'].setup {
-        settings = { Lua = { workspace = { checkThirdParty = false, } } } }
+    local lspc = require('lspconfig')
+    local lspSetup = {
+        ['marksman'] = {},
+        ['sumneko_lua'] =  { settings = { Lua = { workspace = { checkThirdParty = false, } } } },
+    }
+    for m, o in pairs(lspSetup) do
+        pcall(function() lspc[m].setup(o) end)
+    end
 end
 
 init_plugins_setup()

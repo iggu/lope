@@ -1,11 +1,13 @@
 # vim: ft=bash
 
 force_color_prompt=yes
+# TODO: https://ohmyposh.dev/ :: prompt theme engine for any shell
 
 # this is a single file which is included by default in the vanilla .bashrc
 # so this is a single place where custom stuff may reside
 
 PATH="$HOME/.local/bin:$PATH"
+CDPATH="$HOME:$HOME/Documents:$HOME/Work:$HOME/.local:$CDPATH" # cd as subdirs of listed paths are in the cwd
 
 alias aaa='bat ~/.bash_aliases'
 alias aar='source ~/.bash_aliases'
@@ -16,7 +18,8 @@ alias wlvim='eval `emsdk_env.eval` ; lvim'
 function mkdcd() {
     mkdir -p "$1" && cd "$1"
 }
-alias dfh='df -h | grep Filesystem ; df -h | grep -E "/dev/(sd|nvm|hd)[a-z0-9]+"'
+alias dfh='duf -only local 2>/dev/null || (df -h | grep Filesystem ; df -h | grep -E "/dev/(sd|nvm|hd)[a-z0-9]+")'
+alias dufl='duf --only local'
 alias pf="fzf --preview='bat -f {}' --bind shift-up:preview-page-up,shift-down:preview-page-down"
 alias where="type -a"
 # Enable aliases to be sudo’ed
@@ -34,6 +37,9 @@ alias aptr='sudo apt remove'
 alias aptR='sudo apt autoremove ; sudo apt autoclean'
 alias apts='apt search'
 alias apth='apt show'
+
+alias batd='bat -l dot'
+alias batj='bat -l json'
 
 alias cdf='cd $(ls -d */ | fzf)'
 alias ..="cd .."
@@ -101,25 +107,47 @@ function grep-w-wo() {
         grep -l "$1" * | xargs -r grep -L "$2"
     fi }
 
-function mind_find_pretty_state_files() {
-    declare dir=${1:-`pwd`} tmpState=`mktemp`
-    while read mindDir ; do
-        local fState="$mindDir/state.json"
-        if [ ! -f "$fState" ]; then continue ; fi
-        mv "$fState" $tmpState
-        cat "$tmpState" | jq -M -S . > "$fState"
-    done <<< $(find "$dir" -type d -name ".mind")
-    rm -f $tmpState ; }
+cfff() # cd to dir of choice with help of 'fff' tool ('q' key)
+{
+    fff "$@"
+    cd "$(cat "${XDG_CACHE_HOME:=${HOME}/.cache}/fff/.fff_d")"
+}
 
-function git-root() {
-    local dir=${1:-`pwd`}
-    while [ "$dir" != "/" ]; do
-        if [ -d "$dir/.git" ]; then
-            echo $dir
-            break
-        else
-            dir=`readlink -m "$dir/.."`
-        fi
-    done }
+# https://github.com/xwmx/nb/issues/102
+nb-list() {
+  nb list -t note --no-color | grep -P '\[\d*\]' |  sed -r 's/\[//' | sed -r 's/\]//' |
+  fzf --height 50% \
+    --preview "nb show -p {1} | head -n 200 | bat -l md" \
+    --bind "alt-j:preview-down,alt-k:preview-up,alt-d:preview-page-down,alt-u:preview-page-up" \
+    --preview-window=right:70% |
+  cut -d$' ' -f1
+}
+bind '"\C-f\C-f": "$(nb-list)\e\C-e\e"' # dunno how it works - but looks ugly
 
-alias mind-pretty='mind_find_pretty_state_files $(git-root)'
+# mind aint in use anymore
+# function mind_find_pretty_state_files() {
+#     declare dir=${1:-`pwd`} tmpState=`mktemp`
+#     while read mindDir ; do
+#         local fState="$mindDir/state.json"
+#         if [ ! -f "$fState" ]; then continue ; fi
+#         mv "$fState" $tmpState
+#         cat "$tmpState" | jq -M -S . > "$fState"
+#     done <<< $(find "$dir" -type d -name ".mind")
+#     rm -f $tmpState ; }
+
+# function git-root() {
+#     local dir=${1:-`pwd`}
+#     while [ "$dir" != "/" ]; do
+#         if [ -d "$dir/.git" ]; then
+#             echo $dir
+#             break
+#         else
+#             dir=`readlink -m "$dir/.."`
+#         fi
+#     done }
+
+# alias mind-pretty='mind_find_pretty_state_files $(git-root)'
+
+
+eval "$(zoxide init bash)"
+
