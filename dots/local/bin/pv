@@ -46,7 +46,7 @@ case "$1" in
     exit 0
     ;;
   *.[1-8])
-    batman -- $"1" || man -- "$1" | col -b
+    batman -- "$1" || man -- "$1" | col -b
     exit 0
     ;;
   *.pdf)

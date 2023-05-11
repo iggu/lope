@@ -68,6 +68,13 @@ function install_encryptpad()
 
 ###############################################################################
 
+function install_fff()
+{
+    _ghclone_make_install make,cc,gcc dylanaraps/fff${1:+/$1}
+}
+
+###############################################################################
+
 function install_vnote()
 {
     _appimage_install "$HOME/.local/bin/vnote" \
