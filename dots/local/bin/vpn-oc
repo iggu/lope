@@ -1,0 +1,162 @@
+#!/bin/bash
+
+function usage()
+{
+    local tb=`tput bold` tu=`tput smul` tr=`tput sgr0`
+    echo
+    echo "$tb${tu}vpn-oc <path-to-pfx> <command>$tr"
+    echo
+    echo "${tu}Argument$tr"
+    echo "  path-to-pfx: file to PFX file with cert and pri-key which to be used to connect to VPN"
+    echo "                 where appropriate, it is assumed that connection setting can be found"
+    echo "                 by the same path as PFX file, but with '.aes' extension (if not - error)."
+    echo
+    echo "${tu}Command$tr"
+    echo "  connect: established connection using giving PFX and appropriate encrypted settings"
+    echo "  showcon: show the content of the encrypted settings file"
+    echo "  addconn: create connection settings for given PFX file;"
+    echo "            some questions to be asked and afterwards <path-to-pfx>.aes file"
+    echo "            encrypted with VPN's password created, with all connection details"
+    echo "  chgpswd: re-encrypt connection settings .aes file with another VPN password"
+}
+
+function crypt_ossl()
+{
+    local args=
+    case "$1" in
+        +) ;;
+        -) args="-d" ;;
+        *) echo "Not supported option '$1' (expect + or -)"; exit 1
+    esac
+    openssl aes-256-cbc $args -salt -pbkdf2 -md sha256 ${2:+-in $2} ${3:+-pass pass:$3}
+    return
+}
+
+function opts_pswd_acq()
+{
+    while true ; do
+        echo -n "Enter VPN/enc password: " ; read -r -s ; echo
+        [ -n "$REPLY" ] && crypt_ossl - "$1" "$REPLY" >/dev/null && return
+    done
+}
+
+function conn_establish()
+{
+    local fpPfx="$1" fpOpts="$2" sVpnPswd="$3" sOcCliArgs="$4"
+        [ ! -f "$fpOpts" ] && echo "Options enc-file '$fpOpts' not found" && exit 2
+        [ ! -f "$fpPfx" ] && echo "PFX file '$fpPfx' not found" && exit 2
+        crypt_ossl - "$fpOpts" "$sVpnPswd" >/dev/null || exit 2
+
+    eval "declare -A aaOpts=( $(crypt_ossl - "$fpOpts" "$sVpnPswd") )"
+
+    echo -e "${aaOpts[certpasswd]}\n$sVpnPswd\n" | \
+        sudo openconnect --passwd-on-stdin $sOcCliArgs \
+             -c "$fpPfx" -u "${aaOpts[login]}" "${aaOpts[server]}"
+
+    return
+}
+
+function opts_create()
+{
+    function prereq_check() { :; }
+        local fpPfx="$1"
+        [ ! -f "$fpPfx" ] && echo "PFX file is not available: '$fpPfx'" && exit 1
+        if ! command -v openssl > /dev/null ; then  echo "'openssl' command not found" && exit 1 ; fi
+        if ! command -v openconnect > /dev/null ; then  echo "'openconnect' command not found" && exit 1 ; fi
+
+    function srvr_addr_ask() { :; }
+        while true ; do
+            echo -n "???? Server address: " ; read -r sSrvrAddr ; echo
+            ping -q -c 1 "$sSrvrAddr" > /dev/null && break
+        done
+
+    function pfx_pswd_ask() { :; }
+        while true; do
+            echo -n "???? PFX certifiate password ($fpPfx): " ; read -r -s sPfxPswd ; echo
+            sPfxCertBody=$(sPfxPswd="$sPfxPswd" openssl pkcs12 -in "$fpPfx" -clcerts -nokeys -passin env:sPfxPswd)
+            [ "$?" = "0" ] && break
+        done
+
+    function pfx_cert_vals() { :; }
+        local sPfxLogin=$(echo $sPfxCertBody | head -n3 | tail -n1 | cut -d',' -f6 | cut -d'=' -f2 | tr -d ' ')
+        local sPfxDomain=${sPfxLogin##*@}
+        local sPfxUser=${sPfxLogin%%@*}
+        [ -z "$sPfxUser" ] && echo "Username is not set in the certificate" && exit 1
+        [ -z "$sPfxDomain" ] && echo "Domain is not set in the certificate" && exit 1
+
+    function props_enc_write() { :; }
+        local fpTmpOpts="$(mktemp -u).aes"
+
+        while true; do
+            echo -n "???? VPN password (will be used as settings file encryption password either): "
+            read -r -s sVpnPswd ; echo
+            echo "[certpasswd]=$sPfxPswd [login]=$sPfxDomain\\$sPfxUser [server]=$sSrvrAddr" | \
+                crypt_ossl + "" "$sVpnPswd" > "${fpTmpOpts}"
+
+            echo "**** I will now try the settings via connection to your VPN ****"
+            echo "       connection details: $sPfxDomain\\$sPfxUser @ $sSrvrAddr"
+
+            if conn_establish "$fpPfx" "$fpTmpOpts" "$sVpnPswd" "--authenticate" ; then
+                echo "Settings entered above accepted by server; finalizing them to '$fpPfx.aes'"
+                mv "$fpTmpOpts" "$fpPfx.aes"
+                break
+            fi
+
+            echo "~~~~ Server didn't accept your settings. Try re-enter VPN password"
+        done
+
+}
+
+function opts_reenc()
+{
+    local fpOptsPfx="$1" fpOptsEnc="$1.aes"
+    [ ! -f "$fpOptsEnc" ] && echo "Options enc-file '$fpOptsEnc' not found" && exit 2
+
+    while true; do
+        echo -n "Enter old VPN/enc password: " ; read -r -s sVpnPswdOld ; echo
+        crypt_ossl - "$fpOptsEnc" "$sVpnPswdOld" >/dev/null && break
+    done
+
+    local sVpnPswdNew1=1 sVpnPswdNew2=2
+    while [ -z "$sVpnPswdNew1" ] || [ -z "$sVpnPswdNew2" ] || [ "$sVpnPswdNew1" != "$sVpnPswdNew2" ] ; do
+        echo -n "Enter new VPN/enc password: " ; read -r -s sVpnPswdNew1 ; echo
+        echo -n "Confirm new VPN/enc password: " ; read -r -s sVpnPswdNew2 ; echo
+        echo
+    done
+
+    local fpOptsPfxNewEnc="$fpOptsPfx.new.aes"
+    if crypt_ossl - "$fpOptsEnc" "$sVpnPswdOld" | crypt_ossl + "" "$sVpnPswdNew1" > "$fpOptsPfxNewEnc" ; then
+        mv "$fpOptsEnc" "$fpOptsPfx.old.aes" ; mv "$fpOptsPfx.new.aes" "$fpOptsEnc"
+    fi
+}
+
+function opts_show()
+{
+    local fpOpts="${1}.aes"
+    opts_pswd_acq "$fpOpts"
+    crypt_ossl - "$fpOpts" "$REPLY"
+}
+
+function connect()
+{
+    local fpPfx="$1"
+    local fpOpts="${fpPfx}.aes"
+    opts_pswd_acq "$fpOpts"
+    conn_establish "$fpPfx" "$fpOpts" "$REPLY"
+}
+
+function mode_run()
+{
+    if [ -n "$1" ] && [ ! -f "$1" ] ; then
+        echo  ; echo "Expect PFX file as 1st cliarg"
+        usage
+    else case "$2" in
+        connect) connect        "$1" "${@:3}" ;;
+        addconn) opts_create    "$1" "${@:3}" ;;
+        chgpswd) opts_reenc     "$1" "${@:3}" ;;
+        showcon) opts_show      "$1" "${@:3}" ;;
+        *) usage ;;
+    esac fi
+}
+
+mode_run "$@"
