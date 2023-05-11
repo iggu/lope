@@ -40,24 +40,54 @@ function _appimage_install()
 {
     declare url="$2" app="$1"
     dpkg -l libfuse2 >/dev/null || sudo apt install libfuse2
-    dpkg -l libfuse2 >/dev/null \
-        && wget -c $url -O $app \
-        && chmod a+x $app
+    dpkg -l libfuse2 >/dev/null
+    case "$url" in
+        *.zip)
+            local fn="$(basename $url)"
+            local dir="$(mktemp -d /tmp/${fn}.XXXXXXXXXX)"
+            local arch="/tmp/$fn"
+            wget -c $url -O $arch
+            unzip "$arch" -d "$dir"
+            mv -f $dir/*.AppImage $app
+            rm -rf $dir
+            ;;
+        *)
+            wget -c $url -O $app
+            ;;
+    esac
+    chmod a+x $app
+}
+
+###############################################################################
+
+function install_encryptpad()
+{
+    _appimage_install "$HOME/.local/bin/encryptpad" \
+        "https://github.com/evpo/EncryptPad/releases/download/v0.5.0.2/encryptpad0_5_0_2.AppImage"
 }
 
 ###############################################################################
 
 function install_vnote()
 {
-    _appimage_install "$HOME/.local/bin/vnote"
-        "https://github.com/vnotex/vnote/releases/download/v3.16.0/vnote-linux-x64_v3.16.0.AppImage"
+    _appimage_install "$HOME/.local/bin/vnote" \
+        "https://github.com/vnotex/vnote/releases/download/v3.16.0/vnote-linux-x64_v3.16.0.zip"
 }
 
 ###############################################################################
 
+
 function install_passh()
 {
     _ghclone_make_install make,cc,gcc clarkwang/passh${1:+/$1} "" "" "cp -bv passh ${CliArgs[prefix]}/bin"
+}
+
+###############################################################################
+
+function install_tldr()
+{
+    :require-pkgs /usr/include/zip.h:libzip-dev /usr/include/x86_64-linux-gnu/curl/curl.h:libcurl4-gnutls-dev
+    _ghclone_make_install make,cc,gcc tldr-pages/tldr-c-client${1:+/$1} "" "" "cp -bv tldr ${CliArgs[prefix]}/bin"
 }
 
 ###############################################################################
