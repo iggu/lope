@@ -117,6 +117,22 @@ local function init_keymaps()
             ["<C-k>"] = actions.move_selection_previous,
         },
     }
+
+    lvim.builtin.telescope.pickers = {
+        live_grep = {
+            layout_strategy = "horizontal",
+            layout_config = {
+                width = 0.8,
+                height = 0.8,
+            },
+        },
+        grep_string = {
+            layout_config = {
+                width = 0.8,
+                height = 0.8,
+            },
+        },
+    }
 end
 
 init_keymaps()
@@ -338,6 +354,8 @@ local function init_plugins_ide()
         -- navigation in large markdown files - doesnt sync with the doc, strip empty lines, do not use
         -- { 'Scuilion/markdown-drawer' },
         { 'SidOfc/mkdx' },
+        { 'dhruvasagar/vim-table-mode' },
+
 
         -- CONTENT NAVIGATION
         { 'zhimsel/vim-stay' }, -- restore cursor pos when reopen file
@@ -375,6 +393,7 @@ local function init_plugins_colorshemes()
         { 'savq/melange' }, { 'bluz71/vim-moonfly-colors' }, { 'liuchengxu/space-vim-theme' },
         { 'Shatur/neovim-ayu' }, { 'EdenEast/nightfox.nvim' }, { 'rebelot/kanagawa.nvim' },
         { 'noorwachid/nvim-nightsky' }, { 'talha-akram/noctis.nvim' }, --<< very good
+        { 'projekt0n/github-nvim-theme' }, { 'd00h/nvim-rusticated' },
         -- not working schemes: they do not color the code, and this is already in: { "folke/tokyonight.nvim" },
         -- { 'AlessandroYorba/Despacio', setup = function() vim.g.despacio_Pitc = 1 end },
         -- { 'junegunn/seoul256.vim', setup = function() vim.g.seoul256_background = 233 end }, --[[233=darkest, 236=lightest; not working here]]
@@ -418,6 +437,7 @@ local function init_whichkeys_menu()
             name = "+Highlight",
             g = { ":Goyo<cr>", "Toggle Goyo" },
             G = { ":Glow!<cr>", "Preview MD in Glow" },
+            F = { [[:lua lvim.userdata.terminal_cmd_toggle('frogmouth ]]..vim.fn.expand('%:p')..[[')<cr>]], "Preview MD in FrogMouth" },
             l = { ":Limelight!!<cr>", "Toggle LimeLight" },
         }
     end
@@ -457,6 +477,12 @@ local function init_whichkeys_menu()
     lsp()
 
     local function git()
+        lvim.builtin.which_key.mappings.g.D = { [[:lua lvim.userdata.terminal_cmd_toggle('git diff '..vim.fn.expand('%:p')..]] ..
+                                                                                     [['; read -p "Press any key to continue..." -s -n 1')<cr>]], "Diff Current" }
+        lvim.builtin.which_key.mappings.g.z = { [[:lua lvim.userdata.terminal_cmd_toggle('git-tui diff '..vim.fn.expand('%:p'))<cr>]], "Diff TUI Current" }
+        lvim.builtin.which_key.mappings.g.Z = { [[:lua lvim.userdata.terminal_cmd_toggle('git-tui diff')<cr>]], "Diff TUI All" }
+        lvim.builtin.which_key.mappings.g.X = { [[:lua lvim.userdata.terminal_cmd_toggle('git-tui log '..vim.fn.expand('%:p'))<cr>]], "Log TUI Current" }
+        lvim.builtin.which_key.mappings.g.x = { [[:lua lvim.userdata.terminal_cmd_toggle('git-tui log')<cr>]], "Log TUI All" }
         lvim.builtin.which_key.mappings.g.G = { ":Gitui<cr>", "GitUI" }
         lvim.builtin.which_key.mappings.g.v = { ":DiffviewOpen<cr>", "Diffview" }
     end

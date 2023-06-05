@@ -34,7 +34,7 @@ sayanarijit/xplr # os only, no arch in name
 extrawurst/gitui # os only, no arch in name
 smallhadroncollider/taskell # kanban board/task manager
 ArthurSonzogni/json-tui # interactive json viewer with branch collapsing
-
+ArthurSonzogni/git-tui # collection of human friendly terminal user interface for git.
 neovim/neovim -1
 
 # FIXME: gui apps - should be listed outhere

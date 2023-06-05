@@ -169,6 +169,15 @@ function install_ctags()
 
 ###############################################################################
 
+function install_frogmouth()
+{
+    # Markdown viewer / browser for terminal
+    :require-pkgs python3 pip
+    sudo pip install frogmouth
+}
+
+###############################################################################
+
 function install_emsdk()
 {
     :require-pkgs python3 xz:xz-utils
