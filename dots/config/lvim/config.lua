@@ -132,6 +132,9 @@ local function init_keymaps()
                 height = 0.8,
             },
         },
+        colorscheme = {
+            enable_preview = false -- after making several cursor movements neovim hangs
+        },
     }
 end
 
@@ -345,7 +348,7 @@ local function init_plugins_ide()
         { 'sidebar-nvim/sidebar.nvim' },
         { 'simrat39/symbols-outline.nvim' },
         -- very concise representation, works fast, tree-sitter based
-        { 'stevearc/aerial.nvim', branch = 'nvim-0.5' }, -- branch 'main' requires neovim-0.8
+        { 'stevearc/aerial.nvim', }, -- branch 'main' requires neovim-0.8
         -- strange view, works with huge js, can have lsp backends (which aint work for cpp), by default uses ctags
         { 'liuchengxu/vista.vim' },
         -- eats processor and freezes ui on almost every file, pure ctags; sometimes breaks layout when toggled after other outlines
@@ -381,11 +384,11 @@ local function init_plugins_colorshemes()
         { "abzcoding/zephyr-nvim" }, --<< this theme uses treesitter in an invalid way which gives permanent erros
         -- INFO: color schemes as they appear in <leader>C menu
         { "sjl/badwolf" }, { 'rockerBOO/boo-colorscheme-nvim' }, { 'tomasiser/vim-code-dark' },
-        { 'catppuccin/nvim', as = "catppuccin" }, { 'nvimdev/oceanic-material' },
-        { "abzcoding/doom-one.nvim" }, { 'Everblush/everblush.nvim', as = 'everblush' }, { 'cocopon/iceberg.vim' },
+        { 'catppuccin/nvim', name = "catppuccin" }, { 'nvimdev/oceanic-material' },
+        { "abzcoding/doom-one.nvim" }, { 'Everblush/everblush.nvim', name = 'everblush' }, { 'cocopon/iceberg.vim' },
         { 'marko-cerovac/material.nvim' }, { 'nyoom-engineering/oxocarbon.nvim' },
         { 'rafamadriz/neon' }, { 'sainnhe/sonokai' }, { 'sainnhe/edge' }, { "rose-pine/neovim" }, -- { 'LunarVim/onedarker.nvim' },
-        { 'jsit/toast.vim' }, { 'sam4llis/nvim-tundra' }, { 'elianiva/gruvy.nvim', requires = { 'rktjmp/lush.nvim' } },
+        { 'jsit/toast.vim' }, { 'sam4llis/nvim-tundra' }, { 'elianiva/gruvy.nvim', dependencies = { 'rktjmp/lush.nvim' } },
         { 'sainnhe/gruvbox-material' }, { 'sainnhe/everforest' }, { 'Tsuzat/NeoSolarized.nvim' },
         { "morhetz/gruvbox" }, { "tomasr/molokai" }, { "Mofiqul/dracula.nvim" }, { "jnurmine/Zenburn" },
         { "kyoz/purify", rtp = "vim" }, { "nanotech/jellybeans.vim" }, { "arcticicestudio/nord-vim" },
@@ -673,7 +676,8 @@ local function init_plugins_setup()
     local hasSetup = {
         ['telescope'] = {},
         ['todo-comments'] = {},
-        ['aerial'] = {},
+        -- on recent versions it doesnt want to show awesome icons - forcing to use plain text
+        ['aerial'] = { nerd_font = false }, -- FIXME: show awesome icons
         -- ['mind'] = {},
         ['glow'] = { width = 200, width_ratio = 0.8, height_ratio = 0.8 },
         ['treesj'] = { use_default_keymaps = false, },
@@ -702,11 +706,9 @@ local function init_plugins_setup()
     end
     -- pcall( function() require('telescope').load_extension('media_files') end )
     require("telescope").load_extension("dir") -- `:Telescope dir live_grep` or `:Telescope dir find_files`
-    -- sumneko_lua asks about working environment on every startup - get rid of it
     local lspc = require('lspconfig')
     local lspSetup = {
         ['marksman'] = {},
-        ['sumneko_lua'] =  { settings = { Lua = { workspace = { checkThirdParty = false, } } } },
     }
     for m, o in pairs(lspSetup) do
         pcall(function() lspc[m].setup(o) end)
