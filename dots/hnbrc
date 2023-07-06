@@ -460,8 +460,8 @@ context import
 
 ##### menu definition
 ##### file
-    menu "File" "------------" ""
-    menu "File" "save      F2" "save"
+    menu "File" "--------------" ""
+    menu "File" "save        F2" "save"
     menu "File" "save as..   " "macro saveas"
         macro define saveas
             getquery db_file 'file to save'
@@ -471,21 +471,21 @@ context import
             restore_state
             end
     menu "File" "revert   " "revert"
-    menu "File" "------------" ""
-    menu "File" "export    ^E" "context export"
-    menu "File" "import    ^L" "context import"
-    menu "File" "------------" ""
-    menu "File" "spell chk F6" "macro m_spellcheck"
-    menu "File" "expand all"	    "expand --all"
-    menu "File" "collapse all"      "collapse --all"
+    menu "File" "--------------" ""
+    menu "File" "export      ^E" "context export"
+    menu "File" "import      ^L" "context import"
+    menu "File" "--------------" ""
+    menu "File" "spell chk   F6" "macro m_spellcheck"
+    menu "File" "expand all   }"	    "expand --all"
+    menu "File" "collapse all {"      "collapse --all"
     menu "File" "statistics"	"macro stats"
         macro define stats
             status "file: \"$db_file\" format:$format"
             mem
             stats
             end
-    menu "File" "------------" ""
-    menu "File" "exit      ^Q" "context quitsave"
+    menu "File" "--------------" ""
+    menu "File" "exit        ^Q" "context quitsave"
 ##### edit
     menu "Edit" "---------" ""
     menu "Edit" "copy   ^C" "copy"

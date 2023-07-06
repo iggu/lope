@@ -127,6 +127,7 @@ local function init_keymaps()
             },
         },
         grep_string = {
+            layout_strategy = "horizontal",
             layout_config = {
                 width = 0.8,
                 height = 0.8,
@@ -707,8 +708,12 @@ local function init_plugins_setup()
     -- pcall( function() require('telescope').load_extension('media_files') end )
     require("telescope").load_extension("dir") -- `:Telescope dir live_grep` or `:Telescope dir find_files`
     local lspc = require('lspconfig')
+    -- WARN: when manually setuping servers - need to speify each of them or they would not start
     local lspSetup = {
         ['marksman'] = {},
+        ['tsserver'] = {},
+        ['lua_ls'] = {},
+        ['clangd'] = {},
     }
     for m, o in pairs(lspSetup) do
         pcall(function() lspc[m].setup(o) end)
