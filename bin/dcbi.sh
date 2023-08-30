@@ -178,6 +178,26 @@ function install_frogmouth()
 
 ###############################################################################
 
+function install_pwgen()
+{
+    :require-pkgs python3 pip
+    sudo pip install pwgen-passphrase
+}
+
+###############################################################################
+
+function install_speedtest()
+{
+    local exe="$HOME/.local/bin/speedtest"
+    mkdir -p ~/.local/bin
+    wget https://raw.githubusercontent.com/tankibaj/speedtest/master/speedtest -O $exe
+    chmod a+x $exe
+    echo "Done speedtest"
+}
+
+###############################################################################
+
+
 function install_emsdk()
 {
     :require-pkgs python3 xz:xz-utils
