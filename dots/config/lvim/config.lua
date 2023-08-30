@@ -67,6 +67,7 @@ local function init_keymaps()
     -- map('n', '<A-l>', ':BufferLineMoveNext<CR>', opts)
 
     lvim.leader = "space" -- view all the defaults by pressing <leader>Lk
+    lvim.keys.normal_mode["K"] = "<Cmd>lua vim.lsp.buf.hover()<CR>"
     lvim.keys.normal_mode["<C-w>z"] = "<Cmd>WindowsMaximize<CR>"
     lvim.keys.normal_mode["<C-a>"] = "<Cmd>WindowsMaximize<CR>"
     lvim.keys.normal_mode["<C-j>"] = "<Cmd>StripTrailingWhitespace<CR>"
@@ -293,6 +294,15 @@ local function init_plugins_editor()
             delete="ds"; change="cs" ]]
         -- { 'gennaro-tedesco/nvim-peekup' }, -- "" to show registers menu, "x to clear them all, C-j, C-k to scroll
         },
+        { 'ivanesmantovich/xkbswitch.nvim', -- always EN for normal mode, whatever layout was in insert
+            -- requires grwlf/xkb-switch lib of version 1.*: dcbi xkbswitch:1.8.5 + accept to export system-wide
+            -- works only if insert-mode exited with ESC; normally restores layout for insert mode
+            -- (can be related to extra ft hooks which conflicts with switching)
+            -- for some filetypes like lua when switching ins-norm-ins - layout does not switched back to RU
+            -- alternatives:
+            --   - keaising/im-select.nvim : requires ibus or fctix, which is not desired
+            --   - lyokha/vim-xkbswitch    : for vim; not tested yet
+       },
         -- DECORATIONS
         { 'm-demare/hlargs.nvim' }, -- highlight arguments' definitions and usages, asynchronously, using Treesitter
         { 'Pocco81/HighStr.nvim' }, -- Permanently highlight selection
@@ -677,6 +687,7 @@ local function init_plugins_setup()
     local hasSetup = {
         ['telescope'] = {},
         ['todo-comments'] = {},
+        ['xkbswitch'] = {},
         -- on recent versions it doesnt want to show awesome icons - forcing to use plain text
         ['aerial'] = { nerd_font = false }, -- FIXME: show awesome icons
         -- ['mind'] = {},
