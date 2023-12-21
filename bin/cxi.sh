@@ -8,6 +8,40 @@ source $THIS_SELF_DIR/_include.sh
 
 ###############################################################################
 
+function install_obsidian()
+{
+    # idea: https://gist.github.com/shaybensasson/3e8e49af92d7e5013fc77da22bd3ae4c?permalink_comment_id=4000226#gistcomment-4000226
+
+    icon_url="https://cdn.discordapp.com/icons/686053708261228577/1361e62fed2fee55c7885103c864e2a8.png"
+    dl_url=$( curl -s https://api.github.com/repos/obsidianmd/obsidian-releases/releases/latest  \
+        | grep "browser_download_url.*AppImage" | tail -n 1 | cut -d '"' -f 4 )
+
+    if [[ -z "$dl_url" ]]; then
+        echo "missing download link"
+        echo "usage: install-obsidian.sh"
+        exit 1
+    fi
+
+    local pApp="${CliArgs[bin]}/Obsidian"
+    curl --location --output "$pApp" "$dl_url"
+    curl --location --output "$pApp.png" "$icon_url"
+
+    chmod a+x "$pApp"
+    # ln -s /opt/obsidian/obsidian.png /usr/share/pixmaps
+
+    # echo "[Desktop Entry]
+    # Type=Application
+    # Name=Obsidian
+    # Exec=/opt/obsidian/Obsidian.AppImage
+    # Icon=obsidian
+    # Terminal=false" | sudo tee /usr/share/applications/obsidian.desktop
+
+    # sudo update-desktop-database /usr/share/applications
+    echo "Obsidian install ok"
+}
+
+###############################################################################
+
 function install_gittools()
 {
     local grv="${CliArgs[bin]}/grv"

@@ -8,6 +8,7 @@ ajeetdsouza/zoxide # remembers which directories you use most frequently
 ClementTsang/bottom # top-like
 lsd-rs/lsd # ls with lots of added feature
 bmatsuo/jqsh # nteractive wrapper to the jq
+noahgorstein/jqp # TUI playground for exploring jq
 charmbracelet/glow # render markdown
 dandavison/delta # diff viewer
 eth-p/bat-extras # batgrep, batman, batpipe, batwatch, batdiff, prettybat
@@ -25,7 +26,8 @@ FiloSottile/age #  file encryption tool, format, and Go library.
 muesli/duf # Disk Usage/Free Utility
 zyedidia/micro # nano editor on steroids - customizations + plugins
 charmbracelet/gum # tool for glamorous shell scripts (widgets).
-noahgorstein/jqp # TUI playground for exploring jq
+ismaelgv/rnr # tool to securely rename multiple files and directories that supports regular expressions.
+sigoden/argc # external command-line options, arguments and sub-commands parser for bash.
 
 ## x86 only - use with -I for other arches
 phiresky/ripgrep-all # look for a regex in a multitude of file types
@@ -39,6 +41,7 @@ neovim/neovim -1
 
 # FIXME: gui apps - should be listed outhere
 # vnotex/vnote -1
+# kovidgoyal/kitty
 
 # FIXME: i dont use them at all
 # wfxr/code-minimap

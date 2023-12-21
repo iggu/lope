@@ -21,6 +21,7 @@ declare -A PPA_REPO_DEBS=(
     [brave-browser]="https://brave-browser-apt-release.s3.brave.com/ stable main"
     [sublime-text]="https://download.sublimetext.com/ apt/stable/"
     [media-human]="https://www.mediahuman.com/packages/ubuntu $codename main "
+    [nodejs]="https://deb.nodesource.com/node_20.x nodistro main"
 )
 
 # unsigned PPAs from ext repos; values are urls to keys which are imported via apt-key add
@@ -30,6 +31,7 @@ declare -A PPA_KEYS_AUTO=(
     [librewolf]="https://deb.librewolf.net/keyring.gpg"
     [codium]="https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg"
     [sublime-text]="https://download.sublimetext.com/sublimehq-pub.gpg"
+    [nodejs]="https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key"
 )
 
 

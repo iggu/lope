@@ -36,6 +36,27 @@ function _ghclone_make_install()
 
 ###############################################################################
 
+function _ghclone_cmake_install()
+{
+    local rqpkg=`echo $1 | tr ',' ' '`
+    [ -z "$rqpkg" ] || :require-pkgs $rqpkg make cmake g++
+
+    local gh=($(echo $2 | tr '/' "\n"))
+    declare user=${gh[0]} repo=${gh[1]} branch=${gh[2]}
+
+    local dir=`mktemp -u -d -p "${CliArgs[tmpdir]}" --suffix=.git -t $user+$repo.XXXX`
+
+    git clone --recursive ${branch:+-b $branch} --single-branch --depth=1 "https://github.com/$user/$repo" "$dir"
+    mkdir "$dir/build"
+    cd "$dir/build" # never return to the path we came from
+    cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${CliArgs[prefix]} ..
+    make install
+
+    if [ -n "${CliArgs[clean]}" ] ; then rm -rf $dir ; fi
+}
+
+###############################################################################
+
 function _appimage_install()
 {
     declare url="$2" app="$1"
@@ -152,6 +173,38 @@ function install_xstow()
 
 ###############################################################################
 
+function install_xkbswitch()
+{
+    _ghclone_cmake_install /usr/include/X11/extensions/XKBfile.h:libxkbfile-dev \
+                            grwlf/xkb-switch${1:+/$1}
+
+    local pLib=$(find ${CliArgs[prefix]}/lib/ -maxdepth 1 -name "libxkbswitch.so.*.*.*")
+    echo
+    if [ -z $pLib ]; then
+        echo "Cannot find library"
+    else
+        echo "XKB-SWITCH and friends (ivanesmantovich/xkbswitch.nvim) use shared libraries"
+        echo "LD possibly would not find libxkbswitch in ${CliArgs[prefix]}/lib"
+        echo "to force apps search there - as root make symlink to system-wide library path"
+        echo "  > sudo ln -s ${CliArgs[prefix]}/lib/libxkbswitch* /usr/local/lib"
+        echo "  > sudo ldconfig # rebuild libs list"
+        echo "or export LD_PRELOAD pointing to this particular lib"
+        echo "  > export LD_PRELOAD=$pLib"
+
+        echo
+        read -r -s -n 1 -p "Want me to export 'libxkbswitch' system-wide? (y/...): "
+        if [[ "${REPLY,,}" == "y" ]] ; then
+            echo
+            sudo ln -s ${CliArgs[prefix]}/lib/libxkbswitch* /usr/local/lib
+            sudo ldconfig
+            echo done
+        fi
+        echo
+    fi
+}
+
+###############################################################################
+
 function install_neovim()
 {
     _ghclone_make_install pkg-config,libtool:libtool-bin,gettextize:gettext,make,cmake,g++ \
@@ -177,6 +230,26 @@ function install_frogmouth()
 }
 
 ###############################################################################
+
+function install_pwgen()
+{
+    :require-pkgs python3 pip
+    sudo pip install pwgen-passphrase
+}
+
+###############################################################################
+
+function install_speedtest()
+{
+    local exe="$HOME/.local/bin/speedtest"
+    mkdir -p ~/.local/bin
+    wget https://raw.githubusercontent.com/tankibaj/speedtest/master/speedtest -O $exe
+    chmod a+x $exe
+    echo "Done speedtest"
+}
+
+###############################################################################
+
 
 function install_emsdk()
 {
