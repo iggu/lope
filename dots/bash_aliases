@@ -27,8 +27,8 @@ alias sudo='sudo '
 alias _='sudo'
 
 alias proc="ps -ef | grep -v grep | grep"
-alias ytm="youtube-dl --extract-audio --audio-format mp3 --embed-thumbnail --add-metadata --audio-quality 0"
-alias ytl="youtube-dl -f bestvideo+bestaudio --merge-output-format mkv"
+alias ytm="yt-dlp --extract-audio --audio-format mp3 --embed-thumbnail --add-metadata --audio-quality 0"
+alias ytl="yt-dlp -f bestvideo+bestaudio --merge-output-format mkv"
 
 alias aptu='sudo apt update'
 alias aptU='sudo apt upgrade'

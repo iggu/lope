@@ -173,7 +173,7 @@ function install_frogmouth()
 {
     # Markdown viewer / browser for terminal
     :require-pkgs python3 pip
-    sudo pip install frogmouth
+    sudo pip install python3-xdg frogmouth
 }
 
 ###############################################################################
