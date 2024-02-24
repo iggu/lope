@@ -173,6 +173,14 @@ function install_xstow()
 
 ###############################################################################
 
+function install_ugrep()
+{
+    _ghclone_make_install pkg-config,autoconf,automake,make,g++ \
+                      Genivia/ugrep${1:+/$1}
+}
+
+###############################################################################
+
 function install_xkbswitch()
 {
     _ghclone_cmake_install /usr/include/X11/extensions/XKBfile.h:libxkbfile-dev \
