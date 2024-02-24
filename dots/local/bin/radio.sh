@@ -25,11 +25,12 @@ declare -A stations=(
   [Instr: Chinese Traditional]=https://laradiofm.ru/download/605-ru-m3u
   [Electro: Kohina]=http://kohina.duckdns.org:8000/stream.ogg
   [Electro: Nightride FM]=https://stream.nightride.fm/nightride.ogg
-  [Chill: Japanese Lofi]=https://www.youtube.com/watch?v=-9gEgshJUuY
   [Chill: Code Radio]=https://coderadio-admin.freecodecamp.org/radio/8010/radio.mp3
   [Chill: Calm Focus Mix]=https://www.youtube.com/watch?v=BYl7v0YsX9g
   [Relax: Hang Drum]=https://www.youtube.com/watch?v=szyyoAzDWHM
   [Relax: Mantra]=http://c22.radioboss.fm/playlist/291/stream.m3u
+  [Relax: Liquid DNB Radio]=https://www.youtube.com/watch?v=8z1tLBynk7U
+  [Relax: Work Stream]=https://www.youtube.com/watch?v=cXzYWEFib4M
 )
 
 if command -v fzf &>/dev/null; then

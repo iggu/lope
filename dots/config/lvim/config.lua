@@ -253,7 +253,7 @@ local function init_plugins_tools()
 
         -- GENERAL PURPOSE
         { "anuvyklack/middleclass" },
-        { "nathom/filetype.nvim" }, -- speed up startup time thru lazy load of filetype.vim - problems with Dockerfile
+        -- { "nathom/filetype.nvim" }, -- is already in neovim core since 0.8; trying to use this leads to errors on file open
 
         -- INTEGRATIONS
         { 'is0n/fm-nvim' }, -- use your favorite terminal file managers (and fuzzy finders)
