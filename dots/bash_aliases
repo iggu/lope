@@ -9,6 +9,8 @@ force_color_prompt=yes
 PATH="$HOME/.local/bin:$PATH"
 CDPATH="$HOME:$HOME/Documents:$HOME/Work:$HOME/.local:$CDPATH" # cd as subdirs of listed paths are in the cwd
 
+HISTIGNORE="$HISTIGNORE:jrnl *" # ignore saving in history
+
 alias aaa='bat ~/.bash_aliases'
 alias aar='source ~/.bash_aliases'
 alias bbr="source $HOME/.bashrc"
