@@ -119,21 +119,13 @@ local function init_keymaps()
         },
     }
 
+    local function mk_layout(type, w, h)
+        return { layout_strategy = type, layout_config = { width = w, height = h, }, }
+    end
+
     lvim.builtin.telescope.pickers = {
-        live_grep = {
-            layout_strategy = "horizontal",
-            layout_config = {
-                width = 0.8,
-                height = 0.8,
-            },
-        },
-        grep_string = {
-            layout_strategy = "horizontal",
-            layout_config = {
-                width = 0.8,
-                height = 0.8,
-            },
-        },
+        live_grep = mk_layout('horizontal', 0.9, 0.9),
+        grep_string = mk_layout('horizontal', 0.9, 0.9),
         colorscheme = {
             enable_preview = false -- after making several cursor movements neovim hangs
         },
