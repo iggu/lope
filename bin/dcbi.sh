@@ -81,10 +81,18 @@ function _appimage_install()
 
 ###############################################################################
 
+function install_logseq()
+{
+    _appimage_install "$HOME/.local/bin/Logseq" \
+        "https://github.com/logseq/logseq/releases/download/0.10.9/Logseq-linux-x64-0.10.9.AppImage"
+}
+
+###############################################################################
+
 function install_encryptpad()
 {
     _appimage_install "$HOME/.local/bin/encryptpad" \
-        "https://github.com/evpo/EncryptPad/releases/download/v0.5.0.2/encryptpad0_5_0_2.AppImage"
+        "https://github.com/evpo/EncryptPad/releases/download/v0.5.0.4/encryptpad0_5_0_2.AppImage"
 }
 
 ###############################################################################
@@ -235,6 +243,19 @@ function install_pwgen()
 {
     :require-pkgs python3 pip
     sudo pip install pwgen-passphrase
+}
+
+###############################################################################
+
+function install_kew()
+{
+    # terminal music player
+    # it requires test-for-existence files for each file, I am too lazy for it
+    # :require-pkgs ffmpeg libfftw3-dev libopus-dev libopusfile-dev libvorbis-dev libchafa-dev libfreeimage-dev libavformat-dev libglib2.0-dev
+    # _ghclone_make_install pkg-config,autoconf,automake,make,gcc \
+    #                         ravachol/kew${1:+/$1}
+    # do the job with single script - though it installs app as root
+    sudo bash -c "curl https://raw.githubusercontent.com/ravachol/kew/main/install.sh | bash"
 }
 
 ###############################################################################

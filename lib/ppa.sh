@@ -14,7 +14,7 @@ function ppa_source_lp()
 {
     declare ppa=$1 key=$3
     local ppaformat="$(echo ${ppa} | tr "/" "-")"
-    echo "deb http://ppa.launchpad.net/${ppa}/ubuntu ${THIS_UBUNTU_CODENAME} main # $ppa" \
+    echo "deb [arch=amd64] http://ppa.launchpad.net/${ppa}/ubuntu ${THIS_UBUNTU_CODENAME} main # $ppa" \
             >> /etc/apt/sources.list.d/${ppaformat}-${THIS_UBUNTU_CODENAME}.list
     echo -n "++ PPA/lp { $ppa } : "
     apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv ${key} > /dev/null 2>&1 \
@@ -25,7 +25,7 @@ function ppa_source_lp()
 function ppa_source_lpker()
 {
     declare name=$1 debstr="$2" key=$3
-    echo "deb $debstr # $name" \
+    echo "deb [arch=amd64] $debstr # $name" \
             >> /etc/apt/sources.list.d/${name}-${THIS_UBUNTU_CODENAME}.list
     echo -n "++ PPA/lpker { $name } : "
     apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv ${key} > /dev/null 2>&1 \
@@ -39,7 +39,7 @@ function ppa_source_auto()
     echo -n "++ PPA/auto { $name } : "
     # FIXME: deprecated, see the DEPRECATION section in 'man 8 apt-key'
     wget -qO- "$keyurl" | sudo apt-key add -
-    echo "deb $debstr # $name" >> /etc/apt/sources.list.d/$name.list
+    echo "deb [arch=amd64] $debstr # $name" >> /etc/apt/sources.list.d/$name.list
 }
 
 # add ppa by url which is signed by the particular key, available by url
@@ -49,7 +49,7 @@ function ppa_source_sign()
     local gpg=/usr/share/keyrings/$name-archive-keyring.gpg
     echo "++ PPA/sign { $name } : OK"
     curl -fsSLo $gpg $keyurl
-    echo "deb [signed-by=$gpg] $debstr # $name" >> /etc/apt/sources.list.d/$name.list
+    echo "deb [arch=amd64 signed-by=$gpg] $debstr # $name" >> /etc/apt/sources.list.d/$name.list
 }
 
 # add all missing keys for ppas

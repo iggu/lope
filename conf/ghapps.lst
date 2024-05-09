@@ -28,6 +28,9 @@ zyedidia/micro # nano editor on steroids - customizations + plugins
 charmbracelet/gum # tool for glamorous shell scripts (widgets).
 ismaelgv/rnr # tool to securely rename multiple files and directories that supports regular expressions.
 sigoden/argc # external command-line options, arguments and sub-commands parser for bash.
+tramhao/termusic # Terminal Music and Podcast Player written in Rust; needs libmpv1 to be installed
+timdubbins/tap # audio player for the terminal with fuzzy-finder shortcuts
+
 
 ## x86 only - use with -I for other arches
 phiresky/ripgrep-all # look for a regex in a multitude of file types
@@ -38,10 +41,16 @@ smallhadroncollider/taskell # kanban board/task manager
 ArthurSonzogni/json-tui # interactive json viewer with branch collapsing
 ArthurSonzogni/git-tui # collection of human friendly terminal user interface for git.
 neovim/neovim -1
+# neovim/neovim v0.9.2 # versions >=v0.9.4 break Telescope on LunarVim<=1.2: https://github.com/nvim-telescope/telescope.nvim/issues/2747
 
 # FIXME: gui apps - should be listed outhere
 # vnotex/vnote -1
 # kovidgoyal/kitty
+
+# places alotof trash into bin/ with symlinks
+# ~/.local/bin$ ll | grep logseq | rev | cut -d/ -f1 | cut -c2- | rev | xargs rm
+# ln -s /home/iggu/.local/lib/ghri/x86_64/logseq++logseq++nightly/Logseq ./
+# logseq/logseq # knowledge management and collaboration
 
 # FIXME: i dont use them at all
 # wfxr/code-minimap
