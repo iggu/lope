@@ -9,6 +9,8 @@ force_color_prompt=yes
 PATH="$HOME/.local/bin:$PATH"
 CDPATH="$HOME:$HOME/Documents:$HOME/Work:$HOME/.local:$CDPATH" # cd as subdirs of listed paths are in the cwd
 
+HISTIGNORE="$HISTIGNORE:jrnl *" # ignore saving in history
+
 alias aaa='bat ~/.bash_aliases'
 alias aar='source ~/.bash_aliases'
 alias bbr="source $HOME/.bashrc"
@@ -27,8 +29,8 @@ alias sudo='sudo '
 alias _='sudo'
 
 alias proc="ps -ef | grep -v grep | grep"
-alias ytm="youtube-dl --extract-audio --audio-format mp3 --embed-thumbnail --add-metadata --audio-quality 0"
-alias ytl="youtube-dl -f bestvideo+bestaudio --merge-output-format mkv"
+alias ytm="yt-dlp --extract-audio --audio-format mp3 --embed-thumbnail --add-metadata --audio-quality 0"
+alias ytl="yt-dlp -f bestvideo+bestaudio --merge-output-format mkv"
 
 alias aptu='sudo apt update'
 alias aptU='sudo apt upgrade'

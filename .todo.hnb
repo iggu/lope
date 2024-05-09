@@ -339,6 +339,7 @@
 	<node><data>install now:</data>
 		<node><data>&apos;mkdx&apos; should use &apos;\&apos; key as prefx (not leader)</data></node>
 		<node><data>try: https://github.com/lyokha/vim-xkbswitch (vim-only, lin/win)</data></node>
+		<node><data>try: SmiteshP/nvim-navbuddy &amp; SmiteshP/nvim-navic</data></node>
 	</node>
 	<node><data>plugins lists</data>
 		<node><data>https://github.com/rockerBOO/awesome-neovim</data></node>

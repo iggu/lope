@@ -1,3 +1,4 @@
+# vi: ft=cfg
 # WARNING: To avoid saving sensitive data in plain-text user must use helper-script 'sn-cli'
 
 [sncli]
