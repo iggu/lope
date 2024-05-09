@@ -2,13 +2,19 @@
 #   - exact match or name
 #   - -N, where N is number - skip N latest versions (-1 - skip first)
 
+#### https://github.com/agarrharr/awesome-cli-apps
+
 ## have releases both for x86_64 and aarch64
 microsoft/ripgrep-prebuilt # original repo only for x86_64
 ajeetdsouza/zoxide # remembers which directories you use most frequently
 ClementTsang/bottom # top-like
 lsd-rs/lsd # ls with lots of added feature
+Equationzhao/g # g is a ls alternative with features
+ogham/exa # ls alternative
+eza-community/eza # eza is replacement for ls, built on exa.
 bmatsuo/jqsh # nteractive wrapper to the jq
 noahgorstein/jqp # TUI playground for exploring jq
+tomnomnom/gron # transforms JSON into discrete assignments of 'absolute paths' to ease the grep
 charmbracelet/glow # render markdown
 dandavison/delta # diff viewer
 eth-p/bat-extras # batgrep, batman, batpipe, batwatch, batdiff, prettybat
@@ -28,11 +34,13 @@ zyedidia/micro # nano editor on steroids - customizations + plugins
 charmbracelet/gum # tool for glamorous shell scripts (widgets).
 ismaelgv/rnr # tool to securely rename multiple files and directories that supports regular expressions.
 sigoden/argc # external command-line options, arguments and sub-commands parser for bash.
+zquestz/s # Web search from the terminal. Just opens in your browser.
+trikko/tshare # share your local files on the web via transfer.sh
 
 ## x86 only - use with -I for other arches
 phiresky/ripgrep-all # look for a regex in a multitude of file types
-ogham/exa # ls alternative
 sayanarijit/xplr # os only, no arch in name
+imsnif/diskonaut # Disk space navigator.
 extrawurst/gitui # os only, no arch in name
 smallhadroncollider/taskell # kanban board/task manager
 ArthurSonzogni/json-tui # interactive json viewer with branch collapsing

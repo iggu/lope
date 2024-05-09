@@ -103,7 +103,8 @@ case "$(file -Lb --mime-type -- "$1")" in
     exit 0
     ;;
   application/json)
-    cat "$1" | jq . | bat -f -l json --file-name "$1" -
+    gron -c "$1" # not always determined correctly, so in some curcimstances bat from text/* will take care
+    # cat "$1" | jq . | bat -f -l json --file-name "$1" -
     exit 0
     ;;
   image/*)

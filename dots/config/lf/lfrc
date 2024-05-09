@@ -5,8 +5,8 @@ set shellopts '-eu'
 
 set previewer pv
 
-set icons on
-set relativenumber on
+set icons true
+set relativenumber true
 
 set ifs "\n" # automatically split file names in $fs and $fx properly
 set scrolloff 10 # leave some space at the top and the bottom of the screen
@@ -43,11 +43,15 @@ map H $hnb
 map ~ cd ~
 map . set hidden!
 
+map E $micro $f || nano $f 
+map e $lvim $f
+
 map o &mimeopen $f
 map O $mimeopen --ask $f
 map i $command pv $f | less -XR
-map I $less -XR $f
-map L $command pistol $f | less -XR
+map o $lazygit
+map L $less -XR $f
+map I $command bat $f --paging=always
 
 map ; redraw # default '<c-l>' clashes with tmux and vim navigations
 map | push !cat<space>$f<space>|<space> # pipe one command with another

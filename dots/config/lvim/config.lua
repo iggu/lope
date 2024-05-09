@@ -119,23 +119,27 @@ local function init_keymaps()
         },
     }
 
+    -- https://www.reddit.com/r/neovim/comments/11wmzlz/comment/jisz4if/
+    local opts4horLayout = {
+        layout_strategy = "horizontal",
+        layout_config = {
+            preview_cutoff = 120, -- no preview if term width is lt given columns
+            preview_width = 0.55, -- can be: function(_, cols, _)
+            width = 0.99,
+            height = 0.99,
+        }
+    }
+    lvim.builtin.telescope.defaults.layout_config = opts4horLayout.layout_config
+    lvim.builtin.telescope.defaults.layout_strategy = opts4horLayout.layout_strategy
+
     lvim.builtin.telescope.pickers = {
-        live_grep = {
-            layout_strategy = "horizontal",
-            layout_config = {
-                width = 0.8,
-                height = 0.8,
-            },
-        },
-        grep_string = {
-            layout_strategy = "horizontal",
-            layout_config = {
-                width = 0.8,
-                height = 0.8,
-            },
-        },
+        -- to get list type :Telescope <TAB> (comp-menu with: live_grep, grep_string, current_buffer_fuzzy_find, ...
         colorscheme = {
-            enable_preview = false -- after making several cursor movements neovim hangs
+            enable_preview = false, -- after making several cursor movements neovim hangs
+            layout_config = {
+                width = 40,
+                height = 0.99,
+            },
         },
     }
 end
@@ -306,7 +310,7 @@ local function init_plugins_editor()
         -- DECORATIONS
         { 'm-demare/hlargs.nvim' }, -- highlight arguments' definitions and usages, asynchronously, using Treesitter
         { 'Pocco81/HighStr.nvim' }, -- Permanently highlight selection
-        { 'haringsrob/nvim_context_vt' }, -- Shows virtual text of the current context at the end of: functions, if, for, ...
+        -- { 'haringsrob/nvim_context_vt' }, -- Shows virtual text of the current context at the end of: functions, if, for, ...
         { 'HiPhish/nvim-ts-rainbow2' }, -- p00f/nvim-ts-rainbow is archived; suddenly all kind of rainbow plugins stopped to work
         -- {'pseewald/vim-anyfold'}, -- folds are pretty unusable since preview windows content is folded too
         { "nyngwang/murmur.lua" }, -- highlight word under cursor - some themes do it themeselves
@@ -321,7 +325,9 @@ local function init_plugins_editor()
         { 'kevinhwang91/nvim-bqf' }, -- better quickfix window,
 
         -- FILETYPES
+	{ 'jamessan/vim-gnupg' }, -- ransparent editing of gpg encrypted files with .gpg, .pgp or .asc suffix
         { 'hauleth/vim-encpipe' }, -- files encoded by encpipe, with '.enc' extension
+        { 'MoserMichael/vimcrypt2' }, -- encrypt files with openssl
         -- { 'aserebryakov/vim-todo-lists' },
         { 'bfrg/vim-jq' },
         -- {'bfrg/vim-jqplay'}, -- pretty useless, have dedicated shell scripts for that
@@ -338,6 +344,8 @@ local function init_plugins_editor()
 end
 
 init_plugins_editor()
+    vim.g.vimcrypt2_cipher = "aes-256-cbc"
+    vim.g.vimcrypt2_addopt = "-md sha256 -pbkdf2"
 
 local function init_plugins_ide()
     table.appendt(lvim.plugins, {
@@ -353,7 +361,7 @@ local function init_plugins_ide()
 
         -- SYMBOLS NAVIGATION
         -- { 'c0r73x/neotags.lua' },
-        { 'romgrk/nvim-treesitter-context' },
+        -- { 'romgrk/nvim-treesitter-context' },
         -- main rule is: left side - tree-sitter based outliners (should be used in general as fastest),
         -- right side - ctags-based (they may be pretty slow on big files)
         { 'sidebar-nvim/sidebar.nvim' },
