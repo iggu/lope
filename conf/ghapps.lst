@@ -1,3 +1,4 @@
+# vi: ft=cfg
 # SYNTAX: ghuser/ghrepo [version], where optional 'version' is:
 #   - exact match or name
 #   - -N, where N is number - skip N latest versions (-1 - skip first)

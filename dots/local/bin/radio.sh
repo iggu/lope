@@ -23,6 +23,7 @@ declare -A stations=(
   [Instr: Nightwave Plaza]=https://radio.plaza.one/mp3
   [Instr: Radio Monacensis]=https://monacensis.stream.laut.fm/monacensis
   [Instr: Chinese Traditional]=https://laradiofm.ru/download/605-ru-m3u
+  [Instr: Work Relax]=https://www.youtube.com/watch?v=_4kHxtiuML0
   [Electro: Kohina]=http://kohina.duckdns.org:8000/stream.ogg
   [Electro: Nightride FM]=https://stream.nightride.fm/nightride.ogg
   [Chill: Code Radio]=https://coderadio-admin.freecodecamp.org/radio/8010/radio.mp3
@@ -30,7 +31,6 @@ declare -A stations=(
   [Relax: Hang Drum]=https://www.youtube.com/watch?v=szyyoAzDWHM
   [Relax: Mantra]=http://c22.radioboss.fm/playlist/291/stream.m3u
   [Relax: Liquid DNB Radio]=https://www.youtube.com/watch?v=8z1tLBynk7U
-  [Relax: Work Stream]=https://www.youtube.com/watch?v=cXzYWEFib4M
 )
 
 if command -v fzf &>/dev/null; then
