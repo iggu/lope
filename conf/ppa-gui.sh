@@ -10,6 +10,7 @@ declare -A PPA_LAUNCHPAD=(
     [mozillateam/ppa]="0AB215679C571D1C8325275B9BDB3D89CE49EC21"
     [phd/chromium-browser]="079FA39EE6A75D23" # by default installs outdated version from the original repos, needs manual version picking
     [mozillateam/ppa]="0AB215679C571D1C8325275B9BDB3D89CE49EC21"
+    [wereturtle/ppa]="EF3F38C8FD5E1EE2E7B3B657653124679B3CCB19"
 )
 
 # PPAs from ext repos; values are the deb string w/o prefix

@@ -72,6 +72,27 @@ function install_leo()
 
 ###############################################################################
 
+
+function install_fpp()
+{
+    # Select paths out of bash's output:
+    # * Parse all incoming lines for entries that look like files
+    # * Present the piped input in a convenient selector UI
+    # * Edit the selected files in your favorite $EDITOR OR Execute an arbitrary command with them
+    :require-py3 8
+    if command -v fpp; then
+        echo "'facebook/PathPicker' seems to be already installed"
+    else
+        declare -r sVersion="0.9.5"
+        local ptZip="/tmp/fpp-$sVersion.zip" pInstDir="${CliArgs[dist]}/PathPicker-$sVersion"
+        [ ! -f "$ptZip" ] &&  wget "https://github.com/facebook/PathPicker/archive/refs/tags/$sVersion.zip" -O "$ptZip"
+        [ -f "$ptZip" ] && [ ! -d "$pInstDir" ] && als "$ptZip" -X "$(dirname $pInstDir)"
+        ln -sf "$pInstDir/fpp" "${CliArgs[bin]}/fpp" # since command -v gave us nothing - overwrite the link
+    fi
+}
+
+###############################################################################
+
 function install_lunarvim()
 {
     # WARNING: LunarVim sadly supports customization of it's paths, never try to move cache dir from default location

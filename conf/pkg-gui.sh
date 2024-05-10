@@ -11,5 +11,5 @@ declare -A PKGs=(
     [noise]="anoise-gui anoise-community-extension2 anoise-community-extension3" # all=basic, 1=boring, 2=places, 3=noises, 4=lakes&rivers, 5=birds
     [browse]="firefox-esr vivaldi-stable brave-browser librewolf chromium-codecs-ffmpeg-extra telegram"
     [youtube]="youtube-to-mp3 youtube-downloader lyrics-finder "
-    [office]="goldendict vym"
+    [office]="goldendict vym ghostwriter"
 )
