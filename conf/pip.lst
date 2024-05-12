@@ -1,2 +1,17 @@
 # Download songs from YouTube by getting the audio from YouTube and the metadata from sources
 ytmdl # deepjyoti30/ytmdl
+
+# CLI helpers to install Github releases on system and keep them updated.
+gh-release-install
+install-release
+
+# Markdown Viewers
+vmd # best colors
+mdv # nice
+frogmouth # kinda broken, can be fixed manually
+
+# Text Editing
+suplemon
+
+# File Manager
+lfm
