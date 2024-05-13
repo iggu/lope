@@ -5,33 +5,36 @@
 
 #### https://github.com/agarrharr/awesome-cli-apps
 
-## have releases both for x86_64 and aarch64
-microsoft/ripgrep-prebuilt # original repo only for x86_64
+########## IN 24.04 PACKAGES ################
 ajeetdsouza/zoxide # remembers which directories you use most frequently
-ClementTsang/bottom # top-like
+microsoft/ripgrep-prebuilt # original repo only for x86_64
 lsd-rs/lsd # ls with lots of added feature
-Equationzhao/g # g is a ls alternative with features
-ogham/exa # ls alternative
 eza-community/eza # eza is replacement for ls, built on exa.
-bmatsuo/jqsh # nteractive wrapper to the jq
 noahgorstein/jqp # TUI playground for exploring jq
 tomnomnom/gron # transforms JSON into discrete assignments of 'absolute paths' to ease the grep
-charmbracelet/glow # render markdown
-dandavison/delta # diff viewer
-eth-p/bat-extras # batgrep, batman, batpipe, batwatch, batdiff, prettybat
-gokcehan/lf # 3-pane file manager
-jesseduffield/lazydocker # docker tui
-jesseduffield/lazygit # git tui
-junegunn/fzf # fyzzy finder tui
-ms-jpq/sad # Batch File Edit tool, sed with preview
 sharkdp/bat # syntax highlighting
-sharkdp/fd # alternative to find
-bootandy/dust # du alternative
+gokcehan/lf # 3-pane file manager
+junegunn/fzf # fyzzy finder tui
 koalaman/shellcheck # warnings and suggestions for bash/sh shell scripts
 aristocratos/btop # resource monitor with lots of stats
 FiloSottile/age #  file encryption tool, format, and Go library.
 muesli/duf # Disk Usage/Free Utility
 zyedidia/micro # nano editor on steroids - customizations + plugins
+neovim/neovim -1
+
+## have releases both for x86_64 and aarch64
+ClementTsang/bottom # top-like
+Equationzhao/g # g is a ls alternative with features
+ogham/exa # ls alternative
+bmatsuo/jqsh # nteractive wrapper to the jq
+charmbracelet/glow # render markdown
+dandavison/delta # diff viewer
+eth-p/bat-extras # batgrep, batman, batpipe, batwatch, batdiff, prettybat
+jesseduffield/lazydocker # docker tui
+jesseduffield/lazygit # git tui
+ms-jpq/sad # Batch File Edit tool, sed with preview
+sharkdp/fd # alternative to find
+bootandy/dust # du alternative
 charmbracelet/gum # tool for glamorous shell scripts (widgets).
 ismaelgv/rnr # tool to securely rename multiple files and directories that supports regular expressions.
 sigoden/argc # external command-line options, arguments and sub-commands parser for bash.
@@ -48,7 +51,6 @@ extrawurst/gitui # os only, no arch in name
 smallhadroncollider/taskell # kanban board/task manager
 ArthurSonzogni/json-tui # interactive json viewer with branch collapsing
 ArthurSonzogni/git-tui # collection of human friendly terminal user interface for git.
-neovim/neovim -1
 # neovim/neovim v0.9.2 # versions >=v0.9.4 break Telescope on LunarVim<=1.2: https://github.com/nvim-telescope/telescope.nvim/issues/2747
 
 # FIXME: gui apps - should be listed outhere
