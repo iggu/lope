@@ -50,7 +50,7 @@ function conn_establish()
     eval "declare -A aaOpts=( $(crypt_ossl - "$fpOpts" "$sVpnPswd") )"
 
     echo -e "${aaOpts[certpasswd]}\n$sVpnPswd\n" | \
-        sudo openconnect --passwd-on-stdin $sOcCliArgs \
+        sudo openconnect --useragent=AnyConnect --passwd-on-stdin $sOcCliArgs \
              -c "$fpPfx" -u "${aaOpts[login]}" "${aaOpts[server]}"
 
     return
