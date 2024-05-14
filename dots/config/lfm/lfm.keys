@@ -1,0 +1,70 @@
+########## lfm - Last File Manager - Keys ##########
+
+[Main]
+# cursor movement
+cursor_up:                     up k
+cursor_down:                   down j
+cursor_pageup:                 pageup K C-p
+cursor_pagedown:               pagedown J C-n
+cursor_up10:                   C-up
+cursor_down10:                 C-down
+cursor_home:                   home C-a g
+cursor_end:                    end C-e G
+cursor_goto_file:              C-s
+cursor_goto_file_1char:        A-s
+
+# change dir
+dir_up:                        left h
+dir_enter:                     right enter l
+goto:                          C-g
+bookmark_goto:                 b
+bookmark_set:                  B
+bookmark_select_fromlist:      C-d
+history_select_fromlist:       C-y
+
+# pane & tabs
+pane_change_focus:             tab
+pane_other_tab_equal:	       =
+panes_swap:                    C-u V
+panes_cycle_view:              v
+refresh:                       C-r
+redraw_screen:                 A-r
+dotfiles_toggle:               .
+filters_edit:                  C-f
+sort_files:                    s
+show_dirs_size:                #
+tab_new:                       :
+tab_close:                     !
+tab_left:                      <
+tab_right:                     >
+
+# selection
+select:                        ins
+select_glob:                   +
+deselect_glob:                 -
+select_invert:                 *
+
+# files
+rename_file:                   F2 r
+view_file:                     F3 i
+edit_file:                     F4 e
+copy_file:                     F5 c
+move_file2:                    F6 m
+make_dir:                      F7 D
+delete_file:                   F8 x
+exec_on_file:                  @
+touch_file:                    t
+link_create:                   L
+link_edit:                     C-l
+show_file_info:                I
+
+# general
+find_grep:                     /
+show_tree:                     C-t
+main_menu:                     F9
+file_menu:                     F12
+help_menu:                     ?
+open_shell:                    C-o
+toggle_powercli:               C-x
+quit_chdir:                    q F10
+quit_nochdir:                  C-q 
