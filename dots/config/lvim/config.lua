@@ -327,7 +327,10 @@ local function init_plugins_editor()
         -- FILETYPES
 	{ 'jamessan/vim-gnupg' }, -- ransparent editing of gpg encrypted files with .gpg, .pgp or .asc suffix
         { 'hauleth/vim-encpipe' }, -- files encoded by encpipe, with '.enc' extension
-        { 'MoserMichael/vimcrypt2' }, -- encrypt files with openssl
+        -- to eliminate 'no python3 provider found' error at startup (from vimcrypt2) - python3-neovim must by installed system-wide
+        -- which also installs some descent version of nvim (https://stackoverflow.com/q/59433677)
+        -- since this package is not really neede right now - comment it out for a while
+        -- { 'MoserMichael/vimcrypt2' }, -- encrypt files with openssl
         -- { 'aserebryakov/vim-todo-lists' },
         { 'bfrg/vim-jq' },
         -- {'bfrg/vim-jqplay'}, -- pretty useless, have dedicated shell scripts for that
