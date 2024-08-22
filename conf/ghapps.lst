@@ -42,6 +42,7 @@ zquestz/s # Web search from the terminal. Just opens in your browser.
 trikko/tshare # share your local files on the web via transfer.sh
 tramhao/termusic # Terminal Music and Podcast Player written in Rust; needs libmpv1 to be installed
 timdubbins/tap # audio player for the terminal with fuzzy-finder shortcuts
+xvzc/SpoofDPI # proxy server to bypass Deep Packet Inspection
 
 ## x86 only - use with -I for other arches
 phiresky/ripgrep-all # look for a regex in a multitude of file types
