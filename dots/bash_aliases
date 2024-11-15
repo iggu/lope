@@ -6,7 +6,7 @@ force_color_prompt=yes
 # this is a single file which is included by default in the vanilla .bashrc
 # so this is a single place where custom stuff may reside
 
-PATH="$HOME/.local/bin:$PATH"
+PATH="$HOME/.local/bin:$PATH:$(readlink -m ~/.bash_aliases/../local/bin)"
 CDPATH="$HOME:$HOME/Documents:$HOME/Work:$HOME/.local:$CDPATH" # cd as subdirs of listed paths are in the cwd
 
 HISTIGNORE="$HISTIGNORE:jrnl *" # ignore saving in history
@@ -151,5 +151,8 @@ bind '"\C-f\C-f": "$(nb-list)\e\C-e\e"' # dunno how it works - but looks ugly
 # alias mind-pretty='mind_find_pretty_state_files $(git-root)'
 
 
-eval "$(zoxide init bash)"
+if command -v zoxide; then
+  eval "$(zoxide init bash)"
+fi
 
+alias nvim='/home/iggu/Templates/nvim-v0.11.0-dev-1097-gf5b84c1a44/bin/nvim'

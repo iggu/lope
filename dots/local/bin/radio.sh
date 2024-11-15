@@ -15,7 +15,7 @@ declare -A stations=(
   [Rock: Наше Радио / Nashe]=http://online2.gkvr.ru:8000/nashe_kaz_64.aac
   [Rock: Maximum]=http://radio.tp.tver.ru:8000/maximum_mp3
   [Pop: Мировая Попса / World Pop]=http://nashe1.hostingradio.ru/best-256
-  [Pop: Future Fnk]=http://node-16.zeno.fm:80/etbbu6a3dnruv
+  #[Pop: Future Fnk]=http://node-16.zeno.fm:80/etbbu6a3dnruv
   [Pop: Gensokyo Radio]=https://stream.gensokyoradio.net/1
   [Pop: Chinamerica]=https://laradiofm.ru/download/2480-ru-m3u
   [Instr: Shonan Beach FM]=http://shonanbeachfm.out.airtime.pro:8000/shonanbeachfm_c
@@ -23,14 +23,14 @@ declare -A stations=(
   [Instr: Nightwave Plaza]=https://radio.plaza.one/mp3
   [Instr: Radio Monacensis]=https://monacensis.stream.laut.fm/monacensis
   [Instr: Chinese Traditional]=https://laradiofm.ru/download/605-ru-m3u
-  [Instr: Work Relax]=https://www.youtube.com/watch?v=_4kHxtiuML0
+  #[Instr: Work Relax]=https://www.youtube.com/watch?v=_4kHxtiuML0
   [Electro: Kohina]=http://kohina.duckdns.org:8000/stream.ogg
   [Electro: Nightride FM]=https://stream.nightride.fm/nightride.ogg
   [Chill: Code Radio]=https://coderadio-admin.freecodecamp.org/radio/8010/radio.mp3
-  [Chill: Calm Focus Mix]=https://www.youtube.com/watch?v=BYl7v0YsX9g
-  [Relax: Hang Drum]=https://www.youtube.com/watch?v=szyyoAzDWHM
+  #[Chill: Calm Focus Mix]=https://www.youtube.com/watch?v=BYl7v0YsX9g
+  #[Relax: Hang Drum]=https://www.youtube.com/watch?v=szyyoAzDWHM
   [Relax: Mantra]=http://c22.radioboss.fm/playlist/291/stream.m3u
-  [Relax: Liquid DNB Radio]=https://www.youtube.com/watch?v=8z1tLBynk7U
+  #[Relax: Liquid DNB Radio]=https://www.youtube.com/watch?v=8z1tLBynk7U
 )
 
 if command -v fzf &>/dev/null; then
